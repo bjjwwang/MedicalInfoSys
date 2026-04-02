@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>开发迭代路线图 - 医案通</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #333;
+    background: #f5f5f5;
+    padding: 20px;
+}
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+h1 {
+    font-size: 28px;
+    color: #1a1a1a;
+    border-bottom: 3px solid #2c3e50;
+    padding-bottom: 12px;
+    margin: 35px 0 20px 0;
+}
+h1:first-child { margin-top: 0; }
+h2 {
+    font-size: 22px;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin: 30px 0 15px 0;
+}
+h3 {
+    font-size: 18px;
+    color: #34495e;
+    margin: 22px 0 10px 0;
+}
+h4 {
+    font-size: 15px;
+    color: #555;
+    margin: 18px 0 8px 0;
+    font-weight: 600;
+}
+p { margin: 10px 0; }
+a { color: #3498db; text-decoration: none; }
+a:hover { text-decoration: underline; }
+strong { color: #2c3e50; }
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-size: 14px;
+    overflow-x: auto;
+    display: block;
+}
+thead { background: #2c3e50; color: #fff; }
+th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    white-space: nowrap;
+}
+td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #eee;
+}
+tbody tr:hover { background: #f8f9fa; }
+code {
+    font-family: "Fira Code", "Source Code Pro", "Consolas", monospace;
+    background: #f0f2f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #e74c3c;
+}
+pre {
+    background: #282c34;
+    color: #abb2bf;
+    padding: 18px 22px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 16px 0;
+    line-height: 1.6;
+}
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 13px;
+}
+blockquote {
+    border-left: 4px solid #3498db;
+    padding: 10px 18px;
+    margin: 16px 0;
+    background: #f8f9fa;
+    color: #555;
+    border-radius: 0 4px 4px 0;
+}
+ul, ol { padding-left: 28px; margin: 10px 0; }
+li { margin-bottom: 5px; }
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 30px 0;
+}
+.page-break {
+    border-top: 2px dashed #ccc;
+    margin: 40px 0;
+    padding-top: 10px;
+}
+/* 导航栏 */
+.nav-bar {
+    max-width: 960px;
+    margin: 0 auto 15px auto;
+    padding: 12px 20px;
+    background: #2c3e50;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.nav-bar a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+.nav-bar a:hover { background: #34495e; }
+.nav-bar a.active { background: #3498db; }
+/* 返回顶部 */
+.back-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    background: #2c3e50;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.back-top:hover { opacity: 1; text-decoration: none; }
+/* 打印样式 */
+@media print {
+    body { background: #fff; padding: 0; }
+    .container { box-shadow: none; padding: 20px; }
+    .nav-bar, .back-top { display: none; }
+    pre { white-space: pre-wrap; }
+}
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .container { padding: 20px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; }
+    table { font-size: 12px; }
+    th, td { padding: 6px 8px; }
+}
+</style>
+</head>
+<body>
+<nav class="nav-bar"><a href="01-项目概述.html">项目概述</a><a href="02-商业模式与团队规划.html">商业模式</a><a href="03-技术架构与数据库设计.html">技术架构</a><a href="04-功能模块设计.html">功能模块</a><a href="05-开发迭代路线图.html" class="active">迭代路线</a><a href="06-合规与安全规范.html">合规安全</a><a href="07-运营与风险管理.html">运营风险</a></nav>
+<div class="container">
+<h1 id="_1">开发迭代路线图</h1>
+<h2 id="_2">总览</h2>
+<pre><code>MVP(2个月) → V1.0(3个月) → V1.5(3个月) → V2.0(4个月) → V3.0(持续)
+</code></pre>
+<hr />
+<h2 id="phase-01-2">Phase 0：准备期（第1-2周）</h2>
+<h3 id="_3">目标：搭建开发基础</h3>
+<ul>
+<li>[ ] 技术选型确认 &amp; 开发环境搭建</li>
+<li>[ ] Git仓库初始化、CI/CD基础流水线</li>
+<li>[ ] 数据库设计评审 &amp; 初始化</li>
+<li>[ ] UI/UX 设计启动（原型图）</li>
+<li>[ ] 法律顾问对接，启动资质申请调研</li>
+</ul>
+<h3 id="_4">交付物</h3>
+<ul>
+<li>可运行的项目骨架</li>
+<li>数据库DDL</li>
+<li>低保真原型图</li>
+</ul>
+<hr />
+<h2 id="phase-1mvp3-10">Phase 1：MVP（第3-10周）</h2>
+<h3 id="_5">目标：跑通核心闭环——"上传病例 → 搜索 → 查看 → 付费"</h3>
+<h3 id="_6">功能范围</h3>
+<p><strong>用户模块</strong> (MVP)<br />
+- 手机号注册登录<br />
+- 基本资料填写<br />
+- 医生认证（人工审核）</p>
+<p><strong>病例模块</strong> (MVP)<br />
+- 结构化模板录入（3-5个通用模板）<br />
+- 规则引擎脱敏（正则匹配）<br />
+- 人工审核流程<br />
+- 病例列表和详情展示<br />
+- 付费内容区分（免费摘要/付费详情）</p>
+<p><strong>搜索模块</strong> (MVP)<br />
+- ES关键词搜索<br />
+- 基础筛选（病种、治疗类型、疗效）</p>
+<p><strong>交易模块</strong> (MVP)<br />
+- 微信支付（单次购买）<br />
+- 基础分账（作者70% / 平台30%）</p>
+<p><strong>管理后台</strong> (MVP)<br />
+- 病例审核<br />
+- 用户管理</p>
+<h3 id="_7">聚焦病种</h3>
+<p>MVP选择 1-2 个垂直病种切入，建议：<br />
+- <strong>罕见病</strong>（信息最稀缺，付费意愿最高）<br />
+- <strong>肿瘤</strong>（患者基数大，需求明确）</p>
+<h3 id="_8">验证指标</h3>
+<ul>
+<li>种子用户（医生）≥ 20人</li>
+<li>有效病例 ≥ 100个</li>
+<li>有用户愿意付费（≥ 10笔交易）</li>
+<li>用户反馈NPS ≥ 30</li>
+</ul>
+<hr />
+<h2 id="phase-2v1011-22">Phase 2：V1.0（第11-22周）</h2>
+<h3 id="_9">目标：产品完善，支撑初步增长</h3>
+<h3 id="_10">新增功能</h3>
+<p><strong>用户模块</strong><br />
+- 微信OAuth登录<br />
+- 信用体系基础版<br />
+- 钱包 &amp; 提现</p>
+<p><strong>病例模块</strong><br />
+- NER脱敏模型上线<br />
+- LLM辅助结构化提取<br />
+- 更多病种模板（扩展到10+病种）<br />
+- 病例收藏</p>
+<p><strong>搜索模块</strong><br />
+- 搜索建议 &amp; 自动补全<br />
+- 搜索结果高亮<br />
+- 排序优化</p>
+<p><strong>交易模块</strong><br />
+- 支付宝支付<br />
+- 余额支付<br />
+- 退款流程<br />
+- 提现到银行卡</p>
+<p><strong>管理后台</strong><br />
+- 仪表盘<br />
+- 交易管理<br />
+- 医生认证审核流程优化</p>
+<h3 id="_11">验证指标</h3>
+<ul>
+<li>注册用户 ≥ 1000</li>
+<li>月活 ≥ 300</li>
+<li>月交易额 ≥ ¥10000</li>
+<li>病例数 ≥ 500</li>
+</ul>
+<hr />
+<h2 id="phase-3v1523-34">Phase 3：V1.5（第23-34周）</h2>
+<h3 id="ai">目标：AI能力 + 社区，构建壁垒</h3>
+<h3 id="_12">新增功能</h3>
+<p><strong>病例模块</strong><br />
+- 影像上传 + OCR脱敏<br />
+- 同行评审机制<br />
+- 质量分级体系<br />
+- 病例讨论区（评论）</p>
+<p><strong>搜索模块</strong><br />
+- 相似病例推荐<br />
+- 热门排行 &amp; 趋势</p>
+<p><strong>AI服务</strong><br />
+- AI自动审核<br />
+- 病例摘要自动生成<br />
+- 内容质量自动评分</p>
+<p><strong>交易模块</strong><br />
+- 订阅套餐<br />
+- 自动续费</p>
+<p><strong>管理后台</strong><br />
+- 运营工具（推荐位、Banner、专题）<br />
+- 基础数据分析</p>
+<p><strong>运营</strong><br />
+- 小程序上线<br />
+- 邀请制增长（老用户邀请得奖励）</p>
+<h3 id="_13">验证指标</h3>
+<ul>
+<li>注册用户 ≥ 5000</li>
+<li>付费用户 ≥ 500</li>
+<li>月收入 ≥ ¥50000</li>
+<li>订阅用户占比 ≥ 20%</li>
+</ul>
+<hr />
+<h2 id="phase-4v2035-50">Phase 4：V2.0（第35-50周）</h2>
+<h3 id="_14">目标：规模化 &amp; 商业化加速</h3>
+<h3 id="_15">新增功能</h3>
+<p><strong>搜索模块</strong><br />
+- 语义搜索（向量检索）<br />
+- 个性化推荐</p>
+<p><strong>AI服务</strong><br />
+- 智能问答（上传病历获取参考建议）<br />
+- 多模态理解</p>
+<p><strong>交易模块</strong><br />
+- 企业版/机构版<br />
+- 动态定价建议<br />
+- 打赏功能</p>
+<p><strong>数据服务</strong><br />
+- 脱敏数据API（面向B端）<br />
+- 专病数据报告<br />
+- 数据可视化面板</p>
+<p><strong>平台</strong><br />
+- 机构入驻体系<br />
+- 多端一致体验优化<br />
+- 国际化准备（繁体中文 → 英文）</p>
+<h3 id="_16">验证指标</h3>
+<ul>
+<li>注册用户 ≥ 20000</li>
+<li>月收入 ≥ ¥300000</li>
+<li>企业客户 ≥ 5家</li>
+<li>获得融资</li>
+</ul>
+<hr />
+<h2 id="phase-5v30">Phase 5：V3.0+（持续迭代）</h2>
+<h3 id="_17">方向</h3>
+<ul>
+<li>国际化（面向东南亚/全球）</li>
+<li>专病垂直深耕（每个重点病种的深度案例库）</li>
+<li>AI辅助诊断（需要更高的监管资质）</li>
+<li>医患连接（案例作者的在线咨询服务）</li>
+<li>学术合作（与医学院/研究机构数据合作）</li>
+<li>保险/药企深度合作</li>
+</ul>
+<hr />
+<h2 id="_18">里程碑一览</h2>
+<table>
+<thead>
+<tr>
+<th>里程碑</th>
+<th>时间</th>
+<th>标志性事件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP上线</td>
+<td>第10周</td>
+<td>核心闭环跑通，种子用户验证</td>
+</tr>
+<tr>
+<td>首笔收入</td>
+<td>第12周</td>
+<td>第一笔真实交易完成</td>
+</tr>
+<tr>
+<td>V1.0</td>
+<td>第22周</td>
+<td>产品基本完善，支付体系完整</td>
+</tr>
+<tr>
+<td>千人用户</td>
+<td>第25周</td>
+<td>注册用户破千</td>
+</tr>
+<tr>
+<td>V1.5</td>
+<td>第34周</td>
+<td>AI能力上线，小程序上线</td>
+</tr>
+<tr>
+<td>月入5万</td>
+<td>第36周</td>
+<td>商业模式初步验证</td>
+</tr>
+<tr>
+<td>天使轮融资</td>
+<td>第38周</td>
+<td>基于验证数据融资</td>
+</tr>
+<tr>
+<td>V2.0</td>
+<td>第50周</td>
+<td>企业客户 &amp; 数据服务</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="mvp-8">MVP 详细开发计划（8周）</h1>
+<h2 id="sprint-11-2">Sprint 1（第1-2周）：基础搭建</h2>
+<h3 id="_19">后端</h3>
+<ul>
+<li>[ ] 项目初始化：FastAPI + SQLAlchemy + Alembic</li>
+<li>[ ] 数据库设计实现：users, cases, transactions 核心表</li>
+<li>[ ] 用户注册/登录 API（手机号 + 验证码）</li>
+<li>[ ] JWT认证中间件</li>
+<li>[ ] 基础错误处理和日志</li>
+</ul>
+<h3 id="_20">前端</h3>
+<ul>
+<li>[ ] Next.js 项目初始化</li>
+<li>[ ] 基础页面框架和路由</li>
+<li>[ ] 登录/注册页面</li>
+<li>[ ] 基础UI组件库选择和主题配置</li>
+</ul>
+<h3 id="_21">基础设施</h3>
+<ul>
+<li>[ ] 开发环境搭建（Docker Compose: PostgreSQL + Redis + ES）</li>
+<li>[ ] CI/CD 基础流水线</li>
+<li>[ ] 代码规范（linter、pre-commit hooks）</li>
+</ul>
+<h3 id="_22">交付物</h3>
+<ul>
+<li>可注册登录的应用骨架</li>
+<li>数据库已迁移</li>
+<li>开发环境文档</li>
+</ul>
+<hr />
+<h2 id="sprint-23-4">Sprint 2（第3-4周）：病例核心</h2>
+<h3 id="_23">后端</h3>
+<ul>
+<li>[ ] 病例 CRUD API</li>
+<li>[ ] 结构化模板定义（JSON Schema）</li>
+<li>[ ] 草稿保存机制</li>
+<li>[ ] 规则引擎脱敏（正则匹配手机号/身份证/姓名格式）</li>
+<li>[ ] 病例状态机（draft → pending → approved/rejected → published）</li>
+</ul>
+<h3 id="_24">前端</h3>
+<ul>
+<li>[ ] 病例录入表单（基于模板的动态表单）</li>
+<li>[ ] 草稿保存和续填</li>
+<li>[ ] 病例详情页（区分免费区/付费区）</li>
+<li>[ ] 我的病例列表</li>
+</ul>
+<h3 id="_25">交付物</h3>
+<ul>
+<li>可以完整录入一个病例并展示</li>
+<li>脱敏规则初步生效</li>
+</ul>
+<hr />
+<h2 id="sprint-35-6">Sprint 3（第5-6周）：搜索 + 交易</h2>
+<h3 id="_26">后端</h3>
+<ul>
+<li>[ ] Elasticsearch 索引设计和数据同步</li>
+<li>[ ] 搜索 API（关键词 + 筛选 + 分页）</li>
+<li>[ ] 微信支付集成（JSAPI/H5）</li>
+<li>[ ] 订单创建 → 支付 → 回调完整流程</li>
+<li>[ ] 购买后内容解锁逻辑</li>
+</ul>
+<h3 id="_27">前端</h3>
+<ul>
+<li>[ ] 首页：病例列表 + 搜索框</li>
+<li>[ ] 搜索结果页（筛选条件侧栏）</li>
+<li>[ ] 支付流程页面</li>
+<li>[ ] 已购买病例列表</li>
+</ul>
+<h3 id="_28">交付物</h3>
+<ul>
+<li>搜索可用</li>
+<li>支付闭环跑通（沙箱环境）</li>
+</ul>
+<hr />
+<h2 id="sprint-47-8">Sprint 4（第7-8周）：管理后台 + 联调 + 上线</h2>
+<h3 id="_29">后端</h3>
+<ul>
+<li>[ ] 管理后台 API（审核、用户管理）</li>
+<li>[ ] 分账逻辑实现</li>
+<li>[ ] 数据校验和安全加固</li>
+<li>[ ] 性能优化和压测</li>
+<li>[ ] 部署脚本和生产环境配置</li>
+</ul>
+<h3 id="_30">前端</h3>
+<ul>
+<li>[ ] 管理后台：审核列表 + 审核操作</li>
+<li>[ ] 管理后台：用户列表 + 认证审核</li>
+<li>[ ] 全站联调和Bug修复</li>
+<li>[ ] 响应式适配（移动端基础可用）</li>
+</ul>
+<h3 id="_31">运营准备</h3>
+<ul>
+<li>[ ] 种子医生邀请（目标20人）</li>
+<li>[ ] 初始病例内容准备（运营手动录入标杆案例）</li>
+<li>[ ] 用户协议和隐私政策定稿</li>
+<li>[ ] 免责声明定稿</li>
+</ul>
+<h3 id="_32">交付物</h3>
+<ul>
+<li>MVP版本上线</li>
+<li>20+种子用户 + 50+病例</li>
+<li>基本运营支撑就绪</li>
+</ul>
+<hr />
+<h2 id="mvp">技术债务清单（MVP后优先处理）</h2>
+<ul>
+<li>[ ] 单元测试补全（MVP期间覆盖率目标 &gt; 60%）</li>
+<li>[ ] API文档完善</li>
+<li>[ ] 错误监控接入（Sentry）</li>
+<li>[ ] 性能基线建立</li>
+<li>[ ] 脱敏引擎升级（规则 → NER）</li>
+<li>[ ] 代码review制度建立</li>
+</ul>
+</div>
+<a href="#" class="back-top" title="返回顶部">&uarr;</a>
+</body>
+</html>

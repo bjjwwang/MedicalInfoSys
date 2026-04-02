@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 1 — C/C++ Systems Programming & Security — Explained</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.7;
+            padding: 30px 20px;
+        }
+        .container { max-width: 960px; margin: 0 auto; }
+        h1 { color: #b71c1c; font-size: 28px; text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 30px; }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+            background: white; padding: 18px; border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 30px;
+        }
+        .stat { text-align: center; }
+        .stat-val { font-size: 26px; font-weight: 700; color: #b71c1c; }
+        .stat-label { font-size: 12px; color: #888; }
+
+        /* Category nav */
+        .category-nav {
+            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px;
+        }
+        .cat-btn {
+            padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+            cursor: pointer; border: 2px solid #ddd; background: white; transition: 0.2s;
+        }
+        .cat-btn:hover { border-color: #b71c1c; color: #b71c1c; }
+        .cat-btn.active { background: #b71c1c; color: white; border-color: #b71c1c; }
+
+        /* Question card */
+        .q-card {
+            background: white; border-radius: 12px; padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 25px;
+            border-left: 5px solid #ddd;
+        }
+        .q-card.cat-ub { border-left-color: #e65100; }
+        .q-card.cat-memory { border-left-color: #c62828; }
+        .q-card.cat-security { border-left-color: #1565c0; }
+        .q-card.cat-stl { border-left-color: #2e7d32; }
+        .q-card.cat-lang { border-left-color: #6a1b9a; }
+        .q-card.cat-tools { border-left-color: #00838f; }
+
+        .q-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+        }
+        .q-num {
+            font-size: 14px; font-weight: 700; color: #b71c1c;
+            background: #ffebee; padding: 3px 12px; border-radius: 15px;
+        }
+        .q-stats { font-size: 12px; color: #888; display: flex; gap: 12px; }
+        .q-correct { color: #2e7d32; font-weight: 600; }
+        .q-tricky { color: #e65100; font-weight: 600; }
+        .q-category {
+            font-size: 11px; font-weight: 600; padding: 2px 10px;
+            border-radius: 10px; background: #f5f5f5; color: #666;
+        }
+
+        .q-text { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #222; }
+
+        pre.q-code {
+            background: #1e1e1e; color: #d4d4d4; padding: 15px;
+            border-radius: 8px; font-family: 'Consolas', 'Fira Code', monospace;
+            font-size: 14px; line-height: 1.6; overflow-x: auto; margin: 12px 0;
+        }
+        pre.q-code .kw { color: #569cd6; }
+        pre.q-code .type { color: #4ec9b0; }
+        pre.q-code .str { color: #ce9178; }
+        pre.q-code .cmt { color: #6a9955; }
+        pre.q-code .num { color: #b5cea8; }
+
+        /* Answer choices */
+        .choices { margin: 12px 0; }
+        .choice {
+            padding: 10px 15px; margin: 5px 0; border-radius: 8px;
+            font-size: 14px; border: 1px solid #eee; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .choice.correct { background: #e8f5e9; border-color: #a5d6a7; }
+        .choice.wrong { background: #fff; border-color: #eee; }
+        .choice-pct { font-size: 13px; font-weight: 600; min-width: 45px; text-align: right; }
+        .choice.correct .choice-pct { color: #2e7d32; }
+
+        /* Explanation */
+        .explanation {
+            background: #f8f9ff; border: 1px solid #e3e7fd; border-radius: 10px;
+            padding: 18px; margin-top: 15px;
+        }
+        .explanation h4 {
+            color: #1565c0; margin-bottom: 8px; font-size: 15px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .explanation p { font-size: 14px; margin-bottom: 8px; }
+        .explanation ul { margin: 8px 0 8px 20px; font-size: 14px; }
+        .explanation code {
+            background: #e8eaf6; padding: 1px 6px; border-radius: 3px;
+            font-family: monospace; font-size: 13px;
+        }
+        .explanation .warn {
+            background: #fff3e0; border-left: 3px solid #e65100;
+            padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 10px 0;
+            font-size: 13px;
+        }
+        .explanation .key-point {
+            background: #e8f5e9; border-left: 3px solid #2e7d32;
+            padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 10px 0;
+            font-size: 13px;
+        }
+
+        /* Toggle explanation */
+        .toggle-btn {
+            background: none; border: 1px solid #ccc; border-radius: 6px;
+            padding: 5px 14px; font-size: 13px; cursor: pointer; color: #666;
+            margin-top: 10px; transition: 0.2s;
+        }
+        .toggle-btn:hover { border-color: #1565c0; color: #1565c0; }
+        .explanation.collapsed { display: none; }
+
+        /* Difficulty indicator */
+        .diff-bar { display: flex; gap: 2px; align-items: center; }
+        .diff-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #ddd;
+        }
+        .diff-dot.filled { background: #e65100; }
+
+        @media (max-width: 600px) {
+            body { padding: 15px 10px; }
+            .q-card { padding: 18px; }
+            pre.q-code { font-size: 12px; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Quiz 1 — C/C++ Systems Programming & Security</h1>
+    <p class="subtitle">20 Questions · Detailed Explanations with Background Knowledge</p>
+
+    <div class="stats-bar">
+        <div class="stat"><div class="stat-val">91%</div><div class="stat-label">Average</div></div>
+        <div class="stat"><div class="stat-val">100%</div><div class="stat-label">High</div></div>
+        <div class="stat"><div class="stat-val">58%</div><div class="stat-label">Low</div></div>
+        <div class="stat"><div class="stat-val">149</div><div class="stat-label">Students</div></div>
+        <div class="stat"><div class="stat-val">20</div><div class="stat-label">Questions</div></div>
+    </div>
+
+    <div class="category-nav">
+        <div class="cat-btn active" onclick="filterCat('all')">All</div>
+        <div class="cat-btn" onclick="filterCat('lang')">C/C++ Language</div>
+        <div class="cat-btn" onclick="filterCat('ub')">Undefined Behavior</div>
+        <div class="cat-btn" onclick="filterCat('memory')">Memory & Pointers</div>
+        <div class="cat-btn" onclick="filterCat('stl')">STL & Data Structures</div>
+        <div class="cat-btn" onclick="filterCat('security')">Security</div>
+        <div class="cat-btn" onclick="filterCat('tools')">Tools</div>
+    </div>
+
+    <div id="questions">
+
+    <!-- ==================== Q1 ==================== -->
+    <div class="q-card cat-lang" data-cat="lang">
+        <div class="q-header">
+            <span class="q-num">Q1</span>
+            <span class="q-category">C/C++ Language</span>
+            <div class="q-stats"><span class="q-correct">97% correct</span></div>
+        </div>
+        <div class="q-text">Consider the program below. What does main return?</div>
+        <pre class="q-code"><span class="kw">struct</span> <span class="type">S</span> { <span class="kw">static</span> <span class="type">int</span> x; };
+<span class="type">int</span> <span class="type">S</span>::x = <span class="num">0</span>;
+<span class="type">int</span> main(<span class="type">void</span>) {
+    <span class="type">S</span>::x++;        <span class="cmt">// x = 1</span>
+    <span class="type">S</span> s; s.x++;    <span class="cmt">// x = 2</span>
+    <span class="type">S</span> t; t.x++;    <span class="cmt">// x = 3</span>
+    <span class="kw">return</span> <span class="type">S</span>::x;
+}</pre>
+        <div class="choices">
+            <div class="choice correct"><span>3.00</span><span class="choice-pct">97%</span></div>
+            <div class="choice wrong"><span>Something else</span><span class="choice-pct">3%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: 3</h4>
+            <p><code>static</code> member variables belong to the <strong>class</strong>, not to any instance. There is exactly <strong>one copy</strong> of <code>S::x</code> shared by all instances.</p>
+            <ul>
+                <li><code>S::x++</code> → accesses via class name, x becomes 1</li>
+                <li><code>s.x++</code> → accesses the <strong>same</strong> static variable through instance <code>s</code>, x becomes 2</li>
+                <li><code>t.x++</code> → same variable again through instance <code>t</code>, x becomes 3</li>
+            </ul>
+            <div class="key-point"><strong>Key concept:</strong> <code>static</code> members are per-class, not per-object. Accessing via <code>obj.x</code> and <code>Class::x</code> refers to the same memory. The <code>static int x;</code> inside the struct is only a declaration — the definition <code>int S::x = 0;</code> is required outside.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q2 ==================== -->
+    <div class="q-card cat-ub" data-cat="ub">
+        <div class="q-header">
+            <span class="q-num">Q2</span>
+            <span class="q-category">Undefined Behavior</span>
+            <div class="q-stats"><span class="q-correct">96% correct</span></div>
+        </div>
+        <div class="q-text">Given that x was declared as <code>int x[3]</code>, accessing <code>x[3]</code> is undefined behaviour.</div>
+        <div class="choices">
+            <div class="choice correct"><span>True</span><span class="choice-pct">96%</span></div>
+            <div class="choice wrong"><span>False</span><span class="choice-pct">4%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: True</h4>
+            <p><code>int x[3]</code> allocates indices 0, 1, 2. Accessing <code>x[3]</code> reads or writes <strong>past the end of the array</strong>.</p>
+            <div class="key-point"><strong>Array bounds in C/C++:</strong> Unlike Java or Python, C/C++ performs <strong>no bounds checking</strong> at runtime. Out-of-bounds access is undefined behavior — it might read garbage, corrupt adjacent data, or crash. This is one of the most common sources of security vulnerabilities (buffer overflow).</div>
+            <div class="warn"><strong>Subtlety:</strong> Taking the address <code>&x[3]</code> (pointer to one-past-the-end) is actually <em>allowed</em> by the standard — you just can't dereference it. This is how iterators like <code>vec.end()</code> work.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q3 ==================== -->
+    <div class="q-card cat-ub" data-cat="ub">
+        <div class="q-header">
+            <span class="q-num">Q3</span>
+            <span class="q-category">Undefined Behavior</span>
+            <div class="q-stats"><span class="q-correct">95% correct</span></div>
+        </div>
+        <div class="q-text">Which of the following is true for C++?</div>
+        <div class="choices">
+            <div class="choice wrong"><span>Signed overflow UB & unsigned overflow UB</span><span class="choice-pct">3%</span></div>
+            <div class="choice wrong"><span>Signed overflow defined & unsigned overflow defined</span><span class="choice-pct">0%</span></div>
+            <div class="choice correct"><span>Signed overflow UB & unsigned overflow defined</span><span class="choice-pct">95%</span></div>
+            <div class="choice wrong"><span>Signed overflow defined & unsigned overflow UB</span><span class="choice-pct">1%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: Signed overflow is UB, unsigned overflow is defined (wraps around)</h4>
+            <p><strong>Signed integer overflow</strong> is undefined behavior per the C/C++ standard. The compiler is free to assume it never happens, and may optimize accordingly.</p>
+            <p><strong>Unsigned integer overflow</strong> is well-defined: it wraps around modulo 2<sup>N</sup> (where N is the number of bits).</p>
+            <div class="key-point"><strong>Why this matters for compilers:</strong> Because signed overflow is UB, the compiler can assume <code>x + 1 > x</code> is always true for signed <code>x</code>. This enables loop optimizations. For unsigned, <code>x + 1</code> could wrap to 0, so the compiler cannot make that assumption.</div>
+            <div class="warn"><strong>Real-world consequence:</strong> GCC with <code>-O2</code> may remove checks like <code>if (x + 1 < x)</code> for signed integers, since it "can't happen" per the standard. Use <code>-fwrapv</code> to make signed overflow wrap, or <code>-ftrapv</code> to trap on it.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q4 ==================== -->
+    <div class="q-card cat-stl" data-cat="stl">
+        <div class="q-header">
+            <span class="q-num">Q4</span>
+            <span class="q-category">STL & Data Structures</span>
+            <div class="q-stats"><span class="q-correct">99% correct</span></div>
+        </div>
+        <div class="q-text">The STL contains a generic undirected graph.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-pct">1%</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-pct">99%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False</h4>
+            <p>The C++ Standard Template Library (STL) provides containers like <code>vector</code>, <code>map</code>, <code>set</code>, <code>unordered_map</code>, <code>list</code>, <code>deque</code>, <code>stack</code>, <code>queue</code>, <code>priority_queue</code>, etc. But there is <strong>no graph data structure</strong>.</p>
+            <div class="key-point"><strong>If you need a graph in C++:</strong> You typically build one yourself using adjacency lists (<code>vector&lt;vector&lt;int&gt;&gt;</code>) or adjacency maps, or use a library like Boost.Graph. In SVF, graphs are implemented with custom <code>GenericGraph&lt;NodeType, EdgeType&gt;</code> template classes.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q5 ==================== -->
+    <div class="q-card cat-stl" data-cat="stl">
+        <div class="q-header">
+            <span class="q-num">Q5</span>
+            <span class="q-category">STL & Data Structures</span>
+            <div class="q-stats"><span class="q-correct">89% correct</span></div>
+        </div>
+        <div class="q-text">Which of the following has the poorer worst case time complexity?<br>
+        (1) A binary search on a sorted array for a specific element.<br>
+        (2) A search in a sorted binary tree for a specific item.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>(1)</span><span class="choice-pct">4%</span></div>
+            <div class="choice correct"><span>(2)</span><span class="choice-pct">89%</span></div>
+            <div class="choice wrong"><span>They have the same worst case</span><span class="choice-pct">7%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: (2) — Binary tree search has worse worst case</h4>
+            <p><strong>Binary search on sorted array:</strong> Always O(log n) — the array is always balanced by definition.</p>
+            <p><strong>Search in a (sorted) binary tree:</strong> A "sorted binary tree" (BST) can be <strong>degenerate</strong> (essentially a linked list), making worst-case search <strong>O(n)</strong>.</p>
+            <div class="key-point"><strong>Key distinction:</strong>
+            <ul>
+                <li>Sorted array + binary search → always O(log n)</li>
+                <li>BST → O(log n) average, <strong>O(n) worst case</strong> (skewed tree)</li>
+                <li>Balanced BST (AVL/Red-Black) → O(log n) guaranteed</li>
+            </ul>
+            The question says "sorted binary tree," not "balanced binary tree." A BST where elements were inserted in sorted order becomes a linked list.</div>
+            <div class="warn"><strong>Note:</strong> <code>std::map</code> uses a red-black tree (self-balancing), so it guarantees O(log n). A plain BST does not.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q6 ==================== -->
+    <div class="q-card cat-lang" data-cat="lang">
+        <div class="q-header">
+            <span class="q-num">Q6</span>
+            <span class="q-category">C/C++ Language</span>
+            <div class="q-stats"><span class="q-correct">91% correct</span></div>
+        </div>
+        <div class="q-text">How many times is function <code>fib</code> called?</div>
+        <pre class="q-code"><span class="type">unsigned int</span> fib(<span class="type">unsigned int</span> n) {
+    <span class="kw">if</span> (n < <span class="num">2</span>) <span class="kw">return</span> n;
+    <span class="kw">else</span> <span class="kw">return</span> fib(n - <span class="num">1</span>) + fib(n - <span class="num">2</span>);
+}
+<span class="type">int</span> main(<span class="type">void</span>) { fib(<span class="num">11</span>); }</pre>
+        <div class="choices">
+            <div class="choice correct"><span>287</span><span class="choice-pct">91%</span></div>
+            <div class="choice wrong"><span>Something else</span><span class="choice-pct">9%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: 287</h4>
+            <p>Let C(n) = total number of calls to compute fib(n). C(0) = 1, C(1) = 1, and for n ≥ 2: C(n) = 1 + C(n-1) + C(n-2).</p>
+            <p>Computing step by step:</p>
+            <ul>
+                <li>C(0) = 1, C(1) = 1</li>
+                <li>C(2) = 1+1+1 = 3</li>
+                <li>C(3) = 1+3+1 = 5</li>
+                <li>C(4) = 1+5+3 = 9</li>
+                <li>C(5) = 1+9+5 = 15</li>
+                <li>C(6) = 1+15+9 = 25</li>
+                <li>C(7) = 1+25+15 = 41</li>
+                <li>C(8) = 1+41+25 = 67</li>
+                <li>C(9) = 1+67+41 = 109</li>
+                <li>C(10) = 1+109+67 = 177</li>
+                <li>C(11) = 1+177+109 = <strong>287</strong></li>
+            </ul>
+            <div class="key-point"><strong>Background:</strong> The naive recursive Fibonacci has <strong>exponential</strong> time complexity O(2<sup>n</sup>). The number of calls C(n) = 2·fib(n+1) - 1. This is why memoization or iterative approaches are essential. With memoization, it becomes O(n).</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q7 ==================== -->
+    <div class="q-card cat-memory" data-cat="memory">
+        <div class="q-header">
+            <span class="q-num">Q7</span>
+            <span class="q-category">Memory & Pointers</span>
+            <div class="q-stats"><span class="q-correct">95% correct</span></div>
+        </div>
+        <div class="q-text">It is possible to access memory unsafely through pointers returned by <code>malloc</code> but any access to memory through pointers returned by <code>new</code> is always safe.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-pct">5%</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-pct">95%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False</h4>
+            <p>Both <code>malloc</code> and <code>new</code> return pointers, and <strong>both</strong> can be used unsafely.</p>
+            <ul>
+                <li>Use-after-free: <code>delete p; p->x;</code> — UB</li>
+                <li>Double free: <code>delete p; delete p;</code> — UB</li>
+                <li>Array overrun: <code>int* a = new int[3]; a[10] = 5;</code> — UB</li>
+                <li>Mismatched delete: <code>int* a = new int[3]; delete a;</code> — UB (should be <code>delete[]</code>)</li>
+            </ul>
+            <div class="key-point"><strong>Difference between malloc and new:</strong>
+            <ul>
+                <li><code>malloc</code>: C function, returns <code>void*</code>, does NOT call constructors, freed with <code>free()</code></li>
+                <li><code>new</code>: C++ operator, returns typed pointer, calls constructors, freed with <code>delete</code></li>
+                <li>Both allocate heap memory, both can lead to memory errors if misused</li>
+            </ul></div>
+        </div>
+    </div>
+
+    <!-- ==================== Q8 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q8</span>
+            <span class="q-category">Security</span>
+            <div class="q-stats"><span class="q-correct">98% correct</span></div>
+        </div>
+        <div class="q-text">In which version of C was the <code>gets</code> function removed?</div>
+        <div class="choices">
+            <div class="choice wrong"><span>C89</span><span class="choice-pct">0%</span></div>
+            <div class="choice correct"><span>C11</span><span class="choice-pct">98%</span></div>
+            <div class="choice wrong"><span>C23</span><span class="choice-pct">1%</span></div>
+            <div class="choice wrong"><span>C99</span><span class="choice-pct">1%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: C11</h4>
+            <p><code>gets()</code> reads a line from stdin with <strong>no buffer size limit</strong>, making buffer overflows inevitable. Timeline:</p>
+            <ul>
+                <li><strong>C89/C90:</strong> <code>gets()</code> introduced — no size parameter</li>
+                <li><strong>C99:</strong> <code>gets()</code> deprecated (still available)</li>
+                <li><strong>C11:</strong> <code>gets()</code> <strong>removed</strong> from the standard, replaced by <code>gets_s()</code> in Annex K</li>
+            </ul>
+            <div class="warn"><strong>Why gets() is dangerous:</strong> <code>gets(buf)</code> reads until newline with no bounds check. If input is longer than <code>buf</code>, it overwrites adjacent stack memory. The Morris Worm (1988) exploited a <code>gets()</code> buffer overflow in <code>fingerd</code>.</div>
+            <div class="key-point"><strong>Safe alternative:</strong> <code>fgets(buf, sizeof(buf), stdin)</code> — takes a size parameter, preventing overflow.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q9 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q9</span>
+            <span class="q-category">Security</span>
+            <div class="q-stats"><span class="q-correct">91% correct</span></div>
+        </div>
+        <div class="q-text">In which version of C++ was the insecure <code>std::gets</code> function removed?</div>
+        <div class="choices">
+            <div class="choice wrong"><span>C++11</span><span class="choice-pct">5%</span></div>
+            <div class="choice correct"><span>C++14</span><span class="choice-pct">91%</span></div>
+            <div class="choice wrong"><span>C++17</span><span class="choice-pct">3%</span></div>
+            <div class="choice wrong"><span>C++03</span><span class="choice-pct">0%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: C++14</h4>
+            <p>C++ tracks C standard library changes but on a slightly later schedule:</p>
+            <ul>
+                <li><strong>C11</strong> removed <code>gets()</code> from C</li>
+                <li><strong>C++11</strong> deprecated <code>std::gets</code></li>
+                <li><strong>C++14</strong> officially <strong>removed</strong> <code>std::gets</code></li>
+            </ul>
+            <div class="key-point"><strong>Why the lag?</strong> C++ inherits the C standard library. C11 removed <code>gets</code>, and C++14 adopted that change. C++11 was released around the same time as C11 and only marked it deprecated.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q10 ==================== -->
+    <div class="q-card cat-memory" data-cat="memory">
+        <div class="q-header">
+            <span class="q-num">Q10</span>
+            <span class="q-category">Memory & Pointers</span>
+            <div class="q-stats"><span class="q-tricky">49% correct ⚠ Trickiest question!</span></div>
+        </div>
+        <div class="q-text">A null pointer dereference is possible when accessing what a C++ reference refers to (e.g., <code>T &t = ...; t;</code>)?</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-pct">51%</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-pct">49%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False</h4>
+            <p>This was the <strong>hardest question</strong> (only 49% correct — essentially a coin flip). The reasoning is nuanced:</p>
+            <p>A valid C++ reference <strong>cannot be null</strong>. By the language rules, a reference must always refer to a valid object. Therefore, <em>using</em> a reference is <strong>defined to be safe</strong> — you cannot get a null pointer dereference through normal reference usage.</p>
+            <div class="warn"><strong>But wait — can't you do this?</strong>
+<pre class="q-code"><span class="type">int</span>* p = <span class="kw">nullptr</span>;
+<span class="type">int</span>& r = *p;  <span class="cmt">// ← UB happens HERE, not when using r</span>
+r;            <span class="cmt">// this line is irrelevant — UB already occurred</span></pre>
+            The undefined behavior occurs at the point of <strong>creating</strong> the reference from a null pointer (<code>*p</code>). The reference itself, once it exists, is assumed to be valid. The question asks about <em>accessing what a reference refers to</em>, not about creating a reference from a null pointer. A properly constructed reference cannot be null.</div>
+            <div class="key-point"><strong>Key rule:</strong> References in C++ are designed as "always-valid aliases." The language provides no syntax like <code>r == nullptr</code> for references. If a reference exists, it refers to a valid object (by contract). Any code that creates a null reference has already invoked UB before the reference is used.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q11 ==================== -->
+    <div class="q-card cat-ub" data-cat="ub">
+        <div class="q-header">
+            <span class="q-num">Q11</span>
+            <span class="q-category">Undefined Behavior</span>
+            <div class="q-stats"><span class="q-correct">94% correct</span></div>
+        </div>
+        <div class="q-text">Dereferencing a null pointer will always cause the program to crash.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-pct">6%</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-pct">94%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False</h4>
+            <p>Dereferencing a null pointer is <strong>undefined behavior</strong>. "Undefined" means <em>anything</em> can happen:</p>
+            <ul>
+                <li>It <em>might</em> crash (segfault) — this is the common case on most OSes</li>
+                <li>It <em>might</em> silently read/write address 0 (e.g., embedded systems with no MMU)</li>
+                <li>The compiler <em>might</em> optimize it away entirely (since UB means the code is "unreachable")</li>
+                <li>It <em>might</em> appear to work and corrupt memory</li>
+            </ul>
+            <div class="key-point"><strong>Key distinction:</strong> Segfault is an OS/hardware protection mechanism, not a language guarantee. On systems without virtual memory (microcontrollers), address 0 may be valid, readable memory. The C/C++ standard makes no promise about crashing — it says the behavior is simply <em>undefined</em>.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q12 ==================== -->
+    <div class="q-card cat-ub" data-cat="ub">
+        <div class="q-header">
+            <span class="q-num">Q12</span>
+            <span class="q-category">Undefined Behavior</span>
+            <div class="q-stats"><span class="q-correct">79% correct</span></div>
+        </div>
+        <div class="q-text">What will the following program print?</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="type">int</span> main(<span class="type">void</span>) {
+    <span class="type">int</span> x;           <span class="cmt">// local variable, NOT initialized</span>
+    <span class="kw">if</span> (x) puts(<span class="str">"hello"</span>);
+    puts(<span class="str">"bye"</span>);
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>hellobye</span><span class="choice-pct">7%</span></div>
+            <div class="choice wrong"><span>[nothing]</span><span class="choice-pct">3%</span></div>
+            <div class="choice correct"><span>[unknown]</span><span class="choice-pct">79%</span></div>
+            <div class="choice wrong"><span>bye</span><span class="choice-pct">11%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: [unknown]</h4>
+            <p><code>x</code> is a <strong>local (automatic) variable</strong> that is never initialized. Reading an uninitialized local variable is <strong>undefined behavior</strong> in C/C++.</p>
+            <ul>
+                <li>It could be 0, some garbage value, or the compiler could do anything</li>
+                <li>The if-branch might or might not execute</li>
+                <li>The compiler might even optimize the entire program unpredictably</li>
+            </ul>
+            <div class="warn"><strong>Why not "bye"?</strong> Many students assume <code>x</code> will be 0 (like in Java). In C/C++, local variables are <strong>not zero-initialized</strong>. The stack memory contains whatever was there before. 11% chose "bye" assuming x == 0, but that's not guaranteed.</div>
+            <div class="key-point"><strong>Compare with Q13:</strong> If <code>x</code> were a <em>global</em> variable, it would be zero-initialized. That's the key difference.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q13 ==================== -->
+    <div class="q-card cat-ub" data-cat="ub">
+        <div class="q-header">
+            <span class="q-num">Q13</span>
+            <span class="q-category">Undefined Behavior</span>
+            <div class="q-stats"><span class="q-correct">95% correct</span></div>
+        </div>
+        <div class="q-text">What will the following program print?</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="type">int</span> x;               <span class="cmt">// GLOBAL variable → zero-initialized</span>
+<span class="type">int</span> main(<span class="type">void</span>) {
+    <span class="kw">if</span> (x) puts(<span class="str">"hello"</span>);
+    puts(<span class="str">"bye"</span>);
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>[unknown]</span><span class="choice-pct">2%</span></div>
+            <div class="choice wrong"><span>[nothing]</span><span class="choice-pct">0%</span></div>
+            <div class="choice wrong"><span>hellobye</span><span class="choice-pct">3%</span></div>
+            <div class="choice correct"><span>bye</span><span class="choice-pct">95%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: bye</h4>
+            <p><code>x</code> is a <strong>global variable</strong> (file scope, static storage duration). In C/C++, global variables are <strong>zero-initialized</strong> before program startup.</p>
+            <p>So <code>x == 0</code>, the if-branch is skipped, and only <code>"bye"</code> is printed.</p>
+            <div class="key-point"><strong>Storage duration rules:</strong>
+            <ul>
+                <li><strong>Automatic</strong> (local): NOT initialized → reading is UB (Q12)</li>
+                <li><strong>Static</strong> (global, or <code>static</code> local): zero-initialized before any code runs</li>
+                <li><strong>Dynamic</strong> (<code>new</code>/<code>malloc</code>): <code>malloc</code> does NOT initialize; <code>new int()</code> with <code>()</code> zero-initializes, <code>new int</code> without <code>()</code> does NOT</li>
+            </ul></div>
+        </div>
+    </div>
+
+    <!-- ==================== Q14 ==================== -->
+    <div class="q-card cat-stl" data-cat="stl">
+        <div class="q-header">
+            <span class="q-num">Q14</span>
+            <span class="q-category">STL & Data Structures</span>
+            <div class="q-stats"><span class="q-correct">97% correct</span></div>
+        </div>
+        <div class="q-text">Iterating over a <code>std::map</code> twice will yield the same order.</div>
+        <div class="choices">
+            <div class="choice correct"><span>True</span><span class="choice-pct">97%</span></div>
+            <div class="choice wrong"><span>False</span><span class="choice-pct">3%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: True</h4>
+            <p><code>std::map</code> is an <strong>ordered associative container</strong> (implemented as a red-black tree). Elements are always sorted by key. Iterating always yields the same order (ascending by key).</p>
+            <div class="key-point"><strong>Contrast with <code>std::unordered_map</code>:</strong> An unordered_map uses a hash table. While iterating twice <em>without modification</em> will likely give the same order, the standard does not guarantee it. Rehashing (triggered by insertions) can change the order.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q15 ==================== -->
+    <div class="q-card cat-stl" data-cat="stl">
+        <div class="q-header">
+            <span class="q-num">Q15</span>
+            <span class="q-category">STL & Data Structures</span>
+            <div class="q-stats"><span class="q-correct">97% correct</span></div>
+        </div>
+        <div class="q-text">Dereferencing an invalidated iterator is well defined and results in a no-op.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-pct">3%</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-pct">97%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False</h4>
+            <p>Dereferencing an invalidated iterator is <strong>undefined behavior</strong>, not a no-op.</p>
+            <div class="key-point"><strong>Common causes of iterator invalidation:</strong>
+            <ul>
+                <li><code>vector</code>: any insertion that triggers reallocation invalidates ALL iterators</li>
+                <li><code>vector::erase()</code>: invalidates iterators at and after the erased element</li>
+                <li><code>map/set::erase()</code>: only invalidates the erased element's iterator</li>
+                <li><code>unordered_map</code>: insertion may trigger rehash, invalidating all iterators</li>
+            </ul></div>
+            <div class="warn"><strong>This is a common bug source.</strong> Erasing elements while iterating a vector: <code>for (auto it = v.begin(); it != v.end(); ++it) { if (cond) v.erase(it); }</code> — this is UB. Use the erase-remove idiom or <code>it = v.erase(it)</code>.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q16 ==================== -->
+    <div class="q-card cat-memory" data-cat="memory">
+        <div class="q-header">
+            <span class="q-num">Q16</span>
+            <span class="q-category">Memory & Pointers</span>
+            <div class="q-stats"><span class="q-correct">66% correct</span> (multiple choice)</div>
+        </div>
+        <div class="q-text">Which of the following may cause a stack overflow? (Select all that apply)</div>
+        <div class="choices">
+            <div class="choice wrong"><span>Accessing a stack-allocated array out of bounds</span><span class="choice-pct">11%</span></div>
+            <div class="choice wrong"><span>Dereferencing a null pointer allocated on the stack</span><span class="choice-pct">2%</span></div>
+            <div class="choice correct"><span>Calling a recursive function without a base case</span><span class="choice-pct">97%</span></div>
+            <div class="choice correct"><span>Allocating an array on the stack larger than physical memory</span><span class="choice-pct">74%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: Recursive function without base case + Array larger than physical memory</h4>
+            <p><strong>Stack overflow</strong> = the stack pointer goes beyond the allocated stack space.</p>
+            <ul>
+                <li><strong>Infinite recursion (97% got this):</strong> Each function call pushes a new stack frame. Without a base case, the stack grows until it overflows.</li>
+                <li><strong>Huge stack array (74% got this):</strong> <code>int arr[1000000000];</code> tries to reserve ~4GB on the stack. The default stack size is typically 1-8 MB. This overflows the stack immediately.</li>
+            </ul>
+            <div class="warn"><strong>Why NOT the other two?</strong>
+            <ul>
+                <li><em>Out-of-bounds array access:</em> This is a buffer overflow (corrupts adjacent memory), not a <em>stack overflow</em>. These are different bugs with different names.</li>
+                <li><em>Null pointer dereference:</em> This causes a segfault (accessing address 0), not a stack overflow. The stack is not involved.</li>
+            </ul></div>
+            <div class="key-point"><strong>Terminology:</strong> "Stack overflow" specifically means exhausting stack space. "Buffer overflow" means writing past the end of a buffer. They are different classes of vulnerabilities.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q17 ==================== -->
+    <div class="q-card cat-tools" data-cat="tools">
+        <div class="q-header">
+            <span class="q-num">Q17</span>
+            <span class="q-category">Tools</span>
+            <div class="q-stats"><span class="q-correct">74% correct</span> (multiple choice)</div>
+        </div>
+        <div class="q-text">Which of the following tools can help diagnose memory errors? (Select all)</div>
+        <div class="choices">
+            <div class="choice correct"><span>GDB</span><span class="choice-pct">81%</span></div>
+            <div class="choice wrong"><span>make</span><span class="choice-pct">1%</span></div>
+            <div class="choice correct"><span>Valgrind</span><span class="choice-pct">100%</span></div>
+            <div class="choice correct"><span>UBSan</span><span class="choice-pct">90%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: GDB, Valgrind, UBSan</h4>
+            <ul>
+                <li><strong>Valgrind (100% selected):</strong> Dynamic analysis tool. Its Memcheck tool detects use-after-free, uninitialized reads, memory leaks, double frees. Runs program in a virtual CPU — slow (10-50x) but very thorough.</li>
+                <li><strong>UBSan (90%):</strong> Undefined Behavior Sanitizer. Compile with <code>-fsanitize=undefined</code>. Detects signed overflow, null dereference, out-of-bounds, etc. at runtime with minimal overhead (~2x).</li>
+                <li><strong>GDB (81%):</strong> Debugger. Not specifically a memory error tool, but you can catch segfaults, inspect memory, set watchpoints on addresses. It helps <em>diagnose</em> memory errors after they occur.</li>
+                <li><strong>make (1%):</strong> Build tool. Has nothing to do with memory errors.</li>
+            </ul>
+            <div class="key-point"><strong>Other useful tools:</strong>
+            <ul>
+                <li><strong>ASan</strong> (AddressSanitizer): <code>-fsanitize=address</code> — detects out-of-bounds, use-after-free, leaks. Faster than Valgrind (~2x slowdown).</li>
+                <li><strong>MSan</strong> (MemorySanitizer): <code>-fsanitize=memory</code> — detects uninitialized memory reads.</li>
+                <li><strong>Static analyzers</strong> (e.g., SVF, Clang Static Analyzer): Find bugs at compile time without running the program.</li>
+            </ul></div>
+        </div>
+    </div>
+
+    <!-- ==================== Q18 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q18</span>
+            <span class="q-category">Security</span>
+            <div class="q-stats"><span class="q-correct">99% correct</span></div>
+        </div>
+        <div class="q-text">Security can be ignored for software designed to run offline locally rather than on a network-connected server.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-pct">1%</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-pct">99%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False</h4>
+            <p>Offline software still processes <strong>untrusted input</strong> (files, USB drives, user data). Attack vectors include:</p>
+            <ul>
+                <li>Malicious files (PDFs, images, documents) that exploit parser vulnerabilities</li>
+                <li>Privilege escalation from local exploits</li>
+                <li>Malware that spreads via removable media (Stuxnet spread via USB)</li>
+                <li>Data integrity — a buffer overflow in an offline app can still corrupt/steal local data</li>
+            </ul>
+            <div class="key-point"><strong>Principle:</strong> Security is about protecting against <em>untrusted input</em>, not just network attacks. Any software that processes external data needs to be secure.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q19 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q19</span>
+            <span class="q-category">Security</span>
+            <div class="q-stats"><span class="q-correct">90% correct</span></div>
+        </div>
+        <div class="q-text">Software <code>foo</code> dynamically links library <code>bar</code>. The developers of <code>bar</code> just fixed a major security vulnerability but the API remained stable. What do the users of <code>foo</code> need to do to ensure they are safe?</div>
+        <div class="choices">
+            <div class="choice wrong"><span>Do nothing, bar is dynamically linked</span><span class="choice-pct">4%</span></div>
+            <div class="choice wrong"><span>Download both the latest foo and bar</span><span class="choice-pct">3%</span></div>
+            <div class="choice wrong"><span>Download the latest foo</span><span class="choice-pct">3%</span></div>
+            <div class="choice correct"><span>Download the latest bar</span><span class="choice-pct">90%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: Download the latest bar</h4>
+            <p>With <strong>dynamic linking</strong>, the library (<code>bar.so</code> / <code>bar.dll</code>) is loaded at runtime. Updating just the library file fixes the vulnerability for all programs that use it, without recompiling anything.</p>
+            <div class="key-point"><strong>Dynamic vs. Static linking:</strong>
+            <ul>
+                <li><strong>Dynamic:</strong> Library loaded at runtime. Updating the .so/.dll file is enough. The main program doesn't need to change.</li>
+                <li><strong>Static:</strong> Library code is baked into the executable at compile time. To fix a vulnerability, you must <strong>recompile foo</strong> with the new bar. Every statically-linked program needs to be rebuilt.</li>
+            </ul>
+            This is a major advantage of dynamic linking for security patches.</div>
+            <div class="warn"><strong>Why not "do nothing"?</strong> Dynamic linking means the library is <em>separate</em>, but you still need to <strong>update</strong> it. The old, vulnerable version of <code>bar</code> is still on disk until replaced.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q20 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q20</span>
+            <span class="q-category">Security</span>
+            <div class="q-stats"><span class="q-correct">96% correct</span></div>
+        </div>
+        <div class="q-text"><code>fgets</code> is prone to buffer overflows in the same way <code>gets</code> is.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-pct">4%</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-pct">96%</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False</h4>
+            <p><code>fgets</code> takes a <strong>size parameter</strong>, which <code>gets</code> does not.</p>
+            <pre class="q-code"><span class="cmt">// gets — NO size limit → buffer overflow</span>
+<span class="type">char</span> buf[<span class="num">64</span>];
+gets(buf);  <span class="cmt">// reads unlimited input!</span>
+
+<span class="cmt">// fgets — size parameter → safe</span>
+<span class="type">char</span> buf[<span class="num">64</span>];
+fgets(buf, <span class="kw">sizeof</span>(buf), stdin);  <span class="cmt">// reads at most 63 chars + null</span></pre>
+            <div class="key-point"><strong>fgets behavior:</strong> Reads at most <code>n-1</code> characters (reserves 1 byte for <code>\0</code>). Stops at newline or EOF. The newline character IS included in the buffer (unlike <code>gets</code>). This is the standard safe replacement for <code>gets</code>.</div>
+        </div>
+    </div>
+
+    </div><!-- #questions -->
+</div>
+
+<script>
+function toggleExpl(btn) {
+    const expl = btn.nextElementSibling;
+    expl.classList.toggle('collapsed');
+    btn.textContent = expl.classList.contains('collapsed') ? 'Show Explanation' : 'Hide Explanation';
+}
+
+function filterCat(cat) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.q-card').forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
+</body>
+</html>

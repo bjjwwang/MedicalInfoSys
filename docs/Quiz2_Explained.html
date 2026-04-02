@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 2 — C/C++ Systems Programming & Security — Explained</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.7;
+            padding: 30px 20px;
+        }
+        .container { max-width: 960px; margin: 0 auto; }
+        h1 { color: #1565c0; font-size: 28px; text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 30px; }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+            background: white; padding: 18px; border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 30px;
+        }
+        .stat { text-align: center; }
+        .stat-val { font-size: 26px; font-weight: 700; color: #1565c0; }
+        .stat-label { font-size: 12px; color: #888; }
+
+        /* Category nav */
+        .category-nav {
+            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px;
+        }
+        .cat-btn {
+            padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+            cursor: pointer; border: 2px solid #ddd; background: white; transition: 0.2s;
+        }
+        .cat-btn:hover { border-color: #1565c0; color: #1565c0; }
+        .cat-btn.active { background: #1565c0; color: white; border-color: #1565c0; }
+
+        /* Question card */
+        .q-card {
+            background: white; border-radius: 12px; padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 25px;
+            border-left: 5px solid #ddd;
+        }
+        .q-card.cat-memory { border-left-color: #c62828; }
+        .q-card.cat-ub { border-left-color: #e65100; }
+        .q-card.cat-security { border-left-color: #1565c0; }
+        .q-card.cat-overflow { border-left-color: #6a1b9a; }
+        .q-card.cat-lang { border-left-color: #2e7d32; }
+        .q-card.cat-tools { border-left-color: #00838f; }
+
+        .q-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+        }
+        .q-num {
+            font-size: 14px; font-weight: 700; color: #1565c0;
+            background: #e3f2fd; padding: 3px 12px; border-radius: 15px;
+        }
+        .q-stats { font-size: 12px; color: #888; display: flex; gap: 12px; }
+        .q-correct { color: #2e7d32; font-weight: 600; }
+        .q-tricky { color: #e65100; font-weight: 600; }
+        .q-category {
+            font-size: 11px; font-weight: 600; padding: 2px 10px;
+            border-radius: 10px; background: #f5f5f5; color: #666;
+        }
+
+        .q-text { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #222; }
+
+        pre.q-code {
+            background: #1e1e1e; color: #d4d4d4; padding: 15px;
+            border-radius: 8px; font-family: 'Consolas', 'Fira Code', monospace;
+            font-size: 14px; line-height: 1.6; overflow-x: auto; margin: 12px 0;
+        }
+        pre.q-code .kw { color: #569cd6; }
+        pre.q-code .type { color: #4ec9b0; }
+        pre.q-code .str { color: #ce9178; }
+        pre.q-code .cmt { color: #6a9955; }
+        pre.q-code .num { color: #b5cea8; }
+        pre.q-code .fn { color: #dcdcaa; }
+
+        /* Answer choices */
+        .choices { margin: 12px 0; }
+        .choice {
+            padding: 10px 15px; margin: 5px 0; border-radius: 8px;
+            font-size: 14px; border: 1px solid #eee; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .choice.correct { background: #e8f5e9; border-color: #a5d6a7; }
+        .choice.wrong { background: #fff; border-color: #eee; }
+        .choice-label { font-size: 13px; font-weight: 600; min-width: 45px; text-align: right; }
+        .choice.correct .choice-label { color: #2e7d32; }
+
+        /* Explanation */
+        .explanation {
+            background: #f8f9ff; border: 1px solid #e3e7fd; border-radius: 10px;
+            padding: 18px; margin-top: 15px;
+        }
+        .explanation h4 {
+            color: #1565c0; margin-bottom: 8px; font-size: 15px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .explanation p { font-size: 14px; margin-bottom: 8px; }
+        .explanation ul { margin: 8px 0 8px 20px; font-size: 14px; }
+        .explanation code {
+            background: #e8eaf6; padding: 1px 6px; border-radius: 3px;
+            font-family: monospace; font-size: 13px;
+        }
+        .explanation .warn {
+            background: #fff3e0; border-left: 3px solid #e65100;
+            padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 10px 0;
+            font-size: 13px;
+        }
+        .explanation .key-point {
+            background: #e8f5e9; border-left: 3px solid #2e7d32;
+            padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 10px 0;
+            font-size: 13px;
+        }
+
+        /* Toggle explanation */
+        .toggle-btn {
+            background: none; border: 1px solid #ccc; border-radius: 6px;
+            padding: 5px 14px; font-size: 13px; cursor: pointer; color: #666;
+            margin-top: 10px; transition: 0.2s;
+        }
+        .toggle-btn:hover { border-color: #1565c0; color: #1565c0; }
+        .explanation.collapsed { display: none; }
+
+        @media (max-width: 600px) {
+            body { padding: 15px 10px; }
+            .q-card { padding: 18px; }
+            pre.q-code { font-size: 12px; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Quiz 2 — C/C++ Systems Programming & Security</h1>
+    <p class="subtitle">20 Questions · Detailed Explanations with Background Knowledge</p>
+
+    <div class="stats-bar">
+        <div class="stat"><div class="stat-val">20</div><div class="stat-label">Questions</div></div>
+        <div class="stat"><div class="stat-val">6</div><div class="stat-label">Categories</div></div>
+    </div>
+
+    <div class="category-nav">
+        <div class="cat-btn active" onclick="filterCat('all')">All</div>
+        <div class="cat-btn" onclick="filterCat('memory')">Memory & Pointers</div>
+        <div class="cat-btn" onclick="filterCat('overflow')">Integer Overflow</div>
+        <div class="cat-btn" onclick="filterCat('security')">Security & Strings</div>
+        <div class="cat-btn" onclick="filterCat('ub')">Undefined Behavior</div>
+        <div class="cat-btn" onclick="filterCat('lang')">C/C++ Language</div>
+        <div class="cat-btn" onclick="filterCat('tools')">Assertions & Tools</div>
+    </div>
+
+    <div id="questions">
+
+    <!-- ==================== Q1 ==================== -->
+    <div class="q-card cat-memory" data-cat="memory">
+        <div class="q-header">
+            <span class="q-num">Q1</span>
+            <span class="q-category">Memory & Pointers</span>
+        </div>
+        <div class="q-text">In the above program, which of the following are true? (Select all)</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;assert.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdlib.h&gt;</span>
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">int</span> *p = (<span class="type">int</span> *)<span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="type">int</span>)); <span class="fn">assert</span>(p != NULL);
+    <span class="type">int</span> *q = (<span class="type">int</span> *)<span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="type">int</span>)); <span class="fn">assert</span>(q != NULL);
+    *p = <span class="num">10</span>;                          <span class="cmt">// line 8</span>
+    *q = <span class="num">20</span>;                          <span class="cmt">// line 9</span>
+    p = q;                            <span class="cmt">// line 10: p now points to q's memory</span>
+    <span class="fn">printf</span>(<span class="str">"*p is %d\n"</span>, *p);       <span class="cmt">// line 11</span>
+    <span class="fn">free</span>(p);                          <span class="cmt">// line 12: frees q's memory</span>
+    <span class="fn">printf</span>(<span class="str">"*q is %d\n"</span>, *q);       <span class="cmt">// line 13</span>
+    <span class="fn">free</span>(q);                          <span class="cmt">// line 14</span>
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>The program triggers a use-after-free at line 10</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>The program triggers a use-after-free at line 13</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>The program triggers a null pointer dereference at line 13</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>The program triggers a double-free at line 14</span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: Use-after-free at line 13 + Double-free at line 14</h4>
+            <p>Let's trace the pointer state step by step:</p>
+            <ul>
+                <li><strong>Line 6-7:</strong> <code>p</code> → block A, <code>q</code> → block B</li>
+                <li><strong>Line 10:</strong> <code>p = q</code> → now both <code>p</code> and <code>q</code> point to block B. Block A is <strong>leaked</strong> (no pointer to it anymore).</li>
+                <li><strong>Line 12:</strong> <code>free(p)</code> → frees block B (since p now points to B).</li>
+                <li><strong>Line 13:</strong> <code>*q</code> → <code>q</code> still points to block B, which was just freed. This is a <strong>use-after-free</strong>.</li>
+                <li><strong>Line 14:</strong> <code>free(q)</code> → tries to free block B again. This is a <strong>double-free</strong>.</li>
+            </ul>
+            <div class="warn"><strong>Why NOT "use-after-free at line 10"?</strong> Line 10 is just a pointer assignment (<code>p = q</code>). No dereference occurs — it just copies the address. No memory is accessed through either pointer on that line.</div>
+            <div class="key-point"><strong>Memory leak:</strong> This program also leaks block A. After <code>p = q</code>, there's no way to reach or free block A. A complete bug list: memory leak (block A), use-after-free (line 13), double-free (line 14).</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q2 ==================== -->
+    <div class="q-card cat-overflow" data-cat="overflow">
+        <div class="q-header">
+            <span class="q-num">Q2</span>
+            <span class="q-category">Integer Overflow</span>
+        </div>
+        <div class="q-text">The above program may trigger a signed integer overflow at the line marked with X.</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;stdlib.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+
+<span class="type">int</span> <span class="fn">main</span>(<span class="type">int</span> argc, <span class="type">char</span> *argv[]) {
+    <span class="kw">if</span> (argc &lt; <span class="num">3</span>) <span class="kw">return</span> <span class="num">1</span>;
+    <span class="type">long</span> n = <span class="fn">strtol</span>(argv[<span class="num">1</span>], NULL, <span class="num">10</span>);
+    <span class="type">long</span> m = <span class="fn">strtol</span>(argv[<span class="num">2</span>], NULL, <span class="num">10</span>);
+    <span class="fn">printf</span>(<span class="str">"%ld + %ld = %ld\n"</span>, n, m, n + m);  <span class="cmt">// X</span>
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice correct"><span>True</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>False</span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: True</h4>
+            <p><code>strtol</code> returns a <code>long</code> value. The user can provide any values via command line, including <code>LONG_MAX</code>. If both <code>n</code> and <code>m</code> are large positive (or large negative) values, <code>n + m</code> can overflow.</p>
+            <p><code>long</code> is a <strong>signed</strong> type, so overflow is <strong>undefined behavior</strong>.</p>
+            <div class="key-point"><strong>Key rule:</strong> Signed integer overflow is UB in C/C++. The compiler may assume it never happens and optimize accordingly. <code>strtol</code> itself clamps to <code>LONG_MIN</code>/<code>LONG_MAX</code> on overflow (and sets <code>errno</code>), but the <strong>addition</strong> <code>n + m</code> has no such protection.</div>
+            <div class="warn"><strong>Safe pattern:</strong> To safely add two <code>long</code>s, check before the operation:
+<pre class="q-code"><span class="kw">if</span> (m &gt; <span class="num">0</span> &amp;&amp; n &gt; LONG_MAX - m) { <span class="cmt">/* overflow! */</span> }
+<span class="kw">if</span> (m &lt; <span class="num">0</span> &amp;&amp; n &lt; LONG_MIN - m) { <span class="cmt">/* underflow! */</span> }</pre></div>
+        </div>
+    </div>
+
+    <!-- ==================== Q3 ==================== -->
+    <div class="q-card cat-memory" data-cat="memory">
+        <div class="q-header">
+            <span class="q-num">Q3</span>
+            <span class="q-category">Memory & Pointers</span>
+        </div>
+        <div class="q-text">The above program may trigger a null pointer dereference at the line marked with X.</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;stdlib.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+
+<span class="type">int</span> <span class="fn">main</span>(<span class="type">int</span> argc, <span class="type">char</span> *argv[]) {
+    <span class="type">int</span> *p = (<span class="type">int</span> *)<span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="type">int</span>));
+    *p = argc;  <span class="cmt">// X</span>
+    <span class="fn">printf</span>(<span class="str">"argc is %d\n"</span>, *p);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice correct"><span>True</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>False</span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: True</h4>
+            <p><code>malloc</code> can return <code>NULL</code> if memory allocation fails (out of memory). The code does not check the return value before dereferencing <code>p</code>.</p>
+            <p>If <code>malloc</code> returns <code>NULL</code>, then <code>*p = argc</code> dereferences a null pointer — undefined behavior.</p>
+            <div class="key-point"><strong>Always check malloc's return value:</strong>
+<pre class="q-code"><span class="type">int</span> *p = (<span class="type">int</span> *)<span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="type">int</span>));
+<span class="kw">if</span> (p == NULL) {
+    <span class="fn">perror</span>(<span class="str">"malloc failed"</span>);
+    <span class="kw">return</span> <span class="num">1</span>;
+}
+*p = argc;  <span class="cmt">// now safe</span></pre>
+            Compare with Q1: that code uses <code>assert(p != NULL)</code> to guard against this. This program does not.</div>
+            <div class="warn"><strong>Note:</strong> On most modern systems with overcommit (Linux), <code>malloc</code> almost never returns NULL for small allocations. But relying on this is non-portable and dangerous.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q4 ==================== -->
+    <div class="q-card cat-memory" data-cat="memory">
+        <div class="q-header">
+            <span class="q-num">Q4</span>
+            <span class="q-category">Memory & Pointers</span>
+        </div>
+        <div class="q-text">Assuming the rest of our list functions are implemented correctly, our list implementation contains a memory leak (i.e., looking at just free_list, ensure all allocated structs would be freed).</div>
+        <pre class="q-code"><span class="kw">typedef struct</span> <span class="type">node</span> {
+    <span class="type">int</span> data;
+    <span class="kw">struct</span> <span class="type">node</span> *next;
+} <span class="type">node</span>;
+
+<span class="kw">typedef struct</span> <span class="type">list</span> {
+    <span class="type">size_t</span> num_nodes;
+    <span class="type">node</span> *head;
+} <span class="type">list</span>;
+
+<span class="type">void</span> <span class="fn">free_list</span>(<span class="type">list</span> *l) {
+    <span class="kw">if</span> (l == NULL) <span class="kw">return</span>;
+    <span class="kw">if</span> (l-&gt;head == NULL) <span class="kw">return</span>;
+
+    <span class="type">node</span> *current = l-&gt;head;
+    <span class="kw">while</span> (current != NULL) {
+        <span class="type">node</span> *next = current-&gt;next;
+        <span class="fn">free</span>(current);
+        current = next;
+    }
+}</pre>
+        <div class="choices">
+            <div class="choice correct"><span>True</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>False</span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: True — the <code>list</code> struct itself is never freed</h4>
+            <p>The function correctly frees all <code>node</code>s in the linked list. However, it <strong>never frees the <code>list</code> struct <code>l</code> itself</strong>.</p>
+            <p>If <code>l</code> was allocated with <code>malloc</code>, it leaks. The fix:</p>
+<pre class="q-code"><span class="type">void</span> <span class="fn">free_list</span>(<span class="type">list</span> *l) {
+    <span class="kw">if</span> (l == NULL) <span class="kw">return</span>;
+    <span class="type">node</span> *current = l-&gt;head;
+    <span class="kw">while</span> (current != NULL) {
+        <span class="type">node</span> *next = current-&gt;next;
+        <span class="fn">free</span>(current);
+        current = next;
+    }
+    <span class="fn">free</span>(l);  <span class="cmt">// don't forget the list struct!</span>
+}</pre>
+            <div class="key-point"><strong>Common pattern:</strong> When freeing a composite data structure, you must free from the inside out: first the elements (nodes), then the container (list). Missing either level causes a leak.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q5 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q5</span>
+            <span class="q-category">Security & Strings</span>
+        </div>
+        <div class="q-text"><code>buf</code> is a 50-byte buffer on the stack. Using <code>fgets</code>, we want the user to populate <code>buf</code> with some data. Which calls to <code>fgets</code> will avoid a buffer overflow and allow the user to fill the entirety of <code>buf</code>?</div>
+        <div class="choices">
+            <div class="choice wrong"><span><code>fgets(buf, 49, stdin)</code></span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span><code>fgets(buf, (sizeof(buf) - 1) * sizeof(char), stdin)</code></span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span><code>fgets(buf, 50 * sizeof(char), stdin)</code></span><span class="choice-label">Correct</span></div>
+            <div class="choice correct"><span><code>fgets(buf, sizeof(buf) * sizeof(char), stdin)</code></span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: <code>fgets(buf, 50, stdin)</code> and <code>fgets(buf, sizeof(buf), stdin)</code></h4>
+            <p><code>fgets(buf, n, stdin)</code> reads at most <strong>n-1</strong> characters and appends a null terminator. So the second argument should be the <strong>full buffer size</strong>, not size-1.</p>
+            <ul>
+                <li><code>fgets(buf, 49, stdin)</code> — reads at most 48 chars. Wastes 1 byte of the buffer. <strong>Incorrect</strong> (doesn't fill entirety).</li>
+                <li><code>fgets(buf, (sizeof(buf)-1) * sizeof(char), stdin)</code> — same problem, reads at most 48 chars.</li>
+                <li><code>fgets(buf, 50 * sizeof(char), stdin)</code> — reads at most 49 chars + null. <strong>Correct</strong>. (<code>sizeof(char)</code> is always 1).</li>
+                <li><code>fgets(buf, sizeof(buf) * sizeof(char), stdin)</code> — same as 50 * 1 = 50. <strong>Correct</strong>.</li>
+            </ul>
+            <div class="key-point"><strong>fgets behavior:</strong> <code>fgets(buf, n, stream)</code> reads at most <code>n-1</code> characters, then writes <code>\0</code>. The <code>n</code> parameter is the total buffer size including the null terminator. Pass <code>sizeof(buf)</code>, not <code>sizeof(buf)-1</code>.</div>
+            <div class="warn"><strong>Common mistake:</strong> People often subtract 1 "to leave room for the null terminator" — but <code>fgets</code> already accounts for that. Subtracting 1 wastes a byte.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q6 ==================== -->
+    <div class="q-card cat-memory" data-cat="memory">
+        <div class="q-header">
+            <span class="q-num">Q6</span>
+            <span class="q-category">Memory & Pointers</span>
+        </div>
+        <div class="q-text">Which of the following statements is true?</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;stdlib.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;assert.h&gt;</span>
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">int</span> *data = (<span class="type">int</span> *)<span class="fn">malloc</span>(<span class="num">100</span> * <span class="kw">sizeof</span>(<span class="type">int</span>));
+    <span class="fn">assert</span>(data != NULL);
+
+    <span class="kw">for</span>(<span class="type">int</span> i = <span class="num">0</span>; i &lt; <span class="num">100</span>; i++) {     <span class="cmt">// line 8</span>
+        data[i] = <span class="num">5</span>;
+    }
+
+    <span class="fn">free</span>(data);                         <span class="cmt">// line 10</span>
+    <span class="fn">printf</span>(<span class="str">"%d\n"</span>, data[<span class="num">0</span>]);           <span class="cmt">// line 11</span>
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>A double-free occurs at line 10</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span>A buffer overflow occurs at line 8</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>A use-after-free occurs at line 11</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>A null pointer dereference may occur at line 8</span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: Use-after-free at line 11</h4>
+            <ul>
+                <li><strong>Line 10:</strong> <code>free(data)</code> releases the allocated memory. The pointer <code>data</code> becomes a <strong>dangling pointer</strong>.</li>
+                <li><strong>Line 11:</strong> <code>data[0]</code> accesses the freed memory → <strong>use-after-free</strong> (undefined behavior).</li>
+            </ul>
+            <p>Why NOT the other choices:</p>
+            <ul>
+                <li>No double-free: <code>free</code> is only called once.</li>
+                <li>No buffer overflow: loop goes from 0 to 99, and we allocated 100 ints. Exactly right.</li>
+                <li>No null dereference: the <code>assert</code> guards against that.</li>
+            </ul>
+            <div class="key-point"><strong>Best practice:</strong> After <code>free(p)</code>, set <code>p = NULL</code> to avoid accidental use-after-free. A null dereference crashes immediately (easier to debug) rather than silently corrupting data.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q7 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q7</span>
+            <span class="q-category">Security & Strings</span>
+        </div>
+        <div class="q-text"><code>buf</code> is a buffer of 50 <code>int</code>s. Which of the following calls to <code>memset</code> will result in a buffer overflow?</div>
+        <div class="choices">
+            <div class="choice wrong"><span><code>memset(buf, 0, 50)</code></span><span class="choice-label">No overflow</span></div>
+            <div class="choice wrong"><span><code>memset(buf, sizeof(int) * sizeof(buf), 100)</code></span><span class="choice-label">No overflow</span></div>
+            <div class="choice wrong"><span><code>memset(buf, 0, 0)</code></span><span class="choice-label">No overflow</span></div>
+            <div class="choice correct"><span><code>memset(buf, 100, sizeof(int) * sizeof(buf) * 50)</code></span><span class="choice-label">Overflow!</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: <code>memset(buf, 100, sizeof(int) * sizeof(buf) * 50)</code></h4>
+            <p><code>memset(ptr, value, num_bytes)</code> — the <strong>third argument</strong> is the number of bytes to set.</p>
+            <p>For <code>int buf[50]</code>: <code>sizeof(buf)</code> = 50 × 4 = 200 bytes (assuming 4-byte int).</p>
+            <ul>
+                <li><code>memset(buf, 0, 50)</code> — sets 50 bytes. Only covers 12.5 ints. No overflow (writes less than buffer size).</li>
+                <li><code>memset(buf, ..., 100)</code> — sets 100 bytes. Only 25 ints worth. No overflow.</li>
+                <li><code>memset(buf, 0, 0)</code> — sets 0 bytes. No-op. No overflow.</li>
+                <li><code>memset(buf, 100, sizeof(int) * sizeof(buf) * 50)</code> — sets 4 × 200 × 50 = <strong>40,000 bytes</strong>. The buffer is only 200 bytes. Massive overflow!</li>
+            </ul>
+            <div class="warn"><strong>Note on argument 2:</strong> <code>memset</code>'s second argument is the <em>value</em> (as unsigned char), not a count. <code>memset(buf, sizeof(int)*sizeof(buf), 100)</code> sets 100 bytes to the value 800 (truncated to 0x20 = 32). Confusing but not a buffer overflow.</div>
+            <div class="key-point"><strong>Correct usage:</strong> <code>memset(buf, 0, sizeof(buf))</code> — zeroes out the entire buffer safely. Always use <code>sizeof</code> for the third argument.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q8 ==================== -->
+    <div class="q-card cat-tools" data-cat="tools">
+        <div class="q-header">
+            <span class="q-num">Q8</span>
+            <span class="q-category">Assertions & Tools</span>
+        </div>
+        <div class="q-text">Inserting assertions never affects performance.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False — assertions DO affect performance</h4>
+            <p>Assertions execute a condition check at runtime. If the condition involves computation (function calls, complex expressions), it adds overhead.</p>
+            <ul>
+                <li>An assertion inside a hot loop can significantly slow down the program.</li>
+                <li>In <strong>release builds</strong>, assertions are typically disabled via <code>#define NDEBUG</code> (which makes <code>assert()</code> expand to nothing).</li>
+                <li>But in <strong>debug builds</strong>, every assertion is evaluated at runtime.</li>
+            </ul>
+            <div class="key-point"><strong>The NDEBUG mechanism:</strong>
+<pre class="q-code"><span class="cmt">// With NDEBUG defined, assert() becomes a no-op:</span>
+<span class="kw">#define</span> NDEBUG
+<span class="kw">#include</span> <span class="str">&lt;assert.h&gt;</span>
+<span class="cmt">// assert(expr) expands to ((void)0)</span>
+
+<span class="cmt">// Without NDEBUG, assert() evaluates the expression:</span>
+<span class="cmt">// assert(expr) → if (!(expr)) abort()</span></pre>
+            Compile with <code>-DNDEBUG</code> for release builds to remove assertion overhead.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q9 ==================== -->
+    <div class="q-card cat-ub" data-cat="ub">
+        <div class="q-header">
+            <span class="q-num">Q9</span>
+            <span class="q-category">Undefined Behavior</span>
+        </div>
+        <div class="q-text">The following program may trigger undefined behaviour.</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;stdlib.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+
+<span class="type">void</span> <span class="fn">tenacc</span>(<span class="type">void</span>) {
+    <span class="kw">static</span> <span class="type">unsigned int</span> acc = <span class="num">0</span>;
+    acc += <span class="num">10</span>;
+    <span class="fn">printf</span>(<span class="str">"Accumulator at %u\n"</span>, acc);
+}
+
+<span class="type">int</span> <span class="fn">main</span>(<span class="type">int</span> argc, <span class="type">char</span> *argv[]) {
+    <span class="kw">if</span> (argc &lt; <span class="num">2</span>) <span class="kw">return</span> <span class="num">1</span>;
+    <span class="type">long</span> n = <span class="fn">strtol</span>(argv[<span class="num">1</span>], NULL, <span class="num">10</span>);
+    <span class="kw">for</span> (<span class="type">long</span> i = <span class="num">0</span>; i &lt; n; ++i) <span class="fn">tenacc</span>();
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False — no UB possible</h4>
+            <p>The key insight: <code>acc</code> is <strong><code>unsigned int</code></strong>.</p>
+            <ul>
+                <li><strong>Unsigned integer overflow is well-defined</strong> in C/C++. It wraps around modulo 2<sup>32</sup> (for 32-bit unsigned int).</li>
+                <li>Even if the user provides a huge <code>n</code>, <code>acc += 10</code> will just keep wrapping. No UB.</li>
+                <li>The <code>%u</code> format specifier correctly matches <code>unsigned int</code>.</li>
+                <li><code>strtol</code> returns a <code>long</code>, and the loop variable <code>i</code> is <code>long</code> — no issues there.</li>
+            </ul>
+            <div class="key-point"><strong>Recall from Quiz 1 Q3:</strong> Signed integer overflow is UB, but unsigned integer overflow is <strong>defined</strong> (wraps modulo 2<sup>N</sup>). This question tests whether you can distinguish between the two. If <code>acc</code> were <code>int</code> (signed), this WOULD be UB.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q10 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q10</span>
+            <span class="q-category">Security & Strings</span>
+        </div>
+        <div class="q-text"><code>password</code> is a global buffer containing a user inputted password (null terminated string). The correct password is "hello". The <code>check_password</code> function returns non-0 only when the user entered the correct password and 0 otherwise.</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;string.h&gt;</span>
+
+<span class="type">int</span> <span class="fn">check_password</span>(<span class="type">void</span>) {
+    <span class="kw">return</span> <span class="fn">strncmp</span>(password, <span class="str">"hello"</span>, <span class="num">5</span>) == <span class="num">0</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False — the check is bypassable</h4>
+            <p><code>strncmp(password, "hello", 5)</code> only compares the <strong>first 5 characters</strong>. Any string that starts with "hello" will pass:</p>
+            <ul>
+                <li><code>"hello"</code> → passes (correct)</li>
+                <li><code>"helloworld"</code> → also passes! (incorrect — this is not the right password)</li>
+                <li><code>"hello123"</code> → also passes!</li>
+            </ul>
+            <p>The fix: use <code>strcmp</code> (compares entire strings) or compare with length 6 to include the null terminator:</p>
+<pre class="q-code"><span class="cmt">// Option 1: use strcmp</span>
+<span class="kw">return</span> <span class="fn">strcmp</span>(password, <span class="str">"hello"</span>) == <span class="num">0</span>;
+
+<span class="cmt">// Option 2: strncmp with length including '\0'</span>
+<span class="kw">return</span> <span class="fn">strncmp</span>(password, <span class="str">"hello"</span>, <span class="num">6</span>) == <span class="num">0</span>;</pre>
+            <div class="warn"><strong>Security lesson:</strong> String prefix matching is a classic authentication bypass. Always compare the <strong>full string</strong> including the null terminator when checking passwords or tokens.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q11 ==================== -->
+    <div class="q-card cat-ub" data-cat="ub">
+        <div class="q-header">
+            <span class="q-num">Q11</span>
+            <span class="q-category">Undefined Behavior</span>
+        </div>
+        <div class="q-text">The <code>atoi</code> function can trigger undefined behaviour.</div>
+        <div class="choices">
+            <div class="choice correct"><span>True</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>False</span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: True</h4>
+            <p><code>atoi</code> converts a string to an <code>int</code>. If the result is outside the range of <code>int</code>, the behavior is <strong>undefined</strong> per the C standard (C11 §7.22.1).</p>
+            <ul>
+                <li><code>atoi("99999999999")</code> — value exceeds <code>INT_MAX</code> → UB</li>
+                <li><code>atoi</code> has no way to report errors (no errno, no return code for failure)</li>
+                <li><code>atoi("")</code> → returns 0 (defined, not UB)</li>
+                <li><code>atoi(NULL)</code> → UB (null pointer dereference)</li>
+            </ul>
+            <div class="key-point"><strong>Safe alternative: <code>strtol</code></strong>
+<pre class="q-code"><span class="type">long</span> val = <span class="fn">strtol</span>(str, &amp;endptr, <span class="num">10</span>);
+<span class="kw">if</span> (errno == ERANGE) { <span class="cmt">/* overflow */</span> }
+<span class="kw">if</span> (endptr == str) { <span class="cmt">/* no digits found */</span> }</pre>
+            <code>strtol</code> sets <code>errno</code> on overflow and provides error checking via <code>endptr</code>. Always prefer <code>strtol</code> over <code>atoi</code>.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q12 ==================== -->
+    <div class="q-card cat-ub" data-cat="ub">
+        <div class="q-header">
+            <span class="q-num">Q12</span>
+            <span class="q-category">Undefined Behavior</span>
+        </div>
+        <div class="q-text">There is a bug in the above code, what is it?</div>
+        <pre class="q-code"><span class="kw">struct</span> <span class="type">collection</span> {
+    <span class="type">int</span> a;
+    <span class="type">int</span> b;
+};
+
+<span class="type">int</span> <span class="fn">main</span>(<span class="type">void</span>) {
+    <span class="kw">struct</span> <span class="type">collection</span> *c = (<span class="kw">struct</span> <span class="type">collection</span> *)<span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="kw">struct</span> <span class="type">collection</span>));
+    <span class="fn">assert</span>(c != NULL);
+    <span class="fn">printf</span>(<span class="str">"Fresh: a = %d, b = %d\n"</span>, c-&gt;a, c-&gt;b);  <span class="cmt">// BUG</span>
+    c-&gt;a = <span class="num">10</span>; c-&gt;b = <span class="num">20</span>;
+    <span class="fn">printf</span>(<span class="str">"Updated: a = %d, b = %d\n"</span>, c-&gt;a, c-&gt;b);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>We potentially perform null pointer dereferences</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>We read undefined variables</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>We allocate the incorrect number of bytes in the malloc call</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span>We allocate c on the heap even though we could have allocated it on the stack</span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: We read undefined (uninitialized) variables</h4>
+            <p><code>malloc</code> allocates memory but does <strong>not initialize it</strong>. After <code>malloc</code>, <code>c->a</code> and <code>c->b</code> contain whatever garbage was in that memory.</p>
+            <p>The first <code>printf</code> reads <code>c->a</code> and <code>c->b</code> <strong>before</strong> they are assigned — this reads indeterminate values (UB in C).</p>
+            <div class="key-point"><strong>malloc vs calloc:</strong>
+            <ul>
+                <li><code>malloc(size)</code> — does NOT initialize. Memory contains garbage.</li>
+                <li><code>calloc(count, size)</code> — zero-initializes all bytes to 0.</li>
+            </ul>
+            If you need zero-initialized memory, use <code>calloc</code>, or explicitly set fields after <code>malloc</code>.</div>
+            <div class="warn"><strong>Why not "null pointer dereference"?</strong> The code has <code>assert(c != NULL)</code>, which guards against that. The assert ensures <code>c</code> is valid before use.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q13 ==================== -->
+    <div class="q-card cat-security" data-cat="security">
+        <div class="q-header">
+            <span class="q-num">Q13</span>
+            <span class="q-category">Security & Strings</span>
+        </div>
+        <div class="q-text">There is a bug in the above program, what is it?</div>
+        <pre class="q-code"><span class="type">int</span> <span class="fn">main</span>(<span class="type">void</span>) {
+    <span class="type">char</span> password[<span class="num">4</span>];
+    password[<span class="num">0</span>] = <span class="str">'p'</span>;
+    password[<span class="num">1</span>] = <span class="str">'a'</span>;
+    password[<span class="num">2</span>] = <span class="str">'s'</span>;
+    password[<span class="num">3</span>] = <span class="str">'s'</span>;
+    <span class="type">char</span> input[<span class="num">10</span>] = { <span class="str">'\0'</span> };
+    <span class="fn">fgets</span>(input, <span class="num">10</span>, stdin);
+    <span class="kw">return</span> <span class="fn">strcmp</span>(password, input);
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>A buffer overflow may occur when we are inserting "pass" into password</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span>A buffer overflow may occur through fgets</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>A buffer overflow may occur through strcmp</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>A signed integer overflow may occur at the return statement</span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: Buffer overflow through strcmp</h4>
+            <p><code>password</code> is <code>{'p','a','s','s'}</code> — <strong>no null terminator!</strong> The array is exactly 4 bytes with no room for <code>'\0'</code>.</p>
+            <p><code>strcmp</code> scans both strings until it finds a <code>'\0'</code>. Since <code>password</code> has no null terminator, <code>strcmp</code> will read <strong>past the end of the array</strong>, looking for a <code>'\0'</code> that may never come — buffer over-read.</p>
+            <div class="warn"><strong>Why NOT the other options?</strong>
+            <ul>
+                <li>"pass" into password: We manually set indices 0-3, which is exactly within bounds of <code>char[4]</code>. No overflow.</li>
+                <li><code>fgets</code>: <code>fgets(input, 10, stdin)</code> reads at most 9 chars into a 10-byte buffer. Safe.</li>
+                <li><code>strcmp</code> returns an <code>int</code>. <code>return</code> just passes that value. No integer overflow concern.</li>
+            </ul></div>
+            <div class="key-point"><strong>Lesson:</strong> C strings MUST be null-terminated. A <code>char</code> array without <code>'\0'</code> is not a valid C string. Any string function (<code>strcmp</code>, <code>strlen</code>, <code>strcpy</code>, <code>printf %s</code>) will read past the end looking for the terminator.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q14 ==================== -->
+    <div class="q-card cat-lang" data-cat="lang">
+        <div class="q-header">
+            <span class="q-num">Q14</span>
+            <span class="q-category">C/C++ Language</span>
+        </div>
+        <div class="q-text">When allocating memory for ints, it is safe to assume an int is 4 bytes (e.g., <code>int *p = (int *)malloc(4)</code>).</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False — never hardcode type sizes</h4>
+            <p>The C standard only guarantees minimum sizes:</p>
+            <ul>
+                <li><code>char</code>: at least 8 bits (always exactly 1 byte by definition)</li>
+                <li><code>short</code>: at least 16 bits</li>
+                <li><code>int</code>: at least 16 bits</li>
+                <li><code>long</code>: at least 32 bits</li>
+            </ul>
+            <p>While <code>int</code> is 4 bytes on most modern platforms (x86, ARM), it can be 2 bytes on some embedded systems, or potentially different sizes on exotic architectures.</p>
+            <div class="key-point"><strong>Always use <code>sizeof</code>:</strong>
+<pre class="q-code"><span class="cmt">// Wrong — assumes int is 4 bytes</span>
+<span class="type">int</span> *p = (<span class="type">int</span> *)<span class="fn">malloc</span>(<span class="num">4</span>);
+
+<span class="cmt">// Correct — portable</span>
+<span class="type">int</span> *p = (<span class="type">int</span> *)<span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="type">int</span>));
+
+<span class="cmt">// Even better — type-safe</span>
+<span class="type">int</span> *p = (<span class="type">int</span> *)<span class="fn">malloc</span>(<span class="kw">sizeof</span>(*p));</pre>
+            The last form (<code>sizeof(*p)</code>) is preferred because if you change the type of <code>p</code>, the allocation automatically matches.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q15 ==================== -->
+    <div class="q-card cat-memory" data-cat="memory">
+        <div class="q-header">
+            <span class="q-num">Q15</span>
+            <span class="q-category">Memory & Pointers</span>
+        </div>
+        <div class="q-text">In this code, assuming N &lt; 50, when does a buffer overflow occur?</div>
+        <pre class="q-code"><span class="type">int</span> <span class="fn">main</span>(<span class="type">void</span>) {
+    <span class="type">int</span> nums[N];
+    <span class="kw">for</span> (<span class="type">unsigned int</span> i = <span class="num">0</span>; i &lt; N; i += <span class="num">2</span>) {
+        nums[i] = <span class="num">1</span>;
+        nums[i+<span class="num">1</span>] = <span class="num">0</span>;    <span class="cmt">// potential overflow when i = N-1</span>
+    }
+}</pre>
+        <div class="choices">
+            <div class="choice wrong"><span>There is never a buffer overflow</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span>There is a buffer overflow regardless of N's value</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span>There is a buffer overflow when N is even</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>There is a buffer overflow when N is odd</span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: Buffer overflow when N is odd</h4>
+            <p>The loop increments <code>i</code> by 2. On each iteration, it accesses <code>nums[i]</code> and <code>nums[i+1]</code>.</p>
+            <ul>
+                <li><strong>N is even</strong> (e.g., N=6): i takes values 0, 2, 4. Accesses indices 0,1, 2,3, 4,5 — all within bounds. Safe.</li>
+                <li><strong>N is odd</strong> (e.g., N=5): i takes values 0, 2, 4. When i=4, <code>nums[4]</code> is OK, but <code>nums[4+1]</code> = <code>nums[5]</code> is <strong>out of bounds</strong> (array only has indices 0-4).</li>
+            </ul>
+            <div class="key-point"><strong>Pattern to recognize:</strong> When a loop steps by 2 and accesses <code>[i]</code> and <code>[i+1]</code>, the array size must be even to avoid overflow. For odd-sized arrays, the last iteration's <code>[i+1]</code> goes past the end.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q16 ==================== -->
+    <div class="q-card cat-overflow" data-cat="overflow">
+        <div class="q-header">
+            <span class="q-num">Q16</span>
+            <span class="q-category">Integer Overflow</span>
+        </div>
+        <div class="q-text">What should CONDITION be replaced with to ensure <code>add10</code> does not cause an integer overflow whilst ensuring it can handle as many values of <code>x</code> as possible?</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;limits.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;assert.h&gt;</span>
+
+<span class="type">unsigned int</span> <span class="fn">add10</span>(<span class="type">unsigned int</span> x) {
+    <span class="fn">assert</span>(CONDITION);
+    <span class="kw">return</span> x + <span class="num">10</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice correct"><span><code>UINT_MAX - 10 >= x</code></span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span><code>INT_MAX - 10 == x</code></span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span><code>x + 10 &lt;= UINT_MAX</code></span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span><code>x + 10 > UINT_MAX</code></span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: <code>UINT_MAX - 10 >= x</code></h4>
+            <p>To check if <code>x + 10</code> would overflow, you must check <strong>before</strong> the addition (checking after is too late — the overflow already happened).</p>
+            <ul>
+                <li><code>UINT_MAX - 10 >= x</code> — rearranges <code>x + 10 <= UINT_MAX</code> without performing the potentially overflowing addition. <strong>Correct.</strong></li>
+                <li><code>INT_MAX - 10 == x</code> — wrong constant (<code>INT_MAX</code> instead of <code>UINT_MAX</code>), and <code>==</code> is too restrictive (should be <code>>=</code>).</li>
+                <li><code>x + 10 <= UINT_MAX</code> — this <em>performs the addition first</em>. If it wraps (unsigned), the result is always ≤ <code>UINT_MAX</code> by definition. The check is useless.</li>
+                <li><code>x + 10 > UINT_MAX</code> — same problem; unsigned arithmetic wraps, so this is always false.</li>
+            </ul>
+            <div class="key-point"><strong>Safe overflow check pattern:</strong> To check if <code>a + b</code> overflows for unsigned types:
+<pre class="q-code"><span class="kw">if</span> (a > UINT_MAX - b) { <span class="cmt">/* would overflow */</span> }</pre>
+            Always rearrange the inequality to avoid performing the potentially overflowing operation.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q17 ==================== -->
+    <div class="q-card cat-overflow" data-cat="overflow">
+        <div class="q-header">
+            <span class="q-num">Q17</span>
+            <span class="q-category">Integer Overflow</span>
+        </div>
+        <div class="q-text">What should CONDITION be replaced with to ensure <code>square</code> does not cause an integer overflow whilst ensuring it can handle as many values of <code>x</code> as possible?</div>
+        <pre class="q-code"><span class="kw">#include</span> <span class="str">&lt;limits.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;assert.h&gt;</span>
+
+<span class="type">int</span> <span class="fn">square</span>(<span class="type">int</span> x) {
+    <span class="fn">assert</span>(CONDITION);
+    <span class="kw">return</span> x * x;
+}</pre>
+        <div class="choices">
+            <div class="choice correct"><span><code>(x >= 0 && (INT_MAX / x) >= x) || (x < 0 && (INT_MAX / x) >= x)</code></span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span><code>INT_MAX - x * x >= 0</code></span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span><code>x * x &lt;= INT_MAX</code></span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span><code>(x >= 0 && (INT_MAX / x) >= x) || (x < 0 && (INT_MIN / x) >= x)</code></span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: Check both positive and negative cases against INT_MAX</h4>
+            <p>Since <code>x * x</code> is always non-negative (for real results), we only need to check against <code>INT_MAX</code>, not <code>INT_MIN</code>.</p>
+            <ul>
+                <li><strong>If x >= 0:</strong> check <code>INT_MAX / x >= x</code> (i.e., x² ≤ INT_MAX)</li>
+                <li><strong>If x < 0:</strong> <code>x * x</code> is the same as <code>|x| * |x|</code>. We check <code>INT_MAX / x >= x</code>. Since both are negative, dividing two negatives gives a positive, and the comparison works correctly.</li>
+            </ul>
+            <div class="warn"><strong>Why NOT <code>x * x &lt;= INT_MAX</code>?</strong> This computes <code>x * x</code> first — if it overflows, we already have UB. The check must be done <strong>before</strong> the multiplication.</div>
+            <div class="warn"><strong>Why NOT the INT_MIN variant?</strong> <code>x * x</code> can never produce a negative result (mathematically). So checking against <code>INT_MIN</code> for the negative case is wrong — the potential overflow is always towards <code>INT_MAX</code>.</div>
+            <div class="key-point"><strong>Edge case:</strong> When <code>x == 0</code>, <code>INT_MAX / 0</code> is division by zero (UB). The condition <code>x >= 0 && (INT_MAX / x) >= x</code> short-circuits: when <code>x == 0</code>, <code>x * x == 0</code> which is fine. You'd need to handle <code>x == 0</code> specially for a truly robust check.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q18 ==================== -->
+    <div class="q-card cat-tools" data-cat="tools">
+        <div class="q-header">
+            <span class="q-num">Q18</span>
+            <span class="q-category">Assertions & Tools</span>
+        </div>
+        <div class="q-text">Which of the following implementations of <code>xmalloc</code> (wraps malloc, aborts when malloc fails) are correct?</div>
+        <div class="choices">
+            <div class="choice correct"><span><code>void *xmalloc(size_t size) { void *p = malloc(size); assert(p != NULL); return p; }</code></span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span><code>void *xmalloc(size_t size) { void *p = malloc(size); assert(!errno); return p; }</code></span><span class="choice-label">Incorrect</span></div>
+            <div class="choice wrong"><span><code>void *xmalloc(size_t size) { void *p = malloc(size); assert(errno != ENOMEM); return p; }</code></span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span><code>void *xmalloc(size_t size) { void *p = malloc(size); if (p == NULL) abort(); return p; }</code></span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: assert(p != NULL) and if (p == NULL) abort()</h4>
+            <ul>
+                <li><strong><code>assert(p != NULL)</code>:</strong> Aborts if p is NULL. Works in debug builds. Note: disabled when <code>NDEBUG</code> is defined! For a real xmalloc, this may not be ideal for release, but it fulfils the stated requirement.</li>
+                <li><strong><code>if (p == NULL) abort()</code>:</strong> Always aborts on failure, even in release builds. The most robust approach.</li>
+            </ul>
+            <div class="warn"><strong>Why NOT errno-based checks?</strong>
+            <ul>
+                <li><code>malloc</code> is NOT required to set <code>errno</code> by the C standard. Some implementations do (e.g., glibc sets <code>errno = ENOMEM</code>), but this is implementation-defined, not portable.</li>
+                <li><code>errno</code> might already be non-zero from a previous call. <code>!errno</code> could false-trigger even if malloc succeeded.</li>
+                <li>The only reliable way to check malloc failure is <code>p == NULL</code>.</li>
+            </ul></div>
+            <div class="key-point"><strong>Real-world xmalloc:</strong> Libraries like Git use <code>xmalloc</code> that calls <code>die("out of memory")</code> on failure. This is simpler than checking every malloc call individually.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q19 ==================== -->
+    <div class="q-card cat-tools" data-cat="tools">
+        <div class="q-header">
+            <span class="q-num">Q19</span>
+            <span class="q-category">Assertions & Tools</span>
+        </div>
+        <div class="q-text">The assertion in the following program ensures the program is run with command line arguments from an interactive shell. Assume the executing shell is a Strictly Conforming POSIX Application.</div>
+        <pre class="q-code"><span class="type">int</span> <span class="fn">main</span>(<span class="type">int</span> argc, <span class="type">char</span> *argv[]) {
+    <span class="fn">assert</span>(argc &gt; <span class="num">1</span>);
+    <span class="cmt">// ...</span>
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+        <div class="choices">
+            <div class="choice correct"><span>True</span><span class="choice-label">Correct</span></div>
+            <div class="choice wrong"><span>False</span><span class="choice-label">Incorrect</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: True</h4>
+            <p>In POSIX, when a program is run from a conforming shell, <code>argc</code> is always at least 1 — <code>argv[0]</code> is the program name. <code>assert(argc > 1)</code> checks that at least one command-line argument was provided (beyond the program name).</p>
+            <p>So the assertion ensures the program was run with at least one argument, e.g., <code>./program arg1</code>.</p>
+            <div class="key-point"><strong>argc/argv guarantee:</strong>
+            <ul>
+                <li>POSIX shells always set <code>argv[0]</code> to the program name → <code>argc >= 1</code></li>
+                <li><code>argc > 1</code> means at least one additional argument was passed</li>
+                <li><code>argv[argc]</code> is always <code>NULL</code> (guaranteed by the standard)</li>
+            </ul></div>
+            <div class="warn"><strong>Subtlety:</strong> The C standard technically allows <code>argc == 0</code> (e.g., when calling <code>execve</code> with an empty argv array). But in a "Strictly Conforming POSIX Application" shell, this doesn't happen.</div>
+        </div>
+    </div>
+
+    <!-- ==================== Q20 ==================== -->
+    <div class="q-card cat-lang" data-cat="lang">
+        <div class="q-header">
+            <span class="q-num">Q20</span>
+            <span class="q-category">C/C++ Language</span>
+        </div>
+        <div class="q-text">Deleting an element from a <code>std::set</code> invalidates all current iterators into that <code>std::set</code>.</div>
+        <div class="choices">
+            <div class="choice wrong"><span>True</span><span class="choice-label">Incorrect</span></div>
+            <div class="choice correct"><span>False</span><span class="choice-label">Correct</span></div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExpl(this)">Show Explanation</button>
+        <div class="explanation collapsed">
+            <h4>Answer: False — only the erased element's iterator is invalidated</h4>
+            <p><code>std::set</code> is implemented as a <strong>red-black tree</strong> (balanced BST). Erasing a node only affects that specific node. All other iterators remain valid.</p>
+            <div class="key-point"><strong>Iterator invalidation rules by container:</strong>
+            <table style="width:100%; border-collapse:collapse; font-size:13px; margin:8px 0;">
+                <tr style="background:#f5f5f5;"><th style="text-align:left;padding:6px;border:1px solid #ddd;">Container</th><th style="text-align:left;padding:6px;border:1px solid #ddd;">On erase</th><th style="text-align:left;padding:6px;border:1px solid #ddd;">On insert</th></tr>
+                <tr><td style="padding:6px;border:1px solid #ddd;"><code>vector</code></td><td style="padding:6px;border:1px solid #ddd;">Erased + all after</td><td style="padding:6px;border:1px solid #ddd;">All (if reallocation)</td></tr>
+                <tr><td style="padding:6px;border:1px solid #ddd;"><code>deque</code></td><td style="padding:6px;border:1px solid #ddd;">All</td><td style="padding:6px;border:1px solid #ddd;">All</td></tr>
+                <tr><td style="padding:6px;border:1px solid #ddd;"><code>list</code></td><td style="padding:6px;border:1px solid #ddd;">Only erased</td><td style="padding:6px;border:1px solid #ddd;">None</td></tr>
+                <tr style="background:#e8f5e9;"><td style="padding:6px;border:1px solid #ddd;"><code>set/map</code></td><td style="padding:6px;border:1px solid #ddd;"><strong>Only erased</strong></td><td style="padding:6px;border:1px solid #ddd;">None</td></tr>
+                <tr><td style="padding:6px;border:1px solid #ddd;"><code>unordered_set/map</code></td><td style="padding:6px;border:1px solid #ddd;">Only erased</td><td style="padding:6px;border:1px solid #ddd;">All (if rehash)</td></tr>
+            </table>
+            Node-based containers (<code>set</code>, <code>map</code>, <code>list</code>) have the best iterator stability because each element is an independent node in memory.</div>
+        </div>
+    </div>
+
+    </div><!-- #questions -->
+</div>
+
+<script>
+function toggleExpl(btn) {
+    const expl = btn.nextElementSibling;
+    expl.classList.toggle('collapsed');
+    btn.textContent = expl.classList.contains('collapsed') ? 'Show Explanation' : 'Hide Explanation';
+}
+
+function filterCat(cat) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.q-card').forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
+</body>
+</html>

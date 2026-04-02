@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目概述 - 医案通</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #333;
+    background: #f5f5f5;
+    padding: 20px;
+}
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+h1 {
+    font-size: 28px;
+    color: #1a1a1a;
+    border-bottom: 3px solid #2c3e50;
+    padding-bottom: 12px;
+    margin: 35px 0 20px 0;
+}
+h1:first-child { margin-top: 0; }
+h2 {
+    font-size: 22px;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin: 30px 0 15px 0;
+}
+h3 {
+    font-size: 18px;
+    color: #34495e;
+    margin: 22px 0 10px 0;
+}
+h4 {
+    font-size: 15px;
+    color: #555;
+    margin: 18px 0 8px 0;
+    font-weight: 600;
+}
+p { margin: 10px 0; }
+a { color: #3498db; text-decoration: none; }
+a:hover { text-decoration: underline; }
+strong { color: #2c3e50; }
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-size: 14px;
+    overflow-x: auto;
+    display: block;
+}
+thead { background: #2c3e50; color: #fff; }
+th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    white-space: nowrap;
+}
+td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #eee;
+}
+tbody tr:hover { background: #f8f9fa; }
+code {
+    font-family: "Fira Code", "Source Code Pro", "Consolas", monospace;
+    background: #f0f2f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #e74c3c;
+}
+pre {
+    background: #282c34;
+    color: #abb2bf;
+    padding: 18px 22px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 16px 0;
+    line-height: 1.6;
+}
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 13px;
+}
+blockquote {
+    border-left: 4px solid #3498db;
+    padding: 10px 18px;
+    margin: 16px 0;
+    background: #f8f9fa;
+    color: #555;
+    border-radius: 0 4px 4px 0;
+}
+ul, ol { padding-left: 28px; margin: 10px 0; }
+li { margin-bottom: 5px; }
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 30px 0;
+}
+.page-break {
+    border-top: 2px dashed #ccc;
+    margin: 40px 0;
+    padding-top: 10px;
+}
+/* 导航栏 */
+.nav-bar {
+    max-width: 960px;
+    margin: 0 auto 15px auto;
+    padding: 12px 20px;
+    background: #2c3e50;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.nav-bar a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+.nav-bar a:hover { background: #34495e; }
+.nav-bar a.active { background: #3498db; }
+/* 返回顶部 */
+.back-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    background: #2c3e50;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.back-top:hover { opacity: 1; text-decoration: none; }
+/* 打印样式 */
+@media print {
+    body { background: #fff; padding: 0; }
+    .container { box-shadow: none; padding: 20px; }
+    .nav-bar, .back-top { display: none; }
+    pre { white-space: pre-wrap; }
+}
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .container { padding: 20px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; }
+    table { font-size: 12px; }
+    th, td { padding: 6px 8px; }
+}
+</style>
+</head>
+<body>
+<nav class="nav-bar"><a href="01-项目概述.html" class="active">项目概述</a><a href="02-商业模式与团队规划.html">商业模式</a><a href="03-技术架构与数据库设计.html">技术架构</a><a href="04-功能模块设计.html">功能模块</a><a href="05-开发迭代路线图.html">迭代路线</a><a href="06-合规与安全规范.html">合规安全</a><a href="07-运营与风险管理.html">运营风险</a></nav>
+<div class="container">
+<h1 id="-">医案通 - 疑难杂症病例知识交易平台</h1>
+<h2 id="_1">项目愿景</h2>
+<p>打破疑难杂症治疗经验的信息孤岛，构建一个医疗案例知识交易平台，让成功治愈的经验可以被发现、被验证、被复用。</p>
+<h2 id="_2">核心价值主张</h2>
+<ul>
+<li><strong>对医生</strong>: 将临床经验转化为可持续收益，获得同行认可</li>
+<li><strong>对患者</strong>: 找到与自身相似的成功治愈案例，获取治疗思路参考</li>
+<li><strong>对药企/科研</strong>: 获取真实世界数据 (RWD)，加速研发决策</li>
+<li><strong>对行业</strong>: 推动医疗知识标准化流通，减少重复误诊</li>
+</ul>
+<h2 id="_3">项目定位</h2>
+<p><strong>医学知识交易平台</strong>（非在线问诊/诊疗平台）</p>
+<p>平台提供的是治疗经验的参考信息，不直接提供诊疗服务，所有案例仅供参考。</p>
+<h2 id="_4">目标用户</h2>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>核心需求</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>临床医生</td>
+<td>查阅疑难病例参考方案、分享经验获取收益</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>患者/家属</td>
+<td>寻找相似成功案例、了解治疗方向</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>医疗机构</td>
+<td>病例库建设、医生培训</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>药企</td>
+<td>真实世界数据采购、上市后研究</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>科研机构</td>
+<td>案例数据用于研究</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>保险公司</td>
+<td>治疗方案合理性评估</td>
+<td>P3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">项目代号</h2>
+<p>sys1 (内部代号)，产品名暂定"医案通"（可后续更改）</p>
+</div>
+<a href="#" class="back-top" title="返回顶部">&uarr;</a>
+</body>
+</html>

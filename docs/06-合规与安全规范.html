@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>合规与安全规范 - 医案通</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #333;
+    background: #f5f5f5;
+    padding: 20px;
+}
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+h1 {
+    font-size: 28px;
+    color: #1a1a1a;
+    border-bottom: 3px solid #2c3e50;
+    padding-bottom: 12px;
+    margin: 35px 0 20px 0;
+}
+h1:first-child { margin-top: 0; }
+h2 {
+    font-size: 22px;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin: 30px 0 15px 0;
+}
+h3 {
+    font-size: 18px;
+    color: #34495e;
+    margin: 22px 0 10px 0;
+}
+h4 {
+    font-size: 15px;
+    color: #555;
+    margin: 18px 0 8px 0;
+    font-weight: 600;
+}
+p { margin: 10px 0; }
+a { color: #3498db; text-decoration: none; }
+a:hover { text-decoration: underline; }
+strong { color: #2c3e50; }
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-size: 14px;
+    overflow-x: auto;
+    display: block;
+}
+thead { background: #2c3e50; color: #fff; }
+th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    white-space: nowrap;
+}
+td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #eee;
+}
+tbody tr:hover { background: #f8f9fa; }
+code {
+    font-family: "Fira Code", "Source Code Pro", "Consolas", monospace;
+    background: #f0f2f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #e74c3c;
+}
+pre {
+    background: #282c34;
+    color: #abb2bf;
+    padding: 18px 22px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 16px 0;
+    line-height: 1.6;
+}
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 13px;
+}
+blockquote {
+    border-left: 4px solid #3498db;
+    padding: 10px 18px;
+    margin: 16px 0;
+    background: #f8f9fa;
+    color: #555;
+    border-radius: 0 4px 4px 0;
+}
+ul, ol { padding-left: 28px; margin: 10px 0; }
+li { margin-bottom: 5px; }
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 30px 0;
+}
+.page-break {
+    border-top: 2px dashed #ccc;
+    margin: 40px 0;
+    padding-top: 10px;
+}
+/* 导航栏 */
+.nav-bar {
+    max-width: 960px;
+    margin: 0 auto 15px auto;
+    padding: 12px 20px;
+    background: #2c3e50;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.nav-bar a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+.nav-bar a:hover { background: #34495e; }
+.nav-bar a.active { background: #3498db; }
+/* 返回顶部 */
+.back-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    background: #2c3e50;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.back-top:hover { opacity: 1; text-decoration: none; }
+/* 打印样式 */
+@media print {
+    body { background: #fff; padding: 0; }
+    .container { box-shadow: none; padding: 20px; }
+    .nav-bar, .back-top { display: none; }
+    pre { white-space: pre-wrap; }
+}
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .container { padding: 20px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; }
+    table { font-size: 12px; }
+    th, td { padding: 6px 8px; }
+}
+</style>
+</head>
+<body>
+<nav class="nav-bar"><a href="01-项目概述.html">项目概述</a><a href="02-商业模式与团队规划.html">商业模式</a><a href="03-技术架构与数据库设计.html">技术架构</a><a href="04-功能模块设计.html">功能模块</a><a href="05-开发迭代路线图.html">迭代路线</a><a href="06-合规与安全规范.html" class="active">合规安全</a><a href="07-运营与风险管理.html">运营风险</a></nav>
+<div class="container">
+<h1 id="_1">法律合规规划</h1>
+<h2 id="_2">一、资质牌照清单</h2>
+<table>
+<thead>
+<tr>
+<th>资质</th>
+<th>必要性</th>
+<th>申请周期</th>
+<th>预估费用</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ICP备案</td>
+<td>必须</td>
+<td>2-4周</td>
+<td>免费</td>
+<td>网站上线前置条件</td>
+</tr>
+<tr>
+<td>ICP经营许可证（EDI）</td>
+<td>必须</td>
+<td>1-3月</td>
+<td>¥5000-20000</td>
+<td>涉及在线交易必须</td>
+</tr>
+<tr>
+<td>互联网医疗信息服务许可证</td>
+<td>必须</td>
+<td>2-6月</td>
+<td>¥10000-50000</td>
+<td>发布医疗相关信息</td>
+</tr>
+<tr>
+<td>网络安全等级保护（等保二级+）</td>
+<td>必须</td>
+<td>2-4月</td>
+<td>¥50000-150000</td>
+<td>涉及个人健康数据</td>
+</tr>
+<tr>
+<td>医疗器械网络销售服务第三方平台备案</td>
+<td>视情况</td>
+<td>1-2月</td>
+<td>-</td>
+<td>如涉及器械推荐</td>
+</tr>
+<tr>
+<td>广播电视节目制作经营许可证</td>
+<td>视情况</td>
+<td>1-2月</td>
+<td>-</td>
+<td>如涉及视频内容</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_3">申请优先级</h3>
+<ol>
+<li><strong>立即启动</strong>: ICP备案、ICP经营许可证</li>
+<li><strong>MVP期间</strong>: 互联网医疗信息服务许可证申请</li>
+<li><strong>V1.0前</strong>: 等保测评</li>
+<li><strong>按需</strong>: 其他资质</li>
+</ol>
+<hr />
+<h2 id="_4">二、数据合规</h2>
+<h3 id="_5">适用法律法规</h3>
+<ul>
+<li>《个人信息保护法》(PIPL)</li>
+<li>《数据安全法》</li>
+<li>《网络安全法》</li>
+<li>《医疗卫生机构信息公开办法》</li>
+<li>《人类遗传资源管理条例》（如涉及基因数据）</li>
+<li>《健康医疗大数据标准、安全和服务管理办法》</li>
+</ul>
+<h3 id="_6">数据分类分级</h3>
+<table>
+<thead>
+<tr>
+<th>数据类别</th>
+<th>安全级别</th>
+<th>处理要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>患者原始病历</td>
+<td>L4-极敏感</td>
+<td>加密存储、脱敏后使用、不出境</td>
+</tr>
+<tr>
+<td>医生身份信息</td>
+<td>L3-敏感</td>
+<td>加密存储、最小范围使用</td>
+</tr>
+<tr>
+<td>用户手机号/邮箱</td>
+<td>L3-敏感</td>
+<td>加密存储、脱敏展示</td>
+</tr>
+<tr>
+<td>脱敏后病例数据</td>
+<td>L2-内部</td>
+<td>可用于AI训练、数据分析</td>
+</tr>
+<tr>
+<td>公开展示信息</td>
+<td>L1-公开</td>
+<td>正常使用</td>
+</tr>
+<tr>
+<td>交易记录</td>
+<td>L2-内部</td>
+<td>保留至少5年</td>
+</tr>
+</tbody>
+</table>
+<h3 id="privacy-by-design">隐私设计原则 (Privacy by Design)</h3>
+<ol>
+<li><strong>最小必要</strong>: 只收集业务必需的数据</li>
+<li><strong>目的限制</strong>: 数据仅用于声明的目的</li>
+<li><strong>存储限制</strong>: 设定数据保留期限，过期删除</li>
+<li><strong>单独同意</strong>: 敏感个人信息需用户单独同意</li>
+<li><strong>可撤回</strong>: 用户可随时撤回同意、删除数据</li>
+<li><strong>可携带</strong>: 支持用户导出自己的数据</li>
+</ol>
+<h3 id="_7">同意授权设计</h3>
+<p>病例上传需获取的授权：</p>
+<pre><code>□ 我确认此病例信息已经过充分脱敏，不包含可识别患者身份的信息
+□ 我已获得患者（或其法定代理人）的知情同意，允许将脱敏后的诊疗信息用于医学知识交流
+□ 我同意将此病例信息在平台上展示和交易，并理解平台的《内容使用协议》
+□ 我理解并同意平台的《隐私政策》和《用户服务协议》
+</code></pre>
+<hr />
+<h2 id="_8">三、平台免责设计</h2>
+<h3 id="_9">核心免责声明</h3>
+<pre><code>重要声明：
+1. 本平台提供的所有病例信息仅供医学参考和学术交流使用，不构成任何诊疗建议。
+2. 任何治疗决策应由具有执业资质的医生在充分了解患者具体情况后做出。
+3. 患者不应根据平台上的案例信息自行诊断或治疗。
+4. 平台不对因参考病例信息而产生的任何后果承担责任。
+5. 每位患者的情况各不相同，相同疾病的治疗方案可能因个体差异而完全不同。
+</code></pre>
+<h3 id="_10">需要准备的法律文件</h3>
+<ol>
+<li><strong>用户服务协议</strong> - 明确平台性质、用户权利义务</li>
+<li><strong>隐私政策</strong> - 数据收集、使用、存储、共享说明</li>
+<li><strong>内容使用协议</strong> - 病例版权、使用范围、责任划分</li>
+<li><strong>医疗信息免责声明</strong> - 上述核心免责</li>
+<li><strong>知识产权协议</strong> - 案例著作权归属</li>
+<li><strong>退款政策</strong> - 明确退款条件和流程</li>
+</ol>
+<hr />
+<h2 id="_11">四、知识产权</h2>
+<h3 id="_12">病例版权归属</h3>
+<ul>
+<li><strong>原则</strong>: 病例著作权归作者（上传医生）所有</li>
+<li><strong>平台获得</strong>: 非独占的展示和传播许可</li>
+<li><strong>买方获得</strong>: 个人参考使用权，不得转售或公开传播</li>
+<li><strong>转载/引用</strong>: 需注明来源和作者</li>
+</ul>
+<h3 id="_13">反抄袭机制</h3>
+<ul>
+<li>新上传案例与已有案例进行相似度检测</li>
+<li>疑似抄袭则人工复核</li>
+<li>确认抄袭则下架 + 信用扣分</li>
+</ul>
+<hr />
+<h2 id="_14">五、风险应对预案</h2>
+<table>
+<thead>
+<tr>
+<th>风险场景</th>
+<th>应对方案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据泄露</td>
+<td>72小时内报告主管部门、通知受影响用户、启动应急响应</td>
+</tr>
+<tr>
+<td>虚假病例导致患者受害</td>
+<td>配合调查、提供交易和审核记录、启动保险理赔</td>
+</tr>
+<tr>
+<td>监管政策变化</td>
+<td>保持与行业协会沟通、预留合规调整buffer</td>
+</tr>
+<tr>
+<td>知识产权纠纷</td>
+<td>先下架争议内容、走争议解决流程</td>
+</tr>
+<tr>
+<td>患者隐私投诉</td>
+<td>立即核查脱敏情况、必要时下架、补偿</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_15">建议购买的保险</h3>
+<ul>
+<li>网络安全/数据泄露责任险</li>
+<li>职业责任险</li>
+<li>平台运营责任险</li>
+</ul>
+<hr />
+<h2 id="_16">六、合规检查清单（上线前）</h2>
+<ul>
+<li>[ ] ICP备案通过</li>
+<li>[ ] 用户协议定稿并通过法律审核</li>
+<li>[ ] 隐私政策定稿并通过法律审核</li>
+<li>[ ] 免责声明定稿</li>
+<li>[ ] 脱敏流程测试通过</li>
+<li>[ ] 数据加密方案实施</li>
+<li>[ ] 审计日志功能就绪</li>
+<li>[ ] 用户注销/数据删除功能就绪</li>
+<li>[ ] 未成年人保护措施（14岁以下需监护人同意）</li>
+<li>[ ] 支付资质对接完成</li>
+<li>[ ] 等保评测启动（可MVP后进行）</li>
+</ul>
+<hr />
+<h1 id="_17">安全开发规范</h1>
+<h2 id="490">安全优先级（前4条挡住90%攻击）</h2>
+<ol>
+<li>用ORM，别拼SQL — 防注入</li>
+<li>每个API校验权限 — 防越权</li>
+<li>所有接口加限流 — 防刷</li>
+<li>全站HTTPS + 云WAF — 防中间人+常见Web攻击</li>
+</ol>
+<hr />
+<h2 id="sql">一、SQL注入防御</h2>
+<h3 id="sql_1">原则：永远不要拼接SQL</h3>
+<pre><code class="language-python"># 错 — 拼字符串，一打一个准
+query = f&quot;SELECT * FROM cases WHERE disease = '{user_input}'&quot;
+
+# 对 — ORM参数化查询，天然防注入
+case = db.query(Case).filter(Case.disease == user_input).first()
+
+# 如果必须写原生SQL，用参数绑定
+from sqlalchemy import text
+result = db.execute(text(&quot;SELECT * FROM cases WHERE disease = :name&quot;), {&quot;name&quot;: user_input})
+</code></pre>
+<h3 id="_18">检查清单</h3>
+<ul>
+<li>[ ] 全项目搜索 <code>f"SELECT</code> / <code>f"INSERT</code> / <code>f"UPDATE</code> / <code>f"DELETE</code>，确认零结果</li>
+<li>[ ] 全项目搜索 <code>.format(</code> 后跟SQL关键字，确认零结果</li>
+<li>[ ] 使用 <code>bandit</code> 静态分析工具自动检测</li>
+</ul>
+<hr />
+<h2 id="xss">二、XSS（跨站脚本）防御</h2>
+<h3 id="_19">病例内容是重灾区 — 用户输入的富文本必须清洗</h3>
+<pre><code class="language-python"># 后端：白名单过滤HTML标签
+import bleach
+
+ALLOWED_TAGS = ['p', 'br', 'b', 'i', 'strong', 'em', 'ul', 'ol', 'li', 'h3', 'h4', 'blockquote']
+ALLOWED_ATTRS = {}  # 不允许任何属性（尤其是 href/src/onclick）
+
+def sanitize_html(raw_content: str) -&gt; str:
+    return bleach.clean(raw_content, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS, strip=True)
+</code></pre>
+<pre><code class="language-typescript">// 前端：React默认转义，但以下场景要小心
+// 错 — 直接插入HTML
+&lt;div dangerouslySetInnerHTML={{ __html: caseContent }} /&gt;
+
+// 对 — 用DOMPurify二次清洗
+import DOMPurify from 'dompurify';
+&lt;div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(caseContent) }} /&gt;
+</code></pre>
+<h3 id="http">HTTP安全头</h3>
+<pre><code class="language-nginx">add_header X-Content-Type-Options nosniff;
+add_header X-Frame-Options DENY;
+add_header X-XSS-Protection &quot;1; mode=block&quot;;
+add_header Content-Security-Policy &quot;default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://oss.example.com;&quot;;
+add_header Referrer-Policy strict-origin-when-cross-origin;
+</code></pre>
+<hr />
+<h2 id="_20">三、越权访问防御（最容易忽视，后果最严重）</h2>
+<h3 id="api">原则：每个API都必须验证"这个用户有没有权限做这件事"</h3>
+<pre><code class="language-python"># 错 — 只要知道ID就能看任何人的完整病例
+@app.get(&quot;/api/cases/{case_id}/full&quot;)
+async def get_full_case(case_id: int):
+    return db.query(Case).get(case_id)
+
+# 对 — 验证身份 + 验证权限
+@app.get(&quot;/api/cases/{case_id}/full&quot;)
+async def get_full_case(case_id: int, current_user = Depends(get_current_user)):
+    case = db.query(Case).get(case_id)
+    if not case:
+        raise HTTPException(404)
+
+    # 作者本人可以看
+    if case.author_id == current_user.id:
+        return case
+
+    # 已购买可以看
+    purchase = db.query(Transaction).filter(
+        Transaction.case_id == case_id,
+        Transaction.buyer_id == current_user.id,
+        Transaction.payment_status == &quot;paid&quot;
+    ).first()
+    if not purchase:
+        raise HTTPException(403, &quot;未购买此病例&quot;)
+
+    return case
+</code></pre>
+<h3 id="_21">常见越权场景检查表</h3>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>检查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>查看他人完整病例</td>
+<td>必须已购买或是作者</td>
+</tr>
+<tr>
+<td>编辑/删除病例</td>
+<td>必须是作者本人</td>
+</tr>
+<tr>
+<td>查看他人订单</td>
+<td>必须是买方或卖方</td>
+</tr>
+<tr>
+<td>管理后台操作</td>
+<td>必须是管理员角色</td>
+</tr>
+<tr>
+<td>修改用户资料</td>
+<td>必须是本人</td>
+</tr>
+<tr>
+<td>提现</td>
+<td>必须是本人且已实名</td>
+</tr>
+<tr>
+<td>审核操作</td>
+<td>必须是审核员角色</td>
+</tr>
+</tbody>
+</table>
+<h3 id="idor">IDOR（不安全的直接对象引用）防御</h3>
+<pre><code class="language-python"># 错 — 用自增ID，容易被遍历
+/api/cases/1
+/api/cases/2
+/api/cases/3  # 攻击者依次尝试
+
+# 对 — 外部用UUID，内部用自增ID
+import uuid
+
+class Case(Base):
+    id = Column(BigInteger, primary_key=True)              # 内部用
+    public_id = Column(String(36), default=lambda: str(uuid.uuid4()), unique=True)  # 对外用
+
+# API用public_id
+@app.get(&quot;/api/cases/{public_id}/full&quot;)
+</code></pre>
+<hr />
+<h2 id="_22">四、接口限流</h2>
+<h3 id="_23">关键接口限流配置</h3>
+<pre><code class="language-python">from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
+
+# 验证码 — 最容易被刷（短信费钱）
+@app.post(&quot;/api/auth/sms-code&quot;)
+@limiter.limit(&quot;1/minute&quot;)         # 同一IP每分钟1次
+async def send_sms(request: Request, phone: str):
+    # 额外：同一手机号每天最多10条
+    daily_count = redis.get(f&quot;sms:daily:{phone}&quot;)
+    if daily_count and int(daily_count) &gt;= 10:
+        raise HTTPException(429, &quot;今日验证码已达上限&quot;)
+    ...
+
+# 登录 — 防暴力破解
+@app.post(&quot;/api/auth/login&quot;)
+@limiter.limit(&quot;10/minute&quot;)        # 同一IP每分钟10次
+async def login(request: Request):
+    # 额外：同一账号连续失败5次锁定30分钟
+    fail_count = redis.get(f&quot;login:fail:{phone}&quot;)
+    if fail_count and int(fail_count) &gt;= 5:
+        raise HTTPException(423, &quot;账号已锁定，请30分钟后重试&quot;)
+    ...
+
+# 搜索 — 防爬虫
+@app.get(&quot;/api/cases/search&quot;)
+@limiter.limit(&quot;60/minute&quot;)
+
+# 支付 — 防重复下单
+@app.post(&quot;/api/orders&quot;)
+@limiter.limit(&quot;10/minute&quot;)
+</code></pre>
+<h3 id="_24">完整限流表</h3>
+<table>
+<thead>
+<tr>
+<th>接口类别</th>
+<th>限制</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>发送验证码</td>
+<td>1次/分钟/IP, 10次/天/手机号</td>
+<td>防短信轰炸</td>
+</tr>
+<tr>
+<td>登录</td>
+<td>10次/分钟/IP, 5次失败锁定30分钟</td>
+<td>防暴力破解</td>
+</tr>
+<tr>
+<td>注册</td>
+<td>5次/小时/IP</td>
+<td>防批量注册</td>
+</tr>
+<tr>
+<td>搜索</td>
+<td>60次/分钟</td>
+<td>防爬虫</td>
+</tr>
+<tr>
+<td>病例详情</td>
+<td>120次/分钟</td>
+<td>防批量抓取</td>
+</tr>
+<tr>
+<td>创建订单</td>
+<td>10次/分钟</td>
+<td>防重复下单</td>
+</tr>
+<tr>
+<td>上传文件</td>
+<td>20次/小时</td>
+<td>防存储滥用</td>
+</tr>
+<tr>
+<td>管理后台API</td>
+<td>30次/分钟</td>
+<td>正常使用足够</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_25">五、认证与密码安全</h2>
+<h3 id="_26">密码存储</h3>
+<pre><code class="language-python"># 用bcrypt或argon2，绝对不要用md5/sha256
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=[&quot;bcrypt&quot;], deprecated=&quot;auto&quot;)
+
+# 存储
+hashed = pwd_context.hash(plain_password)
+# 验证
+is_valid = pwd_context.verify(plain_password, hashed)
+</code></pre>
+<h3 id="jwt-token">JWT Token设计</h3>
+<pre><code class="language-python">from datetime import datetime, timedelta
+from jose import jwt
+
+# access_token: 短过期时间
+def create_access_token(user_id: int) -&gt; str:
+    expire = datetime.utcnow() + timedelta(minutes=15)
+    return jwt.encode({&quot;sub&quot;: str(user_id), &quot;exp&quot;: expire}, SECRET_KEY, algorithm=&quot;HS256&quot;)
+
+# refresh_token: 较长过期，单次使用后作废
+def create_refresh_token(user_id: int) -&gt; str:
+    token_id = str(uuid.uuid4())
+    expire = datetime.utcnow() + timedelta(days=7)
+    # 存Redis，用一次就删
+    redis.setex(f&quot;refresh:{token_id}&quot;, 7*86400, user_id)
+    return jwt.encode({&quot;sub&quot;: str(user_id), &quot;jti&quot;: token_id, &quot;exp&quot;: expire}, SECRET_KEY)
+
+# 刷新时：旧refresh_token作废，发新的（Rotation）
+def refresh(old_token: str):
+    payload = jwt.decode(old_token, SECRET_KEY)
+    token_id = payload[&quot;jti&quot;]
+    # 检查是否已使用
+    user_id = redis.get(f&quot;refresh:{token_id}&quot;)
+    if not user_id:
+        # 可能被盗用，吊销该用户所有token
+        revoke_all_tokens(payload[&quot;sub&quot;])
+        raise HTTPException(401, &quot;Token已失效&quot;)
+    # 作废旧token
+    redis.delete(f&quot;refresh:{token_id}&quot;)
+    # 发新token
+    return create_access_token(int(user_id)), create_refresh_token(int(user_id))
+</code></pre>
+<h3 id="_27">敏感字段加密存储</h3>
+<pre><code class="language-python">from cryptography.fernet import Fernet
+
+# 密钥从环境变量或KMS获取，绝不硬编码
+cipher = Fernet(os.environ[&quot;ENCRYPTION_KEY&quot;])
+
+# 加密
+def encrypt_field(plaintext: str) -&gt; str:
+    return cipher.encrypt(plaintext.encode()).decode()
+
+# 解密
+def decrypt_field(ciphertext: str) -&gt; str:
+    return cipher.decrypt(ciphertext.encode()).decode()
+
+# 使用
+user.phone_encrypted = encrypt_field(&quot;13800138000&quot;)
+user.id_card_encrypted = encrypt_field(&quot;110101199001011234&quot;)
+</code></pre>
+<h3 id="_28">需要加密的字段清单</h3>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>加密方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>密码</td>
+<td>bcrypt哈希（不可逆）</td>
+<td>永远不存明文</td>
+</tr>
+<tr>
+<td>手机号</td>
+<td>AES-256加密</td>
+<td>需要解密用于登录/通知</td>
+</tr>
+<tr>
+<td>身份证号</td>
+<td>AES-256加密</td>
+<td>需要解密用于认证</td>
+</tr>
+<tr>
+<td>银行卡号</td>
+<td>AES-256加密</td>
+<td>需要解密用于提现</td>
+</tr>
+<tr>
+<td>执业证号</td>
+<td>AES-256加密</td>
+<td>需要解密用于认证</td>
+</tr>
+<tr>
+<td>原始病历附件</td>
+<td>服务端加密(SSE)</td>
+<td>对象存储层面加密</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_29">六、文件上传安全</h2>
+<pre><code class="language-python">import magic  # python-magic，通过文件头判断真实类型
+
+ALLOWED_TYPES = {
+    &quot;image/jpeg&quot;: &quot;.jpg&quot;,
+    &quot;image/png&quot;: &quot;.png&quot;,
+    &quot;application/pdf&quot;: &quot;.pdf&quot;,
+    &quot;application/dicom&quot;: &quot;.dcm&quot;,
+}
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+
+async def upload_media(file: UploadFile, current_user = Depends(get_current_user)):
+    # 1. 读取内容
+    content = await file.read()
+
+    # 2. 检查文件大小
+    if len(content) &gt; MAX_FILE_SIZE:
+        raise HTTPException(400, &quot;文件不能超过50MB&quot;)
+
+    # 3. 检查真实MIME类型（不信任扩展名和Content-Type）
+    real_type = magic.from_buffer(content, mime=True)
+    if real_type not in ALLOWED_TYPES:
+        raise HTTPException(400, f&quot;不支持的文件类型: {real_type}&quot;)
+
+    # 4. 生成安全文件名（防路径穿越）
+    safe_name = f&quot;{uuid4()}{ALLOWED_TYPES[real_type]}&quot;
+
+    # 5. 存到对象存储（不要存到Web可直接访问的目录）
+    oss_path = f&quot;cases/{current_user.id}/{safe_name}&quot;
+    oss_client.put_object(bucket, oss_path, content)
+
+    # 6. 返回签名URL（不暴露真实存储路径）
+    signed_url = oss_client.sign_url(&quot;GET&quot;, bucket, oss_path, expires=3600)
+
+    return {&quot;url&quot;: signed_url}
+</code></pre>
+<h3 id="_30">文件安全检查清单</h3>
+<ul>
+<li>[ ] 不信任客户端传的文件名和Content-Type</li>
+<li>[ ] 用magic bytes检测真实文件类型</li>
+<li>[ ] 文件名用UUID重新生成</li>
+<li>[ ] 存储路径不在Web根目录下</li>
+<li>[ ] 访问通过签名URL，不直接暴露路径</li>
+<li>[ ] 图片文件做一次重新编码（去除EXIF中的GPS等隐私信息）</li>
+</ul>
+<hr />
+<h2 id="_31">七、支付安全</h2>
+<h3 id="_32">核心原则：不信任客户端，金额从服务端取</h3>
+<pre><code class="language-python"># 创建订单
+async def create_order(case_id: int, current_user = Depends(get_current_user)):
+    case = db.query(Case).get(case_id)
+
+    # 金额从数据库读，不信任前端传的价格
+    order = Transaction(
+        order_no=generate_order_no(),
+        buyer_id=current_user.id,
+        seller_id=case.author_id,
+        case_id=case.id,
+        amount=case.price,            # 从数据库取
+        platform_fee=case.price * Decimal(&quot;0.2&quot;),
+        seller_income=case.price * Decimal(&quot;0.8&quot;),
+    )
+    db.add(order)
+    db.commit()
+
+    # 调用微信支付
+    wx_params = create_wechat_payment(order.order_no, order.amount)
+    return wx_params
+
+# 支付回调 — 三重验证
+async def wechat_notify(request: Request):
+    body = await request.body()
+
+    # 1. 验证微信签名（防伪造回调）
+    if not verify_wechat_signature(request.headers, body):
+        return PlainTextResponse(&quot;FAIL&quot;)
+
+    data = parse_callback(body)
+    order = db.query(Transaction).filter(Transaction.order_no == data[&quot;order_no&quot;]).first()
+
+    # 2. 幂等处理（同一回调可能来多次）
+    if order.payment_status == &quot;paid&quot;:
+        return xml_response(&quot;SUCCESS&quot;)
+
+    # 3. 金额一致性校验
+    if Decimal(data[&quot;amount&quot;]) != order.amount:
+        logger.error(f&quot;金额不一致: 回调{data['amount']}, 订单{order.amount}&quot;)
+        return PlainTextResponse(&quot;FAIL&quot;)
+
+    # 更新订单状态
+    order.payment_status = &quot;paid&quot;
+    order.payment_time = datetime.utcnow()
+    db.commit()
+
+    return xml_response(&quot;SUCCESS&quot;)
+</code></pre>
+<h3 id="_33">支付安全检查清单</h3>
+<ul>
+<li>[ ] 金额永远从服务端数据库获取</li>
+<li>[ ] 回调接口验证支付平台签名</li>
+<li>[ ] 回调金额与订单金额对比</li>
+<li>[ ] 幂等处理防止重复到账</li>
+<li>[ ] 订单号全局唯一，含随机成分</li>
+<li>[ ] 每日对账（平台记录 vs 微信/支付宝账单）</li>
+<li>[ ] 退款只走原路退，不退到其他账户</li>
+</ul>
+<hr />
+<h2 id="_34">八、基础设施安全</h2>
+<h3 id="nginx">Nginx配置</h3>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$host$request_uri;  # 强制HTTPS
+}
+
+server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    # TLS配置
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
+    ssl_prefer_server_ciphers on;
+
+    # 安全头
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options DENY;
+    add_header X-XSS-Protection &quot;1; mode=block&quot;;
+    add_header Strict-Transport-Security &quot;max-age=31536000; includeSubDomains&quot; always;
+    add_header Content-Security-Policy &quot;default-src 'self'; script-src 'self'; img-src 'self' https://oss.example.com;&quot;;
+
+    # 隐藏版本号
+    server_tokens off;
+
+    # 请求限制
+    client_max_body_size 50m;
+
+    # 限流（全局）
+    limit_req_zone $binary_remote_addr zone=global:10m rate=100r/s;
+    limit_req zone=global burst=200 nodelay;
+}
+</code></pre>
+<h3 id="docker">Docker安全</h3>
+<pre><code class="language-dockerfile"># 不用root跑应用
+FROM python:3.12-slim
+RUN groupadd -r appgroup &amp;&amp; useradd -r -g appgroup appuser
+WORKDIR /app
+COPY --chown=appuser:appgroup . .
+USER appuser
+CMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8000&quot;]
+</code></pre>
+<h3 id="_35">数据库安全</h3>
+<pre><code class="language-sql">-- 应用账号：最小权限
+CREATE USER 'app_user'@'%' IDENTIFIED BY 'strong_random_password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON medical_db.* TO 'app_user'@'%';
+-- 不给 DROP, ALTER, CREATE, GRANT
+
+-- 迁移账号：仅CI/CD使用
+CREATE USER 'migration_user'@'%' IDENTIFIED BY 'another_strong_password';
+GRANT ALL PRIVILEGES ON medical_db.* TO 'migration_user'@'%';
+
+-- 只读账号：给数据分析用
+CREATE USER 'readonly_user'@'%' IDENTIFIED BY 'yet_another_password';
+GRANT SELECT ON medical_db.* TO 'readonly_user'@'%';
+</code></pre>
+<h3 id="_36">云服务安全组</h3>
+<pre><code>入站规则：
+  80/443   → 0.0.0.0/0        (Web流量，前面有WAF)
+  22       → 办公室IP/VPN IP   (SSH，不对外开放)
+  5432     → 应用服务器内网IP   (PostgreSQL，不对外)
+  6379     → 应用服务器内网IP   (Redis，不对外)
+  9200     → 应用服务器内网IP   (Elasticsearch，不对外)
+
+出站规则：
+  全部放行（或按需限制）
+</code></pre>
+<h3 id="_37">密钥管理</h3>
+<pre><code class="language-bash"># 绝不硬编码密钥到代码中
+# 错
+SECRET_KEY = &quot;my-secret-key-123&quot;
+DB_PASSWORD = &quot;root123&quot;
+
+# 对 — 环境变量
+SECRET_KEY = os.environ[&quot;SECRET_KEY&quot;]
+DB_URL = os.environ[&quot;DATABASE_URL&quot;]
+
+# 更好 — 云KMS
+# 阿里云KMS / 腾讯云SSM 管理所有密钥
+</code></pre>
+<h3 id="gitignore">.gitignore 必须包含</h3>
+<pre><code class="language-gitignore">.env
+.env.*
+*.pem
+*.key
+credentials.json
+service-account.json
+</code></pre>
+<hr />
+<h2 id="_38">九、审计日志</h2>
+<h3 id="_39">需要记录的操作</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>记录内容</th>
+<th>保留时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>登录/登出</td>
+<td>用户ID, IP, User-Agent, 成功/失败</td>
+<td>1年</td>
+</tr>
+<tr>
+<td>查看完整病例</td>
+<td>用户ID, 病例ID, IP</td>
+<td>2年</td>
+</tr>
+<tr>
+<td>下载附件</td>
+<td>用户ID, 文件ID, IP</td>
+<td>2年</td>
+</tr>
+<tr>
+<td>创建/修改/删除病例</td>
+<td>用户ID, 病例ID, 变更内容</td>
+<td>永久</td>
+</tr>
+<tr>
+<td>支付/退款</td>
+<td>用户ID, 订单ID, 金额</td>
+<td>5年</td>
+</tr>
+<tr>
+<td>管理员操作</td>
+<td>管理员ID, 操作类型, 目标对象</td>
+<td>永久</td>
+</tr>
+<tr>
+<td>导出数据</td>
+<td>用户ID, 导出范围</td>
+<td>2年</td>
+</tr>
+<tr>
+<td>修改账户信息</td>
+<td>用户ID, 修改字段</td>
+<td>1年</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_40">实现</h3>
+<pre><code class="language-python">async def audit_log(
+    user_id: int,
+    action: str,
+    resource_type: str,
+    resource_id: int,
+    request: Request,
+    details: dict = None
+):
+    log = AuditLog(
+        user_id=user_id,
+        action=action,
+        resource_type=resource_type,
+        resource_id=resource_id,
+        ip_address=request.client.host,
+        user_agent=request.headers.get(&quot;user-agent&quot;),
+        details=details,
+    )
+    db.add(log)
+    # 异步写入，不阻塞主流程
+    await db.commit()
+
+# 使用
+@app.get(&quot;/api/cases/{case_id}/full&quot;)
+async def get_full_case(case_id: int, request: Request, current_user = Depends(get_current_user)):
+    case = get_and_check_permission(case_id, current_user)
+    await audit_log(current_user.id, &quot;view_full_case&quot;, &quot;case&quot;, case_id, request)
+    return case
+</code></pre>
+<hr />
+<h2 id="_41">十、开发流程安全</h2>
+<h3 id="_42">依赖安全</h3>
+<pre><code class="language-bash"># Python — 定期检查依赖漏洞
+pip install pip-audit
+pip-audit                    # 检查已知漏洞
+pip-audit --fix              # 自动修复
+
+# Node.js
+npm audit
+npm audit fix
+
+# 在CI/CD中强制执行
+# .github/workflows/security.yml
+- name: Security audit
+  run: pip-audit --strict     # 有漏洞则构建失败
+</code></pre>
+<h3 id="_43">代码静态分析</h3>
+<pre><code class="language-bash"># Python安全扫描
+pip install bandit
+bandit -r src/               # 检测常见安全问题
+
+# 常见检出项：
+# - 硬编码密码
+# - eval/exec使用
+# - 不安全的随机数
+# - SQL拼接
+</code></pre>
+<h3 id="pre-commit-hooks">pre-commit hooks</h3>
+<pre><code class="language-yaml"># .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/PyCQA/bandit
+    hooks:
+      - id: bandit
+        args: ['-c', 'bandit.yaml']
+  - repo: https://github.com/Yelp/detect-secrets
+    hooks:
+      - id: detect-secrets         # 检测代码中的密钥/密码
+</code></pre>
+<h3 id="_44">安全发布检查清单（每次上线前）</h3>
+<ul>
+<li>[ ] <code>pip-audit</code> / <code>npm audit</code> 无高危漏洞</li>
+<li>[ ] <code>bandit</code> 扫描无高危告警</li>
+<li>[ ] 无硬编码密钥/密码</li>
+<li>[ ] 新增API都有权限校验</li>
+<li>[ ] 新增用户输入都有验证和清洗</li>
+<li>[ ] 数据库变更不影响已有数据安全</li>
+<li>[ ] 错误响应不泄露内部信息（堆栈、SQL、文件路径）</li>
+</ul>
+<hr />
+<h2 id="_45">十一、应急响应流程</h2>
+<h3 id="_46">发现安全事件后</h3>
+<pre><code>0-15分钟: 确认 → 评估影响范围 → 止血（关闭泄露通道/封禁攻击IP）
+15分钟-1小时: 详细排查 → 保留证据（日志快照）→ 通知团队
+1-24小时: 修复漏洞 → 评估数据泄露范围 → 通知受影响用户
+24-72小时: 向监管部门报告（PIPL要求）→ 根因分析
+1周内: 复盘报告 → 改进措施落地
+</code></pre>
+<h3 id="_47">常备工具</h3>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fail2ban</td>
+<td>自动封禁恶意IP</td>
+</tr>
+<tr>
+<td>云WAF日志</td>
+<td>分析攻击模式</td>
+</tr>
+<tr>
+<td>Sentry</td>
+<td>异常监控，发现异常行为</td>
+</tr>
+<tr>
+<td>数据库审计日志</td>
+<td>追溯数据访问</td>
+</tr>
+<tr>
+<td>备份恢复</td>
+<td>被加密勒索时的最后防线</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_48">总结：安全不是一次性的事</h2>
+<pre><code>开发阶段: ORM + 输入验证 + 权限校验 + 代码审计
+部署阶段: HTTPS + WAF + 安全组 + 最小权限
+运行阶段: 监控告警 + 审计日志 + 定期扫描
+持续改进: 依赖更新 + 渗透测试（年度）+ 应急演练
+</code></pre>
+</div>
+<a href="#" class="back-top" title="返回顶部">&uarr;</a>
+</body>
+</html>
