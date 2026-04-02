@@ -24,7 +24,8 @@ sys1/
 │   ├── roadmap.md                     整体迭代路线图（MVP → V3.0）
 │   └── mvp-sprint-plan.md             MVP详细Sprint计划（4个Sprint/8周）
 ├── 06-compliance/
-│   └── legal-compliance.md            法律合规（资质/数据/免责/知识产权）
+│   ├── legal-compliance.md            法律合规（资质/数据/免责/知识产权）
+│   └── security-guide.md             安全开发规范（防注入/越权/限流/加密/审计）
 └── 07-operations/
     ├── growth-strategy.md             运营增长策略（冷启动/增长/企业客户/社区）
     └── risk-management.md             风险管理（风险矩阵/预案）
@@ -43,5 +44,6 @@ sys1/
 | 开发节奏怎么安排 | [05-iteration/roadmap.md](05-iteration/roadmap.md) |
 | MVP具体做什么 | [05-iteration/mvp-sprint-plan.md](05-iteration/mvp-sprint-plan.md) |
 | 法律合规要注意什么 | [06-compliance/legal-compliance.md](06-compliance/legal-compliance.md) |
+| 安全怎么做 | [06-compliance/security-guide.md](06-compliance/security-guide.md) |
 | 怎么获取用户 | [07-operations/growth-strategy.md](07-operations/growth-strategy.md) |
 | 有什么风险 | [07-operations/risk-management.md](07-operations/risk-management.md) |
