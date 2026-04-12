@@ -156,6 +156,10 @@ hr {
     transition: opacity 0.2s;
 }
 .back-top:hover { opacity: 1; text-decoration: none; }
+/* checklist */
+.checklist { list-style: none; padding-left: 6px; }
+.checklist li { margin-bottom: 5px; }
+.checklist li::before { content: "\2610\0020"; }
 /* 打印样式 */
 @media print {
     body { background: #fff; padding: 0; }
@@ -176,8 +180,13 @@ hr {
 <body>
 <nav class="nav-bar"><a href="01-项目概述.html">项目概述</a><a href="02-商业模式与团队规划.html">商业模式</a><a href="03-技术架构与数据库设计.html">技术架构</a><a href="04-功能模块设计.html">功能模块</a><a href="05-开发迭代路线图.html">迭代路线</a><a href="06-合规与安全规范.html" class="active">合规安全</a><a href="07-运营与风险管理.html">运营风险</a></nav>
 <div class="container">
-<h1 id="_1">法律合规规划</h1>
-<h2 id="_2">一、资质牌照清单</h2>
+
+<!-- ==================== 法律合规规划 ==================== -->
+
+<h1 id="legal-compliance">法律合规规划</h1>
+
+<h2 id="lc-1">一、资质牌照清单</h2>
+
 <table>
 <thead>
 <tr>
@@ -200,58 +209,113 @@ hr {
 <td>ICP经营许可证（EDI）</td>
 <td>必须</td>
 <td>1-3月</td>
-<td>¥5000-20000</td>
-<td>涉及在线交易必须</td>
+<td>&yen;5000-20000</td>
+<td>涉及在线数据交易必须</td>
 </tr>
 <tr>
-<td>互联网医疗信息服务许可证</td>
-<td>必须</td>
-<td>2-6月</td>
-<td>¥10000-50000</td>
-<td>发布医疗相关信息</td>
-</tr>
-<tr>
-<td>网络安全等级保护（等保二级+）</td>
+<td>网络安全等级保护（等保三级）</td>
 <td>必须</td>
 <td>2-4月</td>
-<td>¥50000-150000</td>
-<td>涉及个人健康数据</td>
+<td>&yen;100000-300000</td>
+<td>涉及健康数据资产交易，需等保三级</td>
 </tr>
 <tr>
-<td>医疗器械网络销售服务第三方平台备案</td>
-<td>视情况</td>
+<td>贵阳大数据交易所数据服务商备案</td>
+<td>必须</td>
 <td>1-2月</td>
-<td>-</td>
-<td>如涉及器械推荐</td>
+<td>按交易所要求</td>
+<td>入驻交易所的前置条件</td>
 </tr>
 <tr>
-<td>广播电视节目制作经营许可证</td>
-<td>视情况</td>
+<td>数据交易服务商资质</td>
+<td>必须</td>
+<td>2-3月</td>
+<td>视地方政策</td>
+<td>数据资产服务提供商备案</td>
+</tr>
+<tr>
+<td>区块链信息服务备案</td>
+<td>必须</td>
 <td>1-2月</td>
-<td>-</td>
-<td>如涉及视频内容</td>
+<td>免费</td>
+<td>国家互联网信息办公室要求</td>
+</tr>
+<tr>
+<td>增值电信业务经营许可证（IDC/ISP）</td>
+<td>视情况</td>
+<td>2-4月</td>
+<td>&yen;10000-30000</td>
+<td>如涉及数据存储服务</td>
 </tr>
 </tbody>
 </table>
-<h3 id="_3">申请优先级</h3>
+
+<h3>申请优先级</h3>
 <ol>
-<li><strong>立即启动</strong>: ICP备案、ICP经营许可证</li>
-<li><strong>MVP期间</strong>: 互联网医疗信息服务许可证申请</li>
-<li><strong>V1.0前</strong>: 等保测评</li>
+<li><strong>立即启动</strong>: ICP备案、贵阳大数据交易所服务商备案申请</li>
+<li><strong>MVP期间</strong>: ICP经营许可证、区块链信息服务备案</li>
+<li><strong>V1.0前</strong>: 等保三级测评、数据交易服务商资质</li>
 <li><strong>按需</strong>: 其他资质</li>
 </ol>
-<hr />
-<h2 id="_4">二、数据合规</h2>
-<h3 id="_5">适用法律法规</h3>
+
+<hr>
+
+<h2 id="lc-2">二、数据交易所合规要求</h2>
+
+<h3>贵阳大数据交易所准入要求</h3>
 <ul>
-<li>《个人信息保护法》(PIPL)</li>
-<li>《数据安全法》</li>
-<li>《网络安全法》</li>
-<li>《医疗卫生机构信息公开办法》</li>
-<li>《人类遗传资源管理条例》（如涉及基因数据）</li>
-<li>《健康医疗大数据标准、安全和服务管理办法》</li>
+<li>企业法人资格，注册资本满足交易所最低要求</li>
+<li>数据来源合法合规证明</li>
+<li>数据安全管理制度和技术保障能力证明</li>
+<li>等保三级或以上认证</li>
+<li>指定数据合规官（DPO）</li>
+<li>签署交易所《数据交易服务协议》、《数据安全责任书》</li>
 </ul>
-<h3 id="_6">数据分类分级</h3>
+
+<h3>数据资产上架要求</h3>
+<ul>
+<li>数据资产需通过交易所审核（数据质量、合规性、脱敏程度）</li>
+<li>提供数据资产说明书（数据来源、采集方式、脱敏方法、适用场景）</li>
+<li>数据样本提交审核</li>
+<li>定价需符合交易所定价指引</li>
+<li>持续运营承诺（数据更新频率、服务响应时效）</li>
+</ul>
+
+<h3>交易所结算合规</h3>
+<ul>
+<li>每周与交易所结算，资金由交易所监管账户划转</li>
+<li>交易手续费按交易所规定执行</li>
+<li>收益分配需在交易所备案（分配比例、分配对象）</li>
+<li>交易流水需保留至少5年</li>
+</ul>
+
+<hr>
+
+<h2 id="lc-3">三、数据资产确权法律框架</h2>
+
+<h3>适用法律法规</h3>
+<ul>
+<li>《数据安全法》</li>
+<li>《个人信息保护法》(PIPL)</li>
+<li>《网络安全法》</li>
+<li>《健康医疗大数据标准、安全和服务管理办法》</li>
+<li>《人类遗传资源管理条例》（如涉及基因数据）</li>
+<li>《贵州省大数据发展应用促进条例》</li>
+<li>《数据资产评估指导意见》</li>
+<li>各地数据条例（如《深圳经济特区数据条例》）</li>
+</ul>
+
+<h3>数据资产确权原则</h3>
+<ol>
+<li><strong>数据来源合法</strong>: 健康数据须由用户本人合法提供或授权获取</li>
+<li><strong>知情同意确权</strong>: 用户明确同意将脱敏后的健康数据形成数据资产并进行交易</li>
+<li><strong>收益权归属</strong>: 数据提供者对其数据资产享有收益权</li>
+<li><strong>资产可追溯</strong>: 通过区块链记录数据资产全生命周期，确保确权可追溯</li>
+<li><strong>脱敏不可逆</strong>: 数据资产中不包含可识别个人身份的信息，脱敏过程不可逆</li>
+</ol>
+
+<h3>数据分类分级</h3>
+
 <table>
 <thead>
 <tr>
@@ -262,14 +326,14 @@ hr {
 </thead>
 <tbody>
 <tr>
-<td>患者原始病历</td>
+<td>用户原始健康数据</td>
 <td>L4-极敏感</td>
-<td>加密存储、脱敏后使用、不出境</td>
+<td>加密存储、脱敏后资产化、不出境</td>
 </tr>
 <tr>
-<td>医生身份信息</td>
+<td>用户身份信息（实名认证）</td>
 <td>L3-敏感</td>
-<td>加密存储、最小范围使用</td>
+<td>加密存储、最小范围使用、确权关联</td>
 </tr>
 <tr>
 <td>用户手机号/邮箱</td>
@@ -277,74 +341,117 @@ hr {
 <td>加密存储、脱敏展示</td>
 </tr>
 <tr>
-<td>脱敏后病例数据</td>
+<td>脱敏后数据资产包</td>
 <td>L2-内部</td>
-<td>可用于AI训练、数据分析</td>
+<td>交易所登记后可交易</td>
 </tr>
 <tr>
-<td>公开展示信息</td>
+<td>数据资产摘要/样本</td>
 <td>L1-公开</td>
-<td>正常使用</td>
+<td>正常展示用于交易浏览</td>
 </tr>
 <tr>
 <td>交易记录</td>
 <td>L2-内部</td>
-<td>保留至少5年</td>
+<td>链上存证、保留至少5年</td>
+</tr>
+<tr>
+<td>区块链存证数据</td>
+<td>L2-内部</td>
+<td>不可篡改、永久保留</td>
 </tr>
 </tbody>
 </table>
-<h3 id="privacy-by-design">隐私设计原则 (Privacy by Design)</h3>
+
+<hr>
+
+<h2 id="lc-4">四、数据保护与隐私设计</h2>
+
+<h3>隐私设计原则 (Privacy by Design)</h3>
 <ol>
-<li><strong>最小必要</strong>: 只收集业务必需的数据</li>
-<li><strong>目的限制</strong>: 数据仅用于声明的目的</li>
-<li><strong>存储限制</strong>: 设定数据保留期限，过期删除</li>
-<li><strong>单独同意</strong>: 敏感个人信息需用户单独同意</li>
-<li><strong>可撤回</strong>: 用户可随时撤回同意、删除数据</li>
-<li><strong>可携带</strong>: 支持用户导出自己的数据</li>
+<li><strong>最小必要</strong>: 只收集资产化业务必需的数据</li>
+<li><strong>目的限制</strong>: 数据仅用于声明的数据资产化和交易目的</li>
+<li><strong>存储限制</strong>: 设定数据保留期限，过期删除（原始数据资产化后按策略保留）</li>
+<li><strong>单独同意</strong>: 敏感健康数据资产化需用户单独同意</li>
+<li><strong>可撤回</strong>: 用户可随时撤回同意、要求下架数据资产（已完成交易不可逆）</li>
+<li><strong>可携带</strong>: 支持用户导出自己的数据和收益记录</li>
 </ol>
-<h3 id="_7">同意授权设计</h3>
-<p>病例上传需获取的授权：</p>
-<pre><code>□ 我确认此病例信息已经过充分脱敏，不包含可识别患者身份的信息
-□ 我已获得患者（或其法定代理人）的知情同意，允许将脱敏后的诊疗信息用于医学知识交流
-□ 我同意将此病例信息在平台上展示和交易，并理解平台的《内容使用协议》
-□ 我理解并同意平台的《隐私政策》和《用户服务协议》
-</code></pre>
-<hr />
-<h2 id="_8">三、平台免责设计</h2>
-<h3 id="_9">核心免责声明</h3>
+
+<h3>同意授权设计</h3>
+
+<h4>数据上传与资产化授权：</h4>
+<pre><code>□ 我确认此健康数据为本人真实数据或已获得数据主体的合法授权
+□ 我同意平台对数据进行脱敏处理，并理解脱敏后数据将不包含可识别个人身份的信息
+□ 我同意将脱敏后的健康数据形成数据资产包，登记至贵阳大数据交易所进行确权和交易
+□ 我理解并同意数据资产的收益分配规则（数据提供者60% / 平台30% / 交易所10%）
+□ 我同意交易记录在区块链上存证，用于确权和收益追溯
+□ 我理解数据资产一经交易完成不可撤回，但可随时要求下架未交易的资产
+□ 我理解并同意平台的《数据资产交易服务协议》和《隐私政策》</code></pre>
+
+<h4>数据购买方授权：</h4>
+<pre><code>□ 我承诺仅将购买的数据资产用于声明的合法用途
+□ 我承诺不对脱敏数据进行反向识别或追踪数据主体
+□ 我承诺不将数据资产转售、转让或公开传播
+□ 我理解并同意平台的《数据资产购买协议》</code></pre>
+
+<hr>
+
+<h2 id="lc-5">五、区块链监管合规</h2>
+
+<h3>适用规范</h3>
+<ul>
+<li>《区块链信息服务管理规定》（国家互联网信息办公室）</li>
+<li>需在国家互联网信息办公室进行区块链信息服务备案</li>
+</ul>
+
+<h3>合规要求</h3>
+<ul>
+<li>区块链信息服务提供者应在10个工作日内完成备案</li>
+<li>链上数据不得包含违法违规信息</li>
+<li>具备安全评估报告</li>
+<li>保留日志不少于6个月</li>
+<li>配合监管部门的监督检查</li>
+<li>用户使用区块链服务需实名认证</li>
+</ul>
+
+<h3>区块链技术合规注意事项</h3>
+<ul>
+<li>链上只存哈希和关键元数据，不存原始健康数据</li>
+<li>隐私计算：涉及数据的链上操作需考虑零知识证明等隐私保护</li>
+<li>智能合约需经过安全审计</li>
+<li>联盟链优先（监管友好、性能可控）</li>
+</ul>
+
+<hr>
+
+<h2 id="lc-6">六、需要准备的法律文件</h2>
+
+<ol>
+<li><strong>数据资产交易服务协议</strong> &mdash; 明确平台作为数据资产服务商的角色、权利义务</li>
+<li><strong>隐私政策</strong> &mdash; 数据收集、使用、脱敏、资产化、交易、存储、共享说明</li>
+<li><strong>数据资产确权声明</strong> &mdash; 数据来源合法性、确权流程、收益权归属</li>
+<li><strong>数据资产购买协议</strong> &mdash; 买方使用范围、限制、反向识别禁止</li>
+<li><strong>收益分配协议</strong> &mdash; 数据提供者/平台/交易所三方分配规则</li>
+<li><strong>数据脱敏声明</strong> &mdash; 脱敏方法、标准、不可逆承诺</li>
+<li><strong>区块链存证说明</strong> &mdash; 链上记录的内容、效力、查询方式</li>
+<li><strong>交易所合作协议</strong> &mdash; 与贵阳大数据交易所的服务合作协议</li>
+<li><strong>退款政策</strong> &mdash; 明确数据资产交易退款条件和流程</li>
+<li><strong>免责声明</strong> &mdash; 数据资产使用风险提示</li>
+</ol>
+
+<h3>核心免责声明</h3>
+
 <pre><code>重要声明：
-1. 本平台提供的所有病例信息仅供医学参考和学术交流使用，不构成任何诊疗建议。
-2. 任何治疗决策应由具有执业资质的医生在充分了解患者具体情况后做出。
-3. 患者不应根据平台上的案例信息自行诊断或治疗。
-4. 平台不对因参考病例信息而产生的任何后果承担责任。
-5. 每位患者的情况各不相同，相同疾病的治疗方案可能因个体差异而完全不同。
-</code></pre>
-<h3 id="_10">需要准备的法律文件</h3>
-<ol>
-<li><strong>用户服务协议</strong> - 明确平台性质、用户权利义务</li>
-<li><strong>隐私政策</strong> - 数据收集、使用、存储、共享说明</li>
-<li><strong>内容使用协议</strong> - 病例版权、使用范围、责任划分</li>
-<li><strong>医疗信息免责声明</strong> - 上述核心免责</li>
-<li><strong>知识产权协议</strong> - 案例著作权归属</li>
-<li><strong>退款政策</strong> - 明确退款条件和流程</li>
-</ol>
-<hr />
-<h2 id="_11">四、知识产权</h2>
-<h3 id="_12">病例版权归属</h3>
-<ul>
-<li><strong>原则</strong>: 病例著作权归作者（上传医生）所有</li>
-<li><strong>平台获得</strong>: 非独占的展示和传播许可</li>
-<li><strong>买方获得</strong>: 个人参考使用权，不得转售或公开传播</li>
-<li><strong>转载/引用</strong>: 需注明来源和作者</li>
-</ul>
-<h3 id="_13">反抄袭机制</h3>
-<ul>
-<li>新上传案例与已有案例进行相似度检测</li>
-<li>疑似抄袭则人工复核</li>
-<li>确认抄袭则下架 + 信用扣分</li>
-</ul>
-<hr />
-<h2 id="_14">五、风险应对预案</h2>
+1. 本平台提供的所有数据资产均经过脱敏处理，不包含可识别个人身份的信息。
+2. 数据资产仅供合法的研究、分析、商业决策参考使用，不构成任何医疗诊断或治疗建议。
+3. 购买方不得对脱敏数据进行反向识别或追踪数据主体身份。
+4. 平台不对因使用数据资产而产生的任何直接或间接后果承担责任。
+5. 所有交易均通过贵阳大数据交易所完成确权和登记，交易记录在区块链上存证。</code></pre>
+
+<hr>
+
+<h2 id="lc-7">七、风险应对预案</h2>
+
 <table>
 <thead>
 <tr>
@@ -355,78 +462,117 @@ hr {
 <tbody>
 <tr>
 <td>数据泄露</td>
-<td>72小时内报告主管部门、通知受影响用户、启动应急响应</td>
+<td>72小时内报告主管部门、通知受影响用户、启动应急响应、通知交易所</td>
 </tr>
 <tr>
-<td>虚假病例导致患者受害</td>
-<td>配合调查、提供交易和审核记录、启动保险理赔</td>
+<td>脱敏不充分导致个人信息暴露</td>
+<td>立即下架相关数据资产、重新脱敏、补偿受影响用户、加强脱敏引擎</td>
+</tr>
+<tr>
+<td>买方滥用数据（反向识别）</td>
+<td>冻结买方账户、通知交易所、配合调查、追究法律责任</td>
+</tr>
+<tr>
+<td>交易所政策变化</td>
+<td>保持与交易所紧密沟通、预留合规调整buffer、评估多交易所策略</td>
+</tr>
+<tr>
+<td>区块链安全事件</td>
+<td>智能合约紧急暂停机制、链下备份、安全审计复查</td>
+</tr>
+<tr>
+<td>数据确权纠纷</td>
+<td>提供链上存证记录、走交易所争议解决流程、法律仲裁</td>
 </tr>
 <tr>
 <td>监管政策变化</td>
-<td>保持与行业协会沟通、预留合规调整buffer</td>
+<td>保持与行业协会和监管部门沟通、预留合规调整buffer</td>
 </tr>
 <tr>
-<td>知识产权纠纷</td>
-<td>先下架争议内容、走争议解决流程</td>
-</tr>
-<tr>
-<td>患者隐私投诉</td>
-<td>立即核查脱敏情况、必要时下架、补偿</td>
+<td>数据跨境风险</td>
+<td>严格执行数据不出境策略、V3.0跨境需单独安全评估</td>
 </tr>
 </tbody>
 </table>
-<h3 id="_15">建议购买的保险</h3>
+
+<h3>建议购买的保险</h3>
 <ul>
 <li>网络安全/数据泄露责任险</li>
 <li>职业责任险</li>
 <li>平台运营责任险</li>
+<li>数据资产交易纠纷保险</li>
 </ul>
-<hr />
-<h2 id="_16">六、合规检查清单（上线前）</h2>
-<ul>
-<li>[ ] ICP备案通过</li>
-<li>[ ] 用户协议定稿并通过法律审核</li>
-<li>[ ] 隐私政策定稿并通过法律审核</li>
-<li>[ ] 免责声明定稿</li>
-<li>[ ] 脱敏流程测试通过</li>
-<li>[ ] 数据加密方案实施</li>
-<li>[ ] 审计日志功能就绪</li>
-<li>[ ] 用户注销/数据删除功能就绪</li>
-<li>[ ] 未成年人保护措施（14岁以下需监护人同意）</li>
-<li>[ ] 支付资质对接完成</li>
-<li>[ ] 等保评测启动（可MVP后进行）</li>
+
+<hr>
+
+<h2 id="lc-8">八、合规检查清单（上线前）</h2>
+
+<ul class="checklist">
+<li>ICP备案通过</li>
+<li>贵阳大数据交易所服务商备案完成</li>
+<li>区块链信息服务备案完成</li>
+<li>数据资产交易服务协议定稿并通过法律审核</li>
+<li>隐私政策定稿并通过法律审核（含数据资产化说明）</li>
+<li>数据资产确权声明定稿</li>
+<li>免责声明定稿</li>
+<li>脱敏流程测试通过 &amp; 脱敏声明定稿</li>
+<li>数据加密方案实施</li>
+<li>审计日志功能就绪</li>
+<li>用户注销/数据删除功能就绪</li>
+<li>未成年人保护措施（14岁以下需监护人同意）</li>
+<li>支付资质对接完成</li>
+<li>交易所结算流程测试通过</li>
+<li>区块链存证功能测试通过</li>
+<li>等保评测启动（V1.0前完成等保三级）</li>
+<li>数据合规官（DPO）指定</li>
 </ul>
-<hr />
-<h1 id="_17">安全开发规范</h1>
-<h2 id="490">安全优先级（前4条挡住90%攻击）</h2>
+
+<!-- ==================== PAGE BREAK ==================== -->
+<div class="page-break"></div>
+
+<!-- ==================== 安全开发规范 ==================== -->
+
+<h1 id="security-guide">安全开发规范</h1>
+
+<h2 id="sg-priority">安全优先级（前6条挡住90%攻击）</h2>
 <ol>
-<li>用ORM，别拼SQL — 防注入</li>
-<li>每个API校验权限 — 防越权</li>
-<li>所有接口加限流 — 防刷</li>
-<li>全站HTTPS + 云WAF — 防中间人+常见Web攻击</li>
+<li>用ORM，别拼SQL &mdash; 防注入</li>
+<li>每个API校验权限 &mdash; 防越权</li>
+<li>所有接口加限流 &mdash; 防刷</li>
+<li>全站HTTPS + 云WAF &mdash; 防中间人+常见Web攻击</li>
+<li>交易所API双向签名 + 加密传输 &mdash; 防篡改+防伪造</li>
+<li>数据资产哈希上链 &mdash; 防篡改+可追溯</li>
 </ol>
-<hr />
-<h2 id="sql">一、SQL注入防御</h2>
-<h3 id="sql_1">原则：永远不要拼接SQL</h3>
+
+<hr>
+
+<h2 id="sg-1">一、SQL注入防御</h2>
+
+<h3>原则：永远不要拼接SQL</h3>
+
 <pre><code class="language-python"># 错 — 拼字符串，一打一个准
-query = f&quot;SELECT * FROM cases WHERE disease = '{user_input}'&quot;
+query = f"SELECT * FROM cases WHERE disease = '{user_input}'"
 
 # 对 — ORM参数化查询，天然防注入
 case = db.query(Case).filter(Case.disease == user_input).first()
 
 # 如果必须写原生SQL，用参数绑定
 from sqlalchemy import text
-result = db.execute(text(&quot;SELECT * FROM cases WHERE disease = :name&quot;), {&quot;name&quot;: user_input})
-</code></pre>
-<h3 id="_18">检查清单</h3>
-<ul>
-<li>[ ] 全项目搜索 <code>f"SELECT</code> / <code>f"INSERT</code> / <code>f"UPDATE</code> / <code>f"DELETE</code>，确认零结果</li>
-<li>[ ] 全项目搜索 <code>.format(</code> 后跟SQL关键字，确认零结果</li>
-<li>[ ] 使用 <code>bandit</code> 静态分析工具自动检测</li>
+result = db.execute(text("SELECT * FROM cases WHERE disease = :name"), {"name": user_input})</code></pre>
+
+<h3>检查清单</h3>
+<ul class="checklist">
+<li>全项目搜索 <code>f"SELECT</code> / <code>f"INSERT</code> / <code>f"UPDATE</code> / <code>f"DELETE</code>，确认零结果</li>
+<li>全项目搜索 <code>.format(</code> 后跟SQL关键字，确认零结果</li>
+<li>使用 <code>bandit</code> 静态分析工具自动检测</li>
 </ul>
-<hr />
-<h2 id="xss">二、XSS（跨站脚本）防御</h2>
-<h3 id="_19">病例内容是重灾区 — 用户输入的富文本必须清洗</h3>
+
+<hr>
+
+<h2 id="sg-2">二、XSS（跨站脚本）防御</h2>
+
+<h3>病例内容是重灾区 &mdash; 用户输入的富文本必须清洗</h3>
+
 <pre><code class="language-python"># 后端：白名单过滤HTML标签
 import bleach
 
@@ -434,33 +580,37 @@ ALLOWED_TAGS = ['p', 'br', 'b', 'i', 'strong', 'em', 'ul', 'ol', 'li', 'h3', 'h4
 ALLOWED_ATTRS = {}  # 不允许任何属性（尤其是 href/src/onclick）
 
 def sanitize_html(raw_content: str) -&gt; str:
-    return bleach.clean(raw_content, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS, strip=True)
-</code></pre>
+    return bleach.clean(raw_content, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS, strip=True)</code></pre>
+
 <pre><code class="language-typescript">// 前端：React默认转义，但以下场景要小心
 // 错 — 直接插入HTML
 &lt;div dangerouslySetInnerHTML={{ __html: caseContent }} /&gt;
 
 // 对 — 用DOMPurify二次清洗
 import DOMPurify from 'dompurify';
-&lt;div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(caseContent) }} /&gt;
-</code></pre>
-<h3 id="http">HTTP安全头</h3>
+&lt;div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(caseContent) }} /&gt;</code></pre>
+
+<h3>HTTP安全头</h3>
+
 <pre><code class="language-nginx">add_header X-Content-Type-Options nosniff;
 add_header X-Frame-Options DENY;
-add_header X-XSS-Protection &quot;1; mode=block&quot;;
-add_header Content-Security-Policy &quot;default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://oss.example.com;&quot;;
-add_header Referrer-Policy strict-origin-when-cross-origin;
-</code></pre>
-<hr />
-<h2 id="_20">三、越权访问防御（最容易忽视，后果最严重）</h2>
-<h3 id="api">原则：每个API都必须验证"这个用户有没有权限做这件事"</h3>
+add_header X-XSS-Protection "1; mode=block";
+add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://oss.example.com;";
+add_header Referrer-Policy strict-origin-when-cross-origin;</code></pre>
+
+<hr>
+
+<h2 id="sg-3">三、越权访问防御（最容易忽视，后果最严重）</h2>
+
+<h3>原则：每个API都必须验证"这个用户有没有权限做这件事"</h3>
+
 <pre><code class="language-python"># 错 — 只要知道ID就能看任何人的完整病例
-@app.get(&quot;/api/cases/{case_id}/full&quot;)
+@app.get("/api/cases/{case_id}/full")
 async def get_full_case(case_id: int):
     return db.query(Case).get(case_id)
 
 # 对 — 验证身份 + 验证权限
-@app.get(&quot;/api/cases/{case_id}/full&quot;)
+@app.get("/api/cases/{case_id}/full")
 async def get_full_case(case_id: int, current_user = Depends(get_current_user)):
     case = db.query(Case).get(case_id)
     if not case:
@@ -474,14 +624,15 @@ async def get_full_case(case_id: int, current_user = Depends(get_current_user)):
     purchase = db.query(Transaction).filter(
         Transaction.case_id == case_id,
         Transaction.buyer_id == current_user.id,
-        Transaction.payment_status == &quot;paid&quot;
+        Transaction.payment_status == "paid"
     ).first()
     if not purchase:
-        raise HTTPException(403, &quot;未购买此病例&quot;)
+        raise HTTPException(403, "未购买此病例")
 
-    return case
-</code></pre>
-<h3 id="_21">常见越权场景检查表</h3>
+    return case</code></pre>
+
+<h3>常见越权场景检查表</h3>
+
 <table>
 <thead>
 <tr>
@@ -520,7 +671,9 @@ async def get_full_case(case_id: int, current_user = Depends(get_current_user)):
 </tr>
 </tbody>
 </table>
-<h3 id="idor">IDOR（不安全的直接对象引用）防御</h3>
+
+<h3>IDOR（不安全的直接对象引用）防御</h3>
+
 <pre><code class="language-python"># 错 — 用自增ID，容易被遍历
 /api/cases/1
 /api/cases/2
@@ -534,45 +687,49 @@ class Case(Base):
     public_id = Column(String(36), default=lambda: str(uuid.uuid4()), unique=True)  # 对外用
 
 # API用public_id
-@app.get(&quot;/api/cases/{public_id}/full&quot;)
-</code></pre>
-<hr />
-<h2 id="_22">四、接口限流</h2>
-<h3 id="_23">关键接口限流配置</h3>
+@app.get("/api/cases/{public_id}/full")</code></pre>
+
+<hr>
+
+<h2 id="sg-4">四、接口限流</h2>
+
+<h3>关键接口限流配置</h3>
+
 <pre><code class="language-python">from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 limiter = Limiter(key_func=get_remote_address)
 
 # 验证码 — 最容易被刷（短信费钱）
-@app.post(&quot;/api/auth/sms-code&quot;)
-@limiter.limit(&quot;1/minute&quot;)         # 同一IP每分钟1次
+@app.post("/api/auth/sms-code")
+@limiter.limit("1/minute")         # 同一IP每分钟1次
 async def send_sms(request: Request, phone: str):
     # 额外：同一手机号每天最多10条
-    daily_count = redis.get(f&quot;sms:daily:{phone}&quot;)
+    daily_count = redis.get(f"sms:daily:{phone}")
     if daily_count and int(daily_count) &gt;= 10:
-        raise HTTPException(429, &quot;今日验证码已达上限&quot;)
+        raise HTTPException(429, "今日验证码已达上限")
     ...
 
 # 登录 — 防暴力破解
-@app.post(&quot;/api/auth/login&quot;)
-@limiter.limit(&quot;10/minute&quot;)        # 同一IP每分钟10次
+@app.post("/api/auth/login")
+@limiter.limit("10/minute")        # 同一IP每分钟10次
 async def login(request: Request):
     # 额外：同一账号连续失败5次锁定30分钟
-    fail_count = redis.get(f&quot;login:fail:{phone}&quot;)
+    fail_count = redis.get(f"login:fail:{phone}")
     if fail_count and int(fail_count) &gt;= 5:
-        raise HTTPException(423, &quot;账号已锁定，请30分钟后重试&quot;)
+        raise HTTPException(423, "账号已锁定，请30分钟后重试")
     ...
 
 # 搜索 — 防爬虫
-@app.get(&quot;/api/cases/search&quot;)
-@limiter.limit(&quot;60/minute&quot;)
+@app.get("/api/cases/search")
+@limiter.limit("60/minute")
 
 # 支付 — 防重复下单
-@app.post(&quot;/api/orders&quot;)
-@limiter.limit(&quot;10/minute&quot;)
-</code></pre>
-<h3 id="_24">完整限流表</h3>
+@app.post("/api/orders")
+@limiter.limit("10/minute")</code></pre>
+
+<h3>完整限流表</h3>
+
 <table>
 <thead>
 <tr>
@@ -624,56 +781,62 @@ async def login(request: Request):
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="_25">五、认证与密码安全</h2>
-<h3 id="_26">密码存储</h3>
+
+<hr>
+
+<h2 id="sg-5">五、认证与密码安全</h2>
+
+<h3>密码存储</h3>
+
 <pre><code class="language-python"># 用bcrypt或argon2，绝对不要用md5/sha256
 from passlib.context import CryptContext
 
-pwd_context = CryptContext(schemes=[&quot;bcrypt&quot;], deprecated=&quot;auto&quot;)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # 存储
 hashed = pwd_context.hash(plain_password)
 # 验证
-is_valid = pwd_context.verify(plain_password, hashed)
-</code></pre>
-<h3 id="jwt-token">JWT Token设计</h3>
+is_valid = pwd_context.verify(plain_password, hashed)</code></pre>
+
+<h3>JWT Token设计</h3>
+
 <pre><code class="language-python">from datetime import datetime, timedelta
 from jose import jwt
 
 # access_token: 短过期时间
 def create_access_token(user_id: int) -&gt; str:
     expire = datetime.utcnow() + timedelta(minutes=15)
-    return jwt.encode({&quot;sub&quot;: str(user_id), &quot;exp&quot;: expire}, SECRET_KEY, algorithm=&quot;HS256&quot;)
+    return jwt.encode({"sub": str(user_id), "exp": expire}, SECRET_KEY, algorithm="HS256")
 
 # refresh_token: 较长过期，单次使用后作废
 def create_refresh_token(user_id: int) -&gt; str:
     token_id = str(uuid.uuid4())
     expire = datetime.utcnow() + timedelta(days=7)
     # 存Redis，用一次就删
-    redis.setex(f&quot;refresh:{token_id}&quot;, 7*86400, user_id)
-    return jwt.encode({&quot;sub&quot;: str(user_id), &quot;jti&quot;: token_id, &quot;exp&quot;: expire}, SECRET_KEY)
+    redis.setex(f"refresh:{token_id}", 7*86400, user_id)
+    return jwt.encode({"sub": str(user_id), "jti": token_id, "exp": expire}, SECRET_KEY)
 
 # 刷新时：旧refresh_token作废，发新的（Rotation）
 def refresh(old_token: str):
     payload = jwt.decode(old_token, SECRET_KEY)
-    token_id = payload[&quot;jti&quot;]
+    token_id = payload["jti"]
     # 检查是否已使用
-    user_id = redis.get(f&quot;refresh:{token_id}&quot;)
+    user_id = redis.get(f"refresh:{token_id}")
     if not user_id:
         # 可能被盗用，吊销该用户所有token
-        revoke_all_tokens(payload[&quot;sub&quot;])
-        raise HTTPException(401, &quot;Token已失效&quot;)
+        revoke_all_tokens(payload["sub"])
+        raise HTTPException(401, "Token已失效")
     # 作废旧token
-    redis.delete(f&quot;refresh:{token_id}&quot;)
+    redis.delete(f"refresh:{token_id}")
     # 发新token
-    return create_access_token(int(user_id)), create_refresh_token(int(user_id))
-</code></pre>
-<h3 id="_27">敏感字段加密存储</h3>
+    return create_access_token(int(user_id)), create_refresh_token(int(user_id))</code></pre>
+
+<h3>敏感字段加密存储</h3>
+
 <pre><code class="language-python">from cryptography.fernet import Fernet
 
 # 密钥从环境变量或KMS获取，绝不硬编码
-cipher = Fernet(os.environ[&quot;ENCRYPTION_KEY&quot;])
+cipher = Fernet(os.environ["ENCRYPTION_KEY"])
 
 # 加密
 def encrypt_field(plaintext: str) -&gt; str:
@@ -684,10 +847,11 @@ def decrypt_field(ciphertext: str) -&gt; str:
     return cipher.decrypt(ciphertext.encode()).decode()
 
 # 使用
-user.phone_encrypted = encrypt_field(&quot;13800138000&quot;)
-user.id_card_encrypted = encrypt_field(&quot;110101199001011234&quot;)
-</code></pre>
-<h3 id="_28">需要加密的字段清单</h3>
+user.phone_encrypted = encrypt_field("13800138000")
+user.id_card_encrypted = encrypt_field("110101199001011234")</code></pre>
+
+<h3>需要加密的字段清单</h3>
+
 <table>
 <thead>
 <tr>
@@ -729,15 +893,18 @@ user.id_card_encrypted = encrypt_field(&quot;110101199001011234&quot;)
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="_29">六、文件上传安全</h2>
+
+<hr>
+
+<h2 id="sg-6">六、文件上传安全</h2>
+
 <pre><code class="language-python">import magic  # python-magic，通过文件头判断真实类型
 
 ALLOWED_TYPES = {
-    &quot;image/jpeg&quot;: &quot;.jpg&quot;,
-    &quot;image/png&quot;: &quot;.png&quot;,
-    &quot;application/pdf&quot;: &quot;.pdf&quot;,
-    &quot;application/dicom&quot;: &quot;.dcm&quot;,
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "application/pdf": ".pdf",
+    "application/dicom": ".dcm",
 }
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
@@ -747,37 +914,216 @@ async def upload_media(file: UploadFile, current_user = Depends(get_current_user
 
     # 2. 检查文件大小
     if len(content) &gt; MAX_FILE_SIZE:
-        raise HTTPException(400, &quot;文件不能超过50MB&quot;)
+        raise HTTPException(400, "文件不能超过50MB")
 
     # 3. 检查真实MIME类型（不信任扩展名和Content-Type）
     real_type = magic.from_buffer(content, mime=True)
     if real_type not in ALLOWED_TYPES:
-        raise HTTPException(400, f&quot;不支持的文件类型: {real_type}&quot;)
+        raise HTTPException(400, f"不支持的文件类型: {real_type}")
 
     # 4. 生成安全文件名（防路径穿越）
-    safe_name = f&quot;{uuid4()}{ALLOWED_TYPES[real_type]}&quot;
+    safe_name = f"{uuid4()}{ALLOWED_TYPES[real_type]}"
 
     # 5. 存到对象存储（不要存到Web可直接访问的目录）
-    oss_path = f&quot;cases/{current_user.id}/{safe_name}&quot;
+    oss_path = f"cases/{current_user.id}/{safe_name}"
     oss_client.put_object(bucket, oss_path, content)
 
     # 6. 返回签名URL（不暴露真实存储路径）
-    signed_url = oss_client.sign_url(&quot;GET&quot;, bucket, oss_path, expires=3600)
+    signed_url = oss_client.sign_url("GET", bucket, oss_path, expires=3600)
 
-    return {&quot;url&quot;: signed_url}
-</code></pre>
-<h3 id="_30">文件安全检查清单</h3>
-<ul>
-<li>[ ] 不信任客户端传的文件名和Content-Type</li>
-<li>[ ] 用magic bytes检测真实文件类型</li>
-<li>[ ] 文件名用UUID重新生成</li>
-<li>[ ] 存储路径不在Web根目录下</li>
-<li>[ ] 访问通过签名URL，不直接暴露路径</li>
-<li>[ ] 图片文件做一次重新编码（去除EXIF中的GPS等隐私信息）</li>
+    return {"url": signed_url}</code></pre>
+
+<h3>文件安全检查清单</h3>
+<ul class="checklist">
+<li>不信任客户端传的文件名和Content-Type</li>
+<li>用magic bytes检测真实文件类型</li>
+<li>文件名用UUID重新生成</li>
+<li>存储路径不在Web根目录下</li>
+<li>访问通过签名URL，不直接暴露路径</li>
+<li>图片文件做一次重新编码（去除EXIF中的GPS等隐私信息）</li>
 </ul>
-<hr />
-<h2 id="_31">七、支付安全</h2>
-<h3 id="_32">核心原则：不信任客户端，金额从服务端取</h3>
+
+<hr>
+
+<h2 id="sg-7">七、区块链安全</h2>
+
+<h3>智能合约安全</h3>
+
+<pre><code class="language-solidity">// 智能合约安全原则
+
+// 1. 使用经过审计的标准库（如 OpenZeppelin）
+// 2. 所有合约上线前必须通过第三方安全审计
+// 3. 实现紧急暂停机制（Pausable）
+// 4. 避免重入攻击（使用 ReentrancyGuard）
+// 5. 整数溢出保护（Solidity 0.8+ 内置，或使用 SafeMath）</code></pre>
+
+<h3>区块链节点安全</h3>
+<ul>
+<li>联盟链节点部署在私有网络，不对外暴露</li>
+<li>节点间通信使用TLS加密</li>
+<li>节点访问需证书认证（mTLS）</li>
+<li>定期更新节点软件，修补已知漏洞</li>
+<li>私钥使用HSM（硬件安全模块）管理，不存储在应用服务器</li>
+</ul>
+
+<h3>链上数据安全原则</h3>
+<ul>
+<li><strong>不存原始数据</strong>: 链上仅存储哈希摘要、交易元数据、确权记录</li>
+<li><strong>隐私保护</strong>: 敏感字段使用零知识证明或同态加密</li>
+<li><strong>不可篡改验证</strong>: 定期对比链上哈希与链下数据一致性</li>
+<li><strong>密钥管理</strong>: 用户签名密钥妥善保管，支持密钥恢复机制</li>
+</ul>
+
+<h3>智能合约安全检查清单</h3>
+<ul class="checklist">
+<li>合约通过第三方安全审计（至少一家知名审计机构）</li>
+<li>实现紧急暂停（pause/unpause）功能</li>
+<li>权限控制完整（仅授权地址可执行管理操作）</li>
+<li>无重入漏洞</li>
+<li>上线前在测试网充分测试</li>
+<li>合约升级方案明确（代理模式或版本管理）</li>
+</ul>
+
+<hr>
+
+<h2 id="sg-8">八、数据交易所接口安全</h2>
+
+<h3>交易所API通信安全</h3>
+
+<pre><code class="language-python">import hashlib
+import hmac
+import time
+import requests
+
+class ExchangeAPIClient:
+    """贵阳大数据交易所API安全通信封装"""
+
+    def __init__(self, app_id: str, app_secret: str, base_url: str):
+        self.app_id = app_id
+        self.app_secret = app_secret
+        self.base_url = base_url
+
+    def _sign_request(self, params: dict, timestamp: str) -&gt; str:
+        """请求签名 — 防止篡改和伪造"""
+        # 1. 参数按字典序排列
+        sorted_params = "&amp;".join(f"{k}={v}" for k, v in sorted(params.items()))
+        # 2. 拼接待签名字符串
+        sign_string = f"{self.app_id}&amp;{timestamp}&amp;{sorted_params}&amp;{self.app_secret}"
+        # 3. HMAC-SHA256签名
+        return hmac.new(
+            self.app_secret.encode(), sign_string.encode(), hashlib.sha256
+        ).hexdigest()
+
+    def _request(self, method: str, path: str, data: dict = None):
+        """安全请求封装"""
+        timestamp = str(int(time.time()))
+        params = data or {}
+        signature = self._sign_request(params, timestamp)
+
+        headers = {
+            "X-App-Id": self.app_id,
+            "X-Timestamp": timestamp,
+            "X-Signature": signature,
+            "Content-Type": "application/json",
+        }
+
+        # 全部使用HTTPS加密传输
+        resp = requests.request(
+            method, f"{self.base_url}{path}",
+            json=params, headers=headers,
+            timeout=30,
+            verify=True  # 强制验证SSL证书
+        )
+
+        # 验证响应签名（防止中间人篡改响应）
+        if not self._verify_response_signature(resp):
+            raise SecurityError("交易所响应签名验证失败")
+
+        return resp.json()</code></pre>
+
+<h3>交易所接口安全原则</h3>
+<ol>
+<li><strong>双向签名</strong>: 请求和响应均需签名验证，防止篡改</li>
+<li><strong>加密传输</strong>: 全部使用HTTPS/TLS 1.2+，强制验证证书</li>
+<li><strong>时间戳校验</strong>: 请求携带时间戳，超过5分钟的请求拒绝（防重放）</li>
+<li><strong>幂等设计</strong>: 关键交易接口使用唯一请求ID，防止重复提交</li>
+<li><strong>IP白名单</strong>: 交易所接口仅允许备案的服务器IP访问</li>
+<li><strong>密钥轮换</strong>: 定期更换API密钥，旧密钥设置过渡期后作废</li>
+</ol>
+
+<h3>交易所接口安全检查清单</h3>
+<ul class="checklist">
+<li>API密钥从KMS/环境变量获取，不硬编码</li>
+<li>请求签名算法与交易所规范一致</li>
+<li>响应签名验证已实现</li>
+<li>时间戳防重放机制已实现</li>
+<li>关键接口幂等处理已实现</li>
+<li>IP白名单已配置</li>
+<li>SSL证书验证已开启（不跳过verify）</li>
+<li>异常响应有告警和重试机制</li>
+<li>接口调用日志完整记录（含请求/响应摘要，不含密钥）</li>
+</ul>
+
+<hr>
+
+<h2 id="sg-9">九、数据资产完整性保护（防篡改）</h2>
+
+<h3>数据资产完整性校验</h3>
+
+<pre><code class="language-python">import hashlib
+import json
+
+def generate_asset_hash(asset_data: dict) -&gt; str:
+    """生成数据资产包哈希指纹 — 用于完整性校验和链上存证"""
+    # 1. 规范化序列化（保证相同数据产生相同哈希）
+    canonical = json.dumps(asset_data, sort_keys=True, ensure_ascii=False)
+    # 2. 多重哈希（SHA-256 + 文件内容哈希）
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+def verify_asset_integrity(asset_data: dict, expected_hash: str) -&gt; bool:
+    """验证数据资产包是否被篡改"""
+    current_hash = generate_asset_hash(asset_data)
+    return hmac.compare_digest(current_hash, expected_hash)
+
+# 完整性校验时机：
+# 1. 资产包生成时 → 计算哈希 → 存数据库 + 上链
+# 2. 交易所登记时 → 重新计算哈希 → 与存储哈希对比
+# 3. 买方下载时 → 重新计算哈希 → 与链上哈希对比
+# 4. 定期巡检 → 批量校验所有资产包哈希</code></pre>
+
+<h3>数据资产防篡改机制</h3>
+<ol>
+<li><strong>生成即锁定</strong>: 数据资产包一旦生成并上链，原始数据包不可修改（只能新建版本）</li>
+<li><strong>链上存证</strong>: 资产包哈希、元数据哈希均上链，任何篡改可通过链上记录检测</li>
+<li><strong>多点校验</strong>: 数据库哈希、对象存储哈希、区块链哈希三方一致性校验</li>
+<li><strong>审计日志</strong>: 所有对数据资产包的访问和操作均记录审计日志</li>
+<li><strong>版本控制</strong>: 数据资产更新通过版本机制，旧版本不可覆盖</li>
+</ol>
+
+<h3>脱敏不可逆保障</h3>
+<ul>
+<li>脱敏后的数据资产包不保留原始数据的映射关系</li>
+<li>原始数据与脱敏数据物理隔离存储</li>
+<li>脱敏过程使用不可逆算法（如K-匿名、L-多样性、差分隐私）</li>
+<li>定期进行反向识别风险评估</li>
+</ul>
+
+<h3>数据资产完整性检查清单</h3>
+<ul class="checklist">
+<li>资产包哈希生成算法一致（全平台统一）</li>
+<li>哈希上链机制已实现</li>
+<li>三方一致性校验定时任务已配置</li>
+<li>资产包不可变存储已实现（对象存储WORM模式或版本控制）</li>
+<li>脱敏不可逆已验证（无法从脱敏数据反推原始数据）</li>
+<li>反向识别风险评估已完成</li>
+</ul>
+
+<hr>
+
+<h2 id="sg-10">十、支付安全</h2>
+
+<h3>核心原则：不信任客户端，金额从服务端取</h3>
+
 <pre><code class="language-python"># 创建订单
 async def create_order(case_id: int, current_user = Depends(get_current_user)):
     case = db.query(Case).get(case_id)
@@ -789,8 +1135,8 @@ async def create_order(case_id: int, current_user = Depends(get_current_user)):
         seller_id=case.author_id,
         case_id=case.id,
         amount=case.price,            # 从数据库取
-        platform_fee=case.price * Decimal(&quot;0.2&quot;),
-        seller_income=case.price * Decimal(&quot;0.8&quot;),
+        platform_fee=case.price * Decimal("0.2"),
+        seller_income=case.price * Decimal("0.8"),
     )
     db.add(order)
     db.commit()
@@ -805,40 +1151,44 @@ async def wechat_notify(request: Request):
 
     # 1. 验证微信签名（防伪造回调）
     if not verify_wechat_signature(request.headers, body):
-        return PlainTextResponse(&quot;FAIL&quot;)
+        return PlainTextResponse("FAIL")
 
     data = parse_callback(body)
-    order = db.query(Transaction).filter(Transaction.order_no == data[&quot;order_no&quot;]).first()
+    order = db.query(Transaction).filter(Transaction.order_no == data["order_no"]).first()
 
     # 2. 幂等处理（同一回调可能来多次）
-    if order.payment_status == &quot;paid&quot;:
-        return xml_response(&quot;SUCCESS&quot;)
+    if order.payment_status == "paid":
+        return xml_response("SUCCESS")
 
     # 3. 金额一致性校验
-    if Decimal(data[&quot;amount&quot;]) != order.amount:
-        logger.error(f&quot;金额不一致: 回调{data['amount']}, 订单{order.amount}&quot;)
-        return PlainTextResponse(&quot;FAIL&quot;)
+    if Decimal(data["amount"]) != order.amount:
+        logger.error(f"金额不一致: 回调{data['amount']}, 订单{order.amount}")
+        return PlainTextResponse("FAIL")
 
     # 更新订单状态
-    order.payment_status = &quot;paid&quot;
+    order.payment_status = "paid"
     order.payment_time = datetime.utcnow()
     db.commit()
 
-    return xml_response(&quot;SUCCESS&quot;)
-</code></pre>
-<h3 id="_33">支付安全检查清单</h3>
-<ul>
-<li>[ ] 金额永远从服务端数据库获取</li>
-<li>[ ] 回调接口验证支付平台签名</li>
-<li>[ ] 回调金额与订单金额对比</li>
-<li>[ ] 幂等处理防止重复到账</li>
-<li>[ ] 订单号全局唯一，含随机成分</li>
-<li>[ ] 每日对账（平台记录 vs 微信/支付宝账单）</li>
-<li>[ ] 退款只走原路退，不退到其他账户</li>
+    return xml_response("SUCCESS")</code></pre>
+
+<h3>支付安全检查清单</h3>
+<ul class="checklist">
+<li>金额永远从服务端数据库获取</li>
+<li>回调接口验证支付平台签名</li>
+<li>回调金额与订单金额对比</li>
+<li>幂等处理防止重复到账</li>
+<li>订单号全局唯一，含随机成分</li>
+<li>每日对账（平台记录 vs 微信/支付宝账单）</li>
+<li>退款只走原路退，不退到其他账户</li>
 </ul>
-<hr />
-<h2 id="_34">八、基础设施安全</h2>
-<h3 id="nginx">Nginx配置</h3>
+
+<hr>
+
+<h2 id="sg-11">十一、基础设施安全</h2>
+
+<h3>Nginx配置</h3>
+
 <pre><code class="language-nginx">server {
     listen 80;
     server_name example.com;
@@ -857,9 +1207,9 @@ server {
     # 安全头
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options DENY;
-    add_header X-XSS-Protection &quot;1; mode=block&quot;;
-    add_header Strict-Transport-Security &quot;max-age=31536000; includeSubDomains&quot; always;
-    add_header Content-Security-Policy &quot;default-src 'self'; script-src 'self'; img-src 'self' https://oss.example.com;&quot;;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; img-src 'self' https://oss.example.com;";
 
     # 隐藏版本号
     server_tokens off;
@@ -870,18 +1220,20 @@ server {
     # 限流（全局）
     limit_req_zone $binary_remote_addr zone=global:10m rate=100r/s;
     limit_req zone=global burst=200 nodelay;
-}
-</code></pre>
-<h3 id="docker">Docker安全</h3>
+}</code></pre>
+
+<h3>Docker安全</h3>
+
 <pre><code class="language-dockerfile"># 不用root跑应用
 FROM python:3.12-slim
 RUN groupadd -r appgroup &amp;&amp; useradd -r -g appgroup appuser
 WORKDIR /app
 COPY --chown=appuser:appgroup . .
 USER appuser
-CMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8000&quot;]
-</code></pre>
-<h3 id="_35">数据库安全</h3>
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
+
+<h3>数据库安全</h3>
+
 <pre><code class="language-sql">-- 应用账号：最小权限
 CREATE USER 'app_user'@'%' IDENTIFIED BY 'strong_random_password';
 GRANT SELECT, INSERT, UPDATE, DELETE ON medical_db.* TO 'app_user'@'%';
@@ -893,9 +1245,10 @@ GRANT ALL PRIVILEGES ON medical_db.* TO 'migration_user'@'%';
 
 -- 只读账号：给数据分析用
 CREATE USER 'readonly_user'@'%' IDENTIFIED BY 'yet_another_password';
-GRANT SELECT ON medical_db.* TO 'readonly_user'@'%';
-</code></pre>
-<h3 id="_36">云服务安全组</h3>
+GRANT SELECT ON medical_db.* TO 'readonly_user'@'%';</code></pre>
+
+<h3>云服务安全组</h3>
+
 <pre><code>入站规则：
   80/443   → 0.0.0.0/0        (Web流量，前面有WAF)
   22       → 办公室IP/VPN IP   (SSH，不对外开放)
@@ -904,32 +1257,37 @@ GRANT SELECT ON medical_db.* TO 'readonly_user'@'%';
   9200     → 应用服务器内网IP   (Elasticsearch，不对外)
 
 出站规则：
-  全部放行（或按需限制）
-</code></pre>
-<h3 id="_37">密钥管理</h3>
+  全部放行（或按需限制）</code></pre>
+
+<h3>密钥管理</h3>
+
 <pre><code class="language-bash"># 绝不硬编码密钥到代码中
 # 错
-SECRET_KEY = &quot;my-secret-key-123&quot;
-DB_PASSWORD = &quot;root123&quot;
+SECRET_KEY = "my-secret-key-123"
+DB_PASSWORD = "root123"
 
 # 对 — 环境变量
-SECRET_KEY = os.environ[&quot;SECRET_KEY&quot;]
-DB_URL = os.environ[&quot;DATABASE_URL&quot;]
+SECRET_KEY = os.environ["SECRET_KEY"]
+DB_URL = os.environ["DATABASE_URL"]
 
 # 更好 — 云KMS
-# 阿里云KMS / 腾讯云SSM 管理所有密钥
-</code></pre>
-<h3 id="gitignore">.gitignore 必须包含</h3>
-<pre><code class="language-gitignore">.env
+# 阿里云KMS / 腾讯云SSM 管理所有密钥</code></pre>
+
+<h3>.gitignore 必须包含</h3>
+
+<pre><code>.env
 .env.*
 *.pem
 *.key
 credentials.json
-service-account.json
-</code></pre>
-<hr />
-<h2 id="_38">九、审计日志</h2>
-<h3 id="_39">需要记录的操作</h3>
+service-account.json</code></pre>
+
+<hr>
+
+<h2 id="sg-12">十二、审计日志</h2>
+
+<h3>需要记录的操作</h3>
+
 <table>
 <thead>
 <tr>
@@ -945,19 +1303,39 @@ service-account.json
 <td>1年</td>
 </tr>
 <tr>
-<td>查看完整病例</td>
-<td>用户ID, 病例ID, IP</td>
-<td>2年</td>
-</tr>
-<tr>
-<td>下载附件</td>
-<td>用户ID, 文件ID, IP</td>
-<td>2年</td>
-</tr>
-<tr>
-<td>创建/修改/删除病例</td>
-<td>用户ID, 病例ID, 变更内容</td>
+<td>上传健康数据</td>
+<td>用户ID, 数据类型, 数据哈希, IP</td>
 <td>永久</td>
+</tr>
+<tr>
+<td>数据资产包生成</td>
+<td>用户ID, 资产ID, 资产哈希</td>
+<td>永久</td>
+</tr>
+<tr>
+<td>交易所资产登记</td>
+<td>资产ID, 交易所登记号, 状态</td>
+<td>永久</td>
+</tr>
+<tr>
+<td>数据资产交易</td>
+<td>买方ID, 卖方ID, 资产ID, 金额, 链上交易哈希</td>
+<td>5年</td>
+</tr>
+<tr>
+<td>数据资产下载</td>
+<td>用户ID, 资产ID, IP</td>
+<td>2年</td>
+</tr>
+<tr>
+<td>收益分配</td>
+<td>用户ID, 金额, 分配明细, 链上记录</td>
+<td>5年</td>
+</tr>
+<tr>
+<td>交易所结算</td>
+<td>结算批次, 金额, 结算状态</td>
+<td>5年</td>
 </tr>
 <tr>
 <td>支付/退款</td>
@@ -967,6 +1345,11 @@ service-account.json
 <tr>
 <td>管理员操作</td>
 <td>管理员ID, 操作类型, 目标对象</td>
+<td>永久</td>
+</tr>
+<tr>
+<td>区块链操作</td>
+<td>操作类型, 交易哈希, 区块号</td>
 <td>永久</td>
 </tr>
 <tr>
@@ -981,7 +1364,9 @@ service-account.json
 </tr>
 </tbody>
 </table>
-<h3 id="_40">实现</h3>
+
+<h3>实现</h3>
+
 <pre><code class="language-python">async def audit_log(
     user_id: int,
     action: str,
@@ -996,7 +1381,7 @@ service-account.json
         resource_type=resource_type,
         resource_id=resource_id,
         ip_address=request.client.host,
-        user_agent=request.headers.get(&quot;user-agent&quot;),
+        user_agent=request.headers.get("user-agent"),
         details=details,
     )
     db.add(log)
@@ -1004,15 +1389,18 @@ service-account.json
     await db.commit()
 
 # 使用
-@app.get(&quot;/api/cases/{case_id}/full&quot;)
+@app.get("/api/cases/{case_id}/full")
 async def get_full_case(case_id: int, request: Request, current_user = Depends(get_current_user)):
     case = get_and_check_permission(case_id, current_user)
-    await audit_log(current_user.id, &quot;view_full_case&quot;, &quot;case&quot;, case_id, request)
-    return case
-</code></pre>
-<hr />
-<h2 id="_41">十、开发流程安全</h2>
-<h3 id="_42">依赖安全</h3>
+    await audit_log(current_user.id, "view_full_case", "case", case_id, request)
+    return case</code></pre>
+
+<hr>
+
+<h2 id="sg-13">十三、开发流程安全</h2>
+
+<h3>依赖安全</h3>
+
 <pre><code class="language-bash"># Python — 定期检查依赖漏洞
 pip install pip-audit
 pip-audit                    # 检查已知漏洞
@@ -1025,9 +1413,10 @@ npm audit fix
 # 在CI/CD中强制执行
 # .github/workflows/security.yml
 - name: Security audit
-  run: pip-audit --strict     # 有漏洞则构建失败
-</code></pre>
-<h3 id="_43">代码静态分析</h3>
+  run: pip-audit --strict     # 有漏洞则构建失败</code></pre>
+
+<h3>代码静态分析</h3>
+
 <pre><code class="language-bash"># Python安全扫描
 pip install bandit
 bandit -r src/               # 检测常见安全问题
@@ -1036,9 +1425,10 @@ bandit -r src/               # 检测常见安全问题
 # - 硬编码密码
 # - eval/exec使用
 # - 不安全的随机数
-# - SQL拼接
-</code></pre>
-<h3 id="pre-commit-hooks">pre-commit hooks</h3>
+# - SQL拼接</code></pre>
+
+<h3>pre-commit hooks</h3>
+
 <pre><code class="language-yaml"># .pre-commit-config.yaml
 repos:
   - repo: https://github.com/PyCQA/bandit
@@ -1047,28 +1437,34 @@ repos:
         args: ['-c', 'bandit.yaml']
   - repo: https://github.com/Yelp/detect-secrets
     hooks:
-      - id: detect-secrets         # 检测代码中的密钥/密码
-</code></pre>
-<h3 id="_44">安全发布检查清单（每次上线前）</h3>
-<ul>
-<li>[ ] <code>pip-audit</code> / <code>npm audit</code> 无高危漏洞</li>
-<li>[ ] <code>bandit</code> 扫描无高危告警</li>
-<li>[ ] 无硬编码密钥/密码</li>
-<li>[ ] 新增API都有权限校验</li>
-<li>[ ] 新增用户输入都有验证和清洗</li>
-<li>[ ] 数据库变更不影响已有数据安全</li>
-<li>[ ] 错误响应不泄露内部信息（堆栈、SQL、文件路径）</li>
+      - id: detect-secrets         # 检测代码中的密钥/密码</code></pre>
+
+<h3>安全发布检查清单（每次上线前）</h3>
+
+<ul class="checklist">
+<li><code>pip-audit</code> / <code>npm audit</code> 无高危漏洞</li>
+<li><code>bandit</code> 扫描无高危告警</li>
+<li>无硬编码密钥/密码</li>
+<li>新增API都有权限校验</li>
+<li>新增用户输入都有验证和清洗</li>
+<li>数据库变更不影响已有数据安全</li>
+<li>错误响应不泄露内部信息（堆栈、SQL、文件路径）</li>
 </ul>
-<hr />
-<h2 id="_45">十一、应急响应流程</h2>
-<h3 id="_46">发现安全事件后</h3>
+
+<hr>
+
+<h2 id="sg-14">十四、应急响应流程</h2>
+
+<h3>发现安全事件后</h3>
+
 <pre><code>0-15分钟: 确认 → 评估影响范围 → 止血（关闭泄露通道/封禁攻击IP）
 15分钟-1小时: 详细排查 → 保留证据（日志快照）→ 通知团队
 1-24小时: 修复漏洞 → 评估数据泄露范围 → 通知受影响用户
 24-72小时: 向监管部门报告（PIPL要求）→ 根因分析
-1周内: 复盘报告 → 改进措施落地
-</code></pre>
-<h3 id="_47">常备工具</h3>
+1周内: 复盘报告 → 改进措施落地</code></pre>
+
+<h3>常备工具</h3>
+
 <table>
 <thead>
 <tr>
@@ -1099,13 +1495,17 @@ repos:
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="_48">总结：安全不是一次性的事</h2>
-<pre><code>开发阶段: ORM + 输入验证 + 权限校验 + 代码审计
-部署阶段: HTTPS + WAF + 安全组 + 最小权限
-运行阶段: 监控告警 + 审计日志 + 定期扫描
-持续改进: 依赖更新 + 渗透测试（年度）+ 应急演练
-</code></pre>
+
+<hr>
+
+<h2 id="sg-summary">总结：安全不是一次性的事</h2>
+
+<pre><code>开发阶段: ORM + 输入验证 + 权限校验 + 代码审计 + 智能合约审计
+部署阶段: HTTPS + WAF + 安全组 + 最小权限 + 区块链节点安全
+运行阶段: 监控告警 + 审计日志 + 定期扫描 + 数据资产完整性巡检
+交易安全: 交易所API签名 + 加密传输 + 幂等处理 + 结算对账
+持续改进: 依赖更新 + 渗透测试（年度）+ 应急演练 + 智能合约升级审计</code></pre>
+
 </div>
 <a href="#" class="back-top" title="返回顶部">&uarr;</a>
 </body>

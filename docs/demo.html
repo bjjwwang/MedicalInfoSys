@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 微生态健康数据资产交易平台 Demo</title>
+<style>
+/* ==================== Reset & Base ==================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1a1a1a;
+    background: #f0f4f8;
+}
+a { color: #2c6fad; text-decoration: none; cursor: pointer; }
+a:hover { text-decoration: underline; }
+
+/* ==================== Layout ==================== */
+.app { display: flex; min-height: 100vh; }
+.sidebar {
+    width: 240px;
+    background: linear-gradient(180deg, #1a3a5c 0%, #2c5282 100%);
+    color: #fff;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s;
+}
+.sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar-header h1 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.sidebar-header p { font-size: 11px; color: rgba(255,255,255,0.6); }
+.sidebar-nav { flex: 1; padding: 12px 0; }
+.sidebar-nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 20px;
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+    transition: all 0.2s;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+}
+.sidebar-nav a:hover { background: rgba(255,255,255,0.08); color: #fff; text-decoration: none; }
+.sidebar-nav a.active {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border-left-color: #63b3ed;
+}
+.sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
+.sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px;
+}
+.sidebar-footer .user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.sidebar-footer .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #63b3ed; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600;
+}
+.sidebar-footer .exchange-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(212,160,23,0.15);
+    border: 1px solid rgba(212,160,23,0.4);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: #fbd38d;
+}
+.main-content {
+    flex: 1;
+    margin-left: 240px;
+    padding: 24px 28px;
+    min-height: 100vh;
+}
+.hamburger {
+    display: none;
+    position: fixed; top: 12px; left: 12px; z-index: 200;
+    background: #2c5282; color: #fff; border: none; border-radius: 8px;
+    width: 40px; height: 40px; font-size: 20px; cursor: pointer;
+}
+.overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99;
+}
+
+/* ==================== Components ==================== */
+.page-title { font-size: 22px; font-weight: 600; color: #1a3a5c; margin-bottom: 20px; }
+
+/* Stat Cards */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+    background: #fff; border-radius: 12px; padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: flex; align-items: flex-start; gap: 14px;
+}
+.stat-card .stat-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+}
+.stat-card .stat-icon.blue { background: #ebf4ff; }
+.stat-card .stat-icon.green { background: #e6ffed; }
+.stat-card .stat-icon.orange { background: #fff5eb; }
+.stat-card .stat-icon.purple { background: #f3e8ff; }
+.stat-card .stat-value { font-size: 26px; font-weight: 700; color: #1a1a1a; line-height: 1.2; }
+.stat-card .stat-label { font-size: 13px; color: #888; margin-top: 2px; }
+.stat-card .stat-trend { font-size: 12px; color: #38a169; margin-top: 4px; }
+
+/* Cards */
+.card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 20px; }
+.card-title { font-size: 16px; font-weight: 600; color: #1a3a5c; margin-bottom: 14px; }
+
+/* Asset Cards */
+.asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.asset-card {
+    background: #fff; border-radius: 12px; padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    cursor: pointer; transition: all 0.2s;
+    border: 1px solid transparent;
+}
+.asset-card:hover { border-color: #63b3ed; box-shadow: 0 4px 12px rgba(44,111,173,0.12); transform: translateY(-2px); }
+.asset-card .asset-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.asset-card .asset-type-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+}
+.asset-card .asset-title { font-size: 15px; font-weight: 600; color: #1a3a5c; margin-bottom: 6px; line-height: 1.4; }
+.asset-card .asset-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.asset-card .asset-tags span {
+    background: #f0f4f8; color: #4a6fa5; font-size: 11px;
+    padding: 2px 8px; border-radius: 4px;
+}
+.asset-card .asset-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #888; }
+.asset-card .asset-price { font-size: 18px; font-weight: 700; color: #e53e3e; }
+.asset-card .asset-stats { display: flex; gap: 12px; margin-top: 8px; font-size: 12px; color: #999; }
+
+/* Badges */
+.badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 500;
+}
+.badge-listed { background: #e6ffed; color: #22543d; }
+.badge-pending { background: #fefcbf; color: #744210; }
+.badge-draft { background: #edf2f7; color: #4a5568; }
+.badge-registered { background: #ebf4ff; color: #2b6cb0; }
+.quality-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 6px;
+    font-size: 13px; font-weight: 700;
+}
+.quality-S { background: linear-gradient(135deg, #fbd38d, #f6ad55); color: #7b341e; }
+.quality-A { background: #ebf4ff; color: #2b6cb0; }
+.quality-B { background: #e6ffed; color: #22543d; }
+.quality-C { background: #edf2f7; color: #4a5568; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; }
+table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.data-table th {
+    background: #f7fafc; padding: 10px 12px; text-align: left;
+    font-weight: 600; color: #4a5568; border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap;
+}
+table.data-table td {
+    padding: 10px 12px; border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+table.data-table tbody tr:hover { background: #f7fafc; }
+.hash-text { font-family: "Fira Code", monospace; font-size: 12px; color: #718096; }
+
+/* Pipeline Stepper */
+.pipeline { display: flex; align-items: center; margin: 20px 0; overflow-x: auto; padding-bottom: 8px; }
+.pipeline-step {
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 90px; position: relative;
+}
+.pipeline-step .step-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600; z-index: 1;
+    background: #edf2f7; color: #a0aec0;
+    transition: all 0.3s;
+}
+.pipeline-step.done .step-dot { background: #38a169; color: #fff; }
+.pipeline-step.active .step-dot { background: #3182ce; color: #fff; animation: pulse 1.5s infinite; }
+.pipeline-step .step-label { font-size: 11px; color: #718096; margin-top: 6px; text-align: center; white-space: nowrap; }
+.pipeline-step.done .step-label { color: #38a169; }
+.pipeline-step.active .step-label { color: #3182ce; font-weight: 600; }
+.pipeline-line {
+    flex: 1; height: 3px; background: #e2e8f0; min-width: 20px;
+    margin: 0 4px; margin-bottom: 20px;
+}
+.pipeline-line.done { background: #38a169; }
+
+/* Bar Chart (CSS) */
+.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-top: 10px; }
+.bar-chart .bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.bar-chart .bar {
+    width: 100%; max-width: 40px; border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, #63b3ed, #3182ce);
+    transition: height 0.8s ease-out;
+    min-height: 4px;
+}
+.bar-chart .bar-label { font-size: 11px; color: #999; margin-top: 6px; }
+.bar-chart .bar-value { font-size: 11px; color: #4a5568; font-weight: 600; margin-bottom: 4px; }
+
+/* Horizontal Bar */
+.h-bar-chart .h-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.h-bar-chart .h-bar-label { width: 100px; font-size: 12px; color: #4a5568; text-align: right; flex-shrink: 0; }
+.h-bar-chart .h-bar-track { flex: 1; height: 22px; background: #edf2f7; border-radius: 4px; overflow: hidden; }
+.h-bar-chart .h-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease-out; }
+.h-bar-chart .h-bar-val { width: 50px; font-size: 12px; color: #4a5568; font-weight: 600; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
+.timeline-item { position: relative; margin-bottom: 16px; padding-left: 16px; }
+.timeline-item::before {
+    content: ''; position: absolute; left: -20px; top: 6px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #3182ce; border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #3182ce;
+}
+.timeline-item .tl-time { font-size: 12px; color: #a0aec0; }
+.timeline-item .tl-content { font-size: 13px; color: #4a5568; margin-top: 2px; }
+.timeline-item .tl-hash { font-size: 11px; color: #a0aec0; font-family: "Fira Code", monospace; }
+
+/* Buttons */
+.btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    border: none; cursor: pointer; transition: all 0.2s;
+    text-decoration: none;
+}
+.btn:hover { text-decoration: none; }
+.btn-primary { background: #3182ce; color: #fff; }
+.btn-primary:hover { background: #2b6cb0; }
+.btn-success { background: #38a169; color: #fff; }
+.btn-success:hover { background: #2f855a; }
+.btn-outline { background: transparent; border: 1px solid #cbd5e0; color: #4a5568; }
+.btn-outline:hover { border-color: #3182ce; color: #3182ce; }
+.btn-sm { padding: 4px 12px; font-size: 12px; }
+.btn-lg { padding: 12px 28px; font-size: 16px; }
+
+/* Forms */
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: #4a5568; margin-bottom: 6px; }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+    font-size: 14px; color: #1a1a1a; background: #fff;
+    transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: #3182ce; box-shadow: 0 0 0 3px rgba(49,130,206,0.1);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Search */
+.search-bar {
+    display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.search-bar input {
+    flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid #e2e8f0;
+    border-radius: 8px; font-size: 14px;
+}
+.search-bar input:focus { outline: none; border-color: #3182ce; }
+.search-bar select {
+    padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+    font-size: 13px; background: #fff; color: #4a5568;
+}
+
+/* Upload Wizard */
+.wizard-content { min-height: 320px; position: relative; }
+.wizard-step { display: none; animation: fadeIn 0.4s; }
+.wizard-step.active { display: block; }
+.wizard-actions { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid #edf2f7; }
+
+/* Desensitize animation */
+.desensitize-row { display: flex; align-items: center; gap: 16px; padding: 8px 0; }
+.desensitize-row .original { color: #e53e3e; text-decoration: line-through; min-width: 120px; }
+.desensitize-row .arrow { color: #a0aec0; }
+.desensitize-row .masked { color: #38a169; font-weight: 600; }
+
+/* Score Radar (simplified) */
+.score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.score-item { text-align: center; }
+.score-item .score-ring {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 4px solid #edf2f7;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 6px;
+    font-size: 20px; font-weight: 700; color: #3182ce;
+    position: relative;
+}
+.score-item .score-ring.high { border-color: #38a169; color: #38a169; }
+.score-item .score-label { font-size: 12px; color: #718096; }
+
+/* Success animation */
+.success-anim { text-align: center; padding: 40px 20px; }
+.success-anim .check-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: #38a169; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; margin: 0 auto 16px;
+    animation: scaleIn 0.5s ease-out;
+}
+.success-anim h2 { font-size: 22px; color: #1a3a5c; margin-bottom: 8px; }
+.success-anim p { color: #718096; margin-bottom: 20px; }
+
+/* Activity Feed */
+.feed-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f4f8; font-size: 13px; }
+.feed-item:last-child { border-bottom: none; }
+.feed-item .feed-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.feed-item .feed-time { color: #a0aec0; font-size: 12px; white-space: nowrap; }
+
+/* Modal */
+.modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 300; align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+    background: #fff; border-radius: 16px; padding: 28px;
+    max-width: 420px; width: 90%;
+    animation: scaleIn 0.3s;
+}
+.modal-box h3 { font-size: 18px; margin-bottom: 16px; }
+
+/* Toast */
+.toast {
+    position: fixed; top: 20px; right: 20px; z-index: 400;
+    background: #1a3a5c; color: #fff; padding: 12px 20px;
+    border-radius: 8px; font-size: 14px;
+    animation: slideIn 0.3s, fadeOut 0.3s 2.7s forwards;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Detail Page */
+.detail-header { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
+.detail-header .type-icon {
+    width: 56px; height: 56px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; flex-shrink: 0;
+}
+.detail-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
+.price-box {
+    background: #fff; border-radius: 12px; padding: 20px;
+    border: 1px solid #e2e8f0; position: sticky; top: 24px;
+}
+.price-box .price { font-size: 32px; font-weight: 700; color: #e53e3e; margin-bottom: 12px; }
+.sample-data { background: #f7fafc; border-radius: 8px; padding: 14px; font-size: 12px; font-family: "Fira Code", monospace; overflow-x: auto; }
+.info-row { display: flex; gap: 8px; padding: 6px 0; font-size: 13px; }
+.info-row .info-label { color: #718096; min-width: 80px; }
+.info-row .info-value { color: #1a1a1a; font-weight: 500; }
+
+/* Back button */
+.back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #718096; font-size: 13px; margin-bottom: 16px;
+    cursor: pointer;
+}
+.back-btn:hover { color: #3182ce; }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(49,130,206,0.4); } 50% { box-shadow: 0 0 0 8px rgba(49,130,206,0); } }
+@keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .hamburger { display: flex; align-items: center; justify-content: center; }
+    .main-content { margin-left: 0; padding: 60px 16px 24px; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .asset-grid { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+    .stat-grid { grid-template-columns: 1fr; }
+    .pipeline { flex-wrap: wrap; justify-content: center; }
+}
+
+/* Two column layout for detail */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+/* Revenue breakdown */
+.rev-breakdown { display: flex; gap: 4px; height: 24px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
+.rev-breakdown div { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 500; }
+
+/* Empty / loading */
+.empty-state { text-align: center; padding: 40px; color: #a0aec0; }
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+/* Misc */
+.text-muted { color: #a0aec0; }
+.text-sm { font-size: 12px; }
+.text-right { text-align: right; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.gap-2 { gap: 8px; }
+.inline-flex { display: inline-flex; align-items: center; gap: 6px; }
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="app">
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>健数通</h1>
+        <p>微生态健康数据资产交易平台</p>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="#dashboard" data-view="dashboard"><span class="icon">&#128202;</span> 首页</a>
+        <a href="#market" data-view="market"><span class="icon">&#128722;</span> 数据市场</a>
+        <a href="#upload" data-view="upload"><span class="icon">&#128228;</span> 上传数据</a>
+        <a href="#my-assets" data-view="my-assets"><span class="icon">&#128188;</span> 我的资产</a>
+        <a href="#revenue" data-view="revenue"><span class="icon">&#128176;</span> 收益中心</a>
+    </nav>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="avatar">张</div>
+            <div>
+                <div style="font-size:14px;font-weight:500;">张女士</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.5);">数据提供者 | 贵州省</div>
+            </div>
+        </div>
+        <div class="exchange-badge">
+            <span>&#127961;</span> 贵阳大数据交易所 已认证
+        </div>
+    </div>
+</aside>
+
+<!-- Main -->
+<main class="main-content" id="main-content">
+    <!-- Views will be rendered here by JS -->
+</main>
+</div>
+
+<!-- Purchase Modal -->
+<div class="modal-overlay" id="purchaseModal">
+    <div class="modal-box" id="modalContent"></div>
+</div>
+
+<script>
+// ==================== MOCK DATA ====================
+
+const ASSETS = [
+    { id:1, title:'2型糖尿病3年随访血糖及用药数据', type:'blood_sugar', typeLabel:'血糖', typeColor:'#e53e3e', disease:'2型糖尿病', price:128, quality:'S', score:4.5, status:'listed', gender:'女', age:'51-60', region:'贵州省', volume:486, views:1230, purchases:47, timeRange:'2023.01 - 2026.03', tags:['糖尿病','二甲双胍','HbA1c','血糖监测'], exchangeId:'GY-HDA-2026-000138', txHash:'0x3a7f8b2c91d4e6a0b5c3f7d8e2a1b4c6d9e0f3a2', blockNum:15234567, createdAt:'2026-03-15' },
+    { id:2, title:'高血压患者12个月血压监测数据', type:'blood_pressure', typeLabel:'血压', typeColor:'#dd6b20', disease:'原发性高血压', price:45, quality:'A', score:4.0, status:'listed', gender:'男', age:'61-70', region:'四川省', volume:365, views:856, purchases:32, timeRange:'2025.03 - 2026.03', tags:['高血压','降压药','动态血压'], exchangeId:'GY-HDA-2026-000142', txHash:'0x8b2c4d6e1f3a5b7c9d0e2f4a6b8c0d2e4f6a8b0c', blockNum:15234890, createdAt:'2026-03-18' },
+    { id:3, title:'溃疡性结肠炎肠道菌群检测数据', type:'microbiome', typeLabel:'微生态', typeColor:'#38a169', disease:'溃疡性结肠炎', price:256, quality:'S', score:4.8, status:'listed', gender:'女', age:'31-40', region:'北京市', volume:24, views:2340, purchases:89, timeRange:'2024.06 - 2026.02', tags:['肠道菌群','溃疡性结肠炎','宏基因组','菌群多样性'], exchangeId:'GY-HDA-2026-000089', txHash:'0xc5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3', blockNum:15230123, createdAt:'2026-02-20' },
+    { id:4, title:'肥胖症饮食干预6个月完整记录', type:'diet', typeLabel:'饮食', typeColor:'#805ad5', disease:'肥胖症', price:35, quality:'B', score:3.5, status:'listed', gender:'男', age:'21-30', region:'广东省', volume:182, views:423, purchases:15, timeRange:'2025.09 - 2026.03', tags:['肥胖','饮食干预','热量控制','体重管理'], exchangeId:'GY-HDA-2026-000156', txHash:'0xd2e4f6a8b0c2d4e6f8a0b2c4d6e8f0a2b4c6d8e0', blockNum:15235012, createdAt:'2026-03-20' },
+    { id:5, title:'帕金森病用药方案与5年疗效跟踪', type:'treatment', typeLabel:'治疗', typeColor:'#2b6cb0', disease:'帕金森病', price:320, quality:'S', score:4.7, status:'listed', gender:'男', age:'71-80', region:'上海市', volume:1826, views:3456, purchases:128, timeRange:'2021.01 - 2026.01', tags:['帕金森','左旋多巴','DBS','运动症状'], exchangeId:'GY-HDA-2026-000045', txHash:'0xe1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9', blockNum:15228456, createdAt:'2026-01-10' },
+    { id:6, title:'IBS患者肠道微生态多样性数据', type:'microbiome', typeLabel:'微生态', typeColor:'#38a169', disease:'肠易激综合征', price:180, quality:'A', score:4.2, status:'listed', gender:'女', age:'21-30', region:'浙江省', volume:36, views:1567, purchases:56, timeRange:'2025.01 - 2026.03', tags:['IBS','肠道菌群','益生菌','FODMAP'], exchangeId:'GY-HDA-2026-000112', txHash:'0xf2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a0', blockNum:15232345, createdAt:'2026-03-05' },
+    { id:7, title:'妊娠期糖尿病血糖管理数据', type:'blood_sugar', typeLabel:'血糖', typeColor:'#e53e3e', disease:'妊娠期糖尿病', price:68, quality:'A', score:3.8, status:'registered', gender:'女', age:'31-40', region:'贵州省', volume:210, views:234, purchases:0, timeRange:'2025.06 - 2026.01', tags:['妊娠糖尿病','血糖','胰岛素'], exchangeId:'GY-HDA-2026-000178', txHash:'0xa1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9', blockNum:15235678, createdAt:'2026-03-25' },
+    { id:8, title:'冠心病PCI术后5年随访数据', type:'treatment', typeLabel:'治疗', typeColor:'#2b6cb0', disease:'冠状动脉粥样硬化性心脏病', price:450, quality:'S', score:4.9, status:'listed', gender:'男', age:'51-60', region:'湖北省', volume:2430, views:4521, purchases:156, timeRange:'2021.03 - 2026.03', tags:['冠心病','PCI','支架','抗血小板'], exchangeId:'GY-HDA-2026-000023', txHash:'0xb2c4d6e8f0a2b4c6d8e0f2a4b6c8d0e2f4a6b8c0', blockNum:15226789, createdAt:'2025-12-08' },
+    { id:9, title:'儿童哮喘用药与过敏原检测数据', type:'medication', typeLabel:'用药', typeColor:'#d69e2e', disease:'支气管哮喘', price:85, quality:'B', score:3.6, status:'registered', gender:'男', age:'0-10', region:'江苏省', volume:96, views:345, purchases:0, timeRange:'2024.09 - 2026.02', tags:['哮喘','布地奈德','过敏原','IgE'], exchangeId:'GY-HDA-2026-000189', txHash:'0xc3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1', blockNum:15235890, createdAt:'2026-03-28' },
+    { id:10, title:'类风湿关节炎生物制剂治疗数据', type:'treatment', typeLabel:'治疗', typeColor:'#2b6cb0', disease:'类风湿关节炎', price:210, quality:'A', score:4.3, status:'listed', gender:'女', age:'41-50', region:'贵州省', volume:730, views:1890, purchases:67, timeRange:'2023.06 - 2026.03', tags:['类风湿','生物制剂','TNF抑制剂','DAS28'], exchangeId:'GY-HDA-2026-000098', txHash:'0xd4e6f8a0b2c4d6e8f0a2b4c6d8e0f2a4b6c8d0e2', blockNum:15231234, createdAt:'2026-02-28' },
+    { id:11, title:'克罗恩病肠道菌群移植前后对比', type:'microbiome', typeLabel:'微生态', typeColor:'#38a169', disease:'克罗恩病', price:380, quality:'S', score:4.6, status:'listed', gender:'男', age:'31-40', region:'天津市', volume:48, views:2890, purchases:98, timeRange:'2024.01 - 2026.03', tags:['克罗恩','FMT','菌群移植','肠道屏障'], exchangeId:'GY-HDA-2026-000067', txHash:'0xe5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3', blockNum:15229567, createdAt:'2026-02-10' },
+    { id:12, title:'高脂血症饮食与运动干预数据', type:'diet', typeLabel:'饮食', typeColor:'#805ad5', disease:'高脂血症', price:28, quality:'B', score:3.2, status:'pending', gender:'女', age:'41-50', region:'重庆市', volume:145, views:89, purchases:0, timeRange:'2025.10 - 2026.03', tags:['高血脂','饮食','运动','他汀'], exchangeId:'', txHash:'', blockNum:0, createdAt:'2026-04-01' }
+];
+
+const MY_ASSETS = [
+    { ...ASSETS[0], myStatus:'listed', revenue:1856.50 },
+    { id:101, title:'个人肠道菌群年度检测数据', type:'microbiome', typeLabel:'微生态', typeColor:'#38a169', disease:'肠道健康', price:150, quality:'A', score:4.1, status:'listed', myStatus:'listed', gender:'女', age:'41-50', region:'贵州省', volume:12, views:567, purchases:23, revenue:892.00, timeRange:'2025.01 - 2026.01', tags:['肠道菌群','多样性指数'], exchangeId:'GY-HDA-2026-000155', txHash:'0xaa11bb22cc33dd44', blockNum:15234000, createdAt:'2026-03-12' },
+    { id:102, title:'高血压合并糖尿病联合用药记录', type:'medication', typeLabel:'用药', typeColor:'#d69e2e', disease:'高血压+糖尿病', price:95, quality:'A', score:4.0, status:'listed', myStatus:'listed', gender:'女', age:'41-50', region:'贵州省', volume:365, views:890, purchases:34, revenue:1245.80, timeRange:'2024.06 - 2026.03', tags:['高血压','糖尿病','联合用药'], exchangeId:'GY-HDA-2026-000160', txHash:'0xbb22cc33dd44ee55', blockNum:15234200, createdAt:'2026-03-14' },
+    { id:103, title:'血压24小时动态监测数据', type:'blood_pressure', typeLabel:'血压', typeColor:'#dd6b20', disease:'高血压', price:55, quality:'B', score:3.7, status:'listed', myStatus:'listed', gender:'女', age:'41-50', region:'贵州省', volume:720, views:345, purchases:12, revenue:267.30, timeRange:'2025.06 - 2026.03', tags:['血压','动态监测'], exchangeId:'GY-HDA-2026-000168', txHash:'0xcc33dd44ee55ff66', blockNum:15234500, createdAt:'2026-03-19' },
+    { id:104, title:'减重期间饮食与体成分变化数据', type:'diet', typeLabel:'饮食', typeColor:'#805ad5', disease:'超重', price:30, quality:'B', score:3.4, status:'listed', myStatus:'listed', gender:'女', age:'41-50', region:'贵州省', volume:180, views:123, purchases:5, revenue:78.90, timeRange:'2025.09 - 2026.03', tags:['减重','饮食','体脂'], exchangeId:'GY-HDA-2026-000175', txHash:'0xdd44ee55ff667788', blockNum:15234800, createdAt:'2026-03-22' },
+    { id:105, title:'空腹血糖6个月连续监测数据', type:'blood_sugar', typeLabel:'血糖', typeColor:'#e53e3e', disease:'糖尿病前期', price:40, quality:'B', score:3.5, status:'registered', myStatus:'registered', gender:'女', age:'41-50', region:'贵州省', volume:180, views:0, purchases:0, revenue:0, timeRange:'2025.10 - 2026.04', tags:['血糖','空腹','监测'], exchangeId:'GY-HDA-2026-000192', txHash:'0xee55ff66778899aa', blockNum:15236000, createdAt:'2026-04-02' },
+    { id:106, title:'益生菌干预前后对比数据', type:'microbiome', typeLabel:'微生态', typeColor:'#38a169', disease:'肠道调理', price:0, quality:'', score:0, status:'draft', myStatus:'draft', gender:'女', age:'41-50', region:'贵州省', volume:6, views:0, purchases:0, revenue:0, timeRange:'2026.03 - 进行中', tags:['益生菌'], exchangeId:'', txHash:'', blockNum:0, createdAt:'2026-04-05' }
+];
+
+const TRANSACTIONS = [
+    { id:1, time:'2026-04-11 14:32', type:'dividend', typeLabel:'数据分红', asset:'2型糖尿病3年随访血糖及用药数据', consumer:'某药企***', total:85.00, myRevenue:12.50, platformFee:2.50, exchangeFee:1.25, settled:true, txHash:'0x3a7f...f3a2' },
+    { id:2, time:'2026-04-10 09:15', type:'purchase', typeLabel:'数据交易', asset:'个人肠道菌群年度检测数据', consumer:'科研***', total:150.00, myRevenue:105.00, platformFee:30.00, exchangeFee:15.00, settled:true, txHash:'0x8b2c...8b0c' },
+    { id:3, time:'2026-04-09 16:45', type:'dividend', typeLabel:'数据分红', asset:'高血压合并糖尿病联合用药记录', consumer:'保险***', total:200.00, myRevenue:8.60, platformFee:1.70, exchangeFee:0.86, settled:true, txHash:'0xc5d7...c1d3' },
+    { id:4, time:'2026-04-08 11:20', type:'purchase', typeLabel:'数据交易', asset:'2型糖尿病3年随访血糖及用药数据', consumer:'个人***', total:128.00, myRevenue:89.60, platformFee:25.60, exchangeFee:12.80, settled:true, txHash:'0xd2e4...d8e0' },
+    { id:5, time:'2026-04-07 08:55', type:'view', typeLabel:'浏览收益', asset:'血压24小时动态监测数据', consumer:'医生***', total:0, myRevenue:0.50, platformFee:0.10, exchangeFee:0.05, settled:true, txHash:'0xe1f3...e7f9' },
+    { id:6, time:'2026-04-05 15:30', type:'purchase', typeLabel:'数据交易', asset:'高血压合并糖尿病联合用药记录', consumer:'药企***', total:95.00, myRevenue:66.50, platformFee:19.00, exchangeFee:9.50, settled:false, txHash:'0xf2a4...f8a0' },
+    { id:7, time:'2026-04-04 10:12', type:'dividend', typeLabel:'数据分红', asset:'个人肠道菌群年度检测数据', consumer:'个人***', total:60.00, myRevenue:4.20, platformFee:0.84, exchangeFee:0.42, settled:false, txHash:'0xa1b3...a7b9' },
+    { id:8, time:'2026-04-02 13:40', type:'purchase', typeLabel:'数据交易', asset:'减重期间饮食与体成分变化数据', consumer:'健康***', total:30.00, myRevenue:21.00, platformFee:6.00, exchangeFee:3.00, settled:false, txHash:'0xb2c4...b8c0' },
+];
+
+const ACTIVITY_FEED = [
+    { time:'5分钟前', text:'药企 贵州***公司 购买了 [肠道菌群多样性数据集]', color:'#38a169' },
+    { time:'23分钟前', text:'用户 李*** 完成了 [高血压监测数据] 的交易所确权', color:'#3182ce' },
+    { time:'1小时前', text:'数据分红: 张*** 因数据被引用获得收益 +12.50', color:'#d69e2e' },
+    { time:'2小时前', text:'新资产上架: [克罗恩病菌群移植对比数据] 评级S级', color:'#805ad5' },
+    { time:'3小时前', text:'科研机构 中科院*** 采购了 [帕金森病5年随访数据]', color:'#38a169' },
+    { time:'5小时前', text:'本周结算完成: 第15批次 总金额 ¥45,230.00', color:'#e53e3e' },
+];
+
+const WEEKLY_CHART = [
+    { label:'3/10', value:12450 },
+    { label:'3/17', value:18230 },
+    { label:'3/24', value:15670 },
+    { label:'3/31', value:22340 },
+    { label:'4/7', value:28910 },
+    { label:'4/11', value:19560 },
+];
+
+const TYPE_DIST = [
+    { label:'微生态数据', value:35, color:'#38a169' },
+    { label:'血糖数据', value:25, color:'#e53e3e' },
+    { label:'治疗数据', value:20, color:'#2b6cb0' },
+    { label:'血压数据', value:12, color:'#dd6b20' },
+    { label:'用药记录', value:5, color:'#d69e2e' },
+    { label:'饮食数据', value:3, color:'#805ad5' },
+];
+
+const PIPELINE_STEPS = ['数据上传','脱敏处理','质量评分','资产封装','交易所审核','确权上链','上架交易'];
+
+const TYPE_ICONS = { blood_sugar:'&#128201;', blood_pressure:'&#128147;', microbiome:'&#129440;', diet:'&#127869;', treatment:'&#128138;', medication:'&#128138;' };
+const TYPE_BG = { blood_sugar:'#fff5f5', blood_pressure:'#fffaf0', microbiome:'#f0fff4', diet:'#faf5ff', treatment:'#ebf8ff', medication:'#fffff0' };
+
+// ==================== ROUTER ====================
+let currentView = 'dashboard';
+let currentAssetId = null;
+
+function navigate(hash) {
+    if (!hash || hash === '#') hash = '#dashboard';
+    const parts = hash.replace('#','').split('?');
+    const view = parts[0];
+    const params = new URLSearchParams(parts[1] || '');
+    currentView = view;
+    currentAssetId = params.get('id') ? parseInt(params.get('id')) : null;
+    renderView();
+    updateNav();
+    window.scrollTo(0, 0);
+    if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').style.display='none'; }
+}
+
+function updateNav() {
+    document.querySelectorAll('.sidebar-nav a').forEach(a => {
+        a.classList.toggle('active', a.dataset.view === currentView || (currentView === 'detail' && a.dataset.view === 'market'));
+    });
+}
+
+window.addEventListener('hashchange', () => navigate(location.hash));
+
+function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('overlay');
+    sb.classList.toggle('open');
+    ov.style.display = sb.classList.contains('open') ? 'block' : 'none';
+}
+
+// ==================== RENDER ====================
+function renderView() {
+    const main = document.getElementById('main-content');
+    switch(currentView) {
+        case 'dashboard': main.innerHTML = renderDashboard(); animateCounters(); animateBars(); break;
+        case 'market': main.innerHTML = renderMarket(); break;
+        case 'detail': main.innerHTML = renderDetail(currentAssetId); break;
+        case 'upload': main.innerHTML = renderUpload(); initUploadWizard(); break;
+        case 'my-assets': main.innerHTML = renderMyAssets(); break;
+        case 'revenue': main.innerHTML = renderRevenue(); animateCounters(); animateBars(); break;
+        default: main.innerHTML = renderDashboard(); animateCounters(); animateBars();
+    }
+}
+
+// ---- Dashboard ----
+function renderDashboard() {
+    const maxVal = Math.max(...WEEKLY_CHART.map(d=>d.value));
+    return `
+    <h2 class="page-title">&#128202; 平台概览</h2>
+    <div class="stat-grid">
+        ${statCard('&#128451;','blue','2,847','已登记数据资产','本周 +126')}
+        ${statCard('&#128178;','green','1,523,680','累计交易额(元)','本周 +89,230')}
+        ${statCard('&#128101;','orange','1,206','活跃数据提供者','本周 +58')}
+        ${statCard('&#127873;','purple','423,150','累计分红发放(元)','本周 +15,670')}
+    </div>
+    <div class="two-col">
+        <div class="card">
+            <div class="card-title">近6周交易趋势</div>
+            <div class="bar-chart">
+                ${WEEKLY_CHART.map(d => `<div class="bar-col"><div class="bar-value">${(d.value/10000).toFixed(1)}万</div><div class="bar" data-h="${Math.round(d.value/maxVal*130)}"></div><div class="bar-label">${d.label}</div></div>`).join('')}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">数据资产类型分布</div>
+            <div class="h-bar-chart">
+                ${TYPE_DIST.map(d => `<div class="h-bar-row"><div class="h-bar-label">${d.label}</div><div class="h-bar-track"><div class="h-bar-fill" style="width:0%;background:${d.color}" data-w="${d.value}%"></div></div><div class="h-bar-val">${d.value}%</div></div>`).join('')}
+            </div>
+        </div>
+    </div>
+    <div class="two-col">
+        <div class="card">
+            <div class="card-title">实时动态</div>
+            ${ACTIVITY_FEED.map(f => `<div class="feed-item"><div class="feed-dot" style="background:${f.color}"></div><div style="flex:1">${f.text}</div><div class="feed-time">${f.time}</div></div>`).join('')}
+        </div>
+        <div class="card">
+            <div class="card-title">快速操作</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;">
+                <a class="btn btn-primary btn-lg" href="#upload">&#128228; 上传健康数据</a>
+                <a class="btn btn-outline btn-lg" href="#market">&#128269; 浏览数据市场</a>
+            </div>
+            <div style="margin-top:24px;padding:16px;background:#f0fff4;border-radius:8px;font-size:13px;">
+                <div style="font-weight:600;color:#22543d;margin-bottom:6px;">&#127793; 本周结算提醒</div>
+                <div style="color:#4a5568;">第16批次结算将于 2026-04-14（周二）执行，预计分配金额 ¥19,560.00</div>
+            </div>
+            <div style="margin-top:12px;padding:16px;background:#ebf8ff;border-radius:8px;font-size:13px;">
+                <div style="font-weight:600;color:#2b6cb0;margin-bottom:6px;">&#9939; 区块链状态</div>
+                <div style="color:#4a5568;">长安链(ChainMaker) 运行正常 | 最新区块 #15,236,128 | 本周上链 342 笔</div>
+            </div>
+        </div>
+    </div>`;
+}
+
+// ---- Market ----
+let marketFilter = { search:'', type:'all', quality:'all' };
+
+function renderMarket() {
+    const filtered = ASSETS.filter(a => {
+        if (marketFilter.type !== 'all' && a.type !== marketFilter.type) return false;
+        if (marketFilter.quality !== 'all' && a.quality !== marketFilter.quality) return false;
+        if (marketFilter.search && !a.title.includes(marketFilter.search) && !a.tags.some(t=>t.includes(marketFilter.search))) return false;
+        return true;
+    });
+    return `
+    <h2 class="page-title">&#128722; 数据资产市场</h2>
+    <div class="search-bar">
+        <input type="text" placeholder="搜索数据资产（疾病名称、标签...）" value="${marketFilter.search}" oninput="marketFilter.search=this.value;document.getElementById('assetGrid').innerHTML=renderAssetCards()">
+        <select onchange="marketFilter.type=this.value;document.getElementById('assetGrid').innerHTML=renderAssetCards()">
+            <option value="all">全部类型</option>
+            <option value="blood_sugar" ${marketFilter.type==='blood_sugar'?'selected':''}>血糖数据</option>
+            <option value="blood_pressure" ${marketFilter.type==='blood_pressure'?'selected':''}>血压数据</option>
+            <option value="microbiome" ${marketFilter.type==='microbiome'?'selected':''}>微生态数据</option>
+            <option value="diet" ${marketFilter.type==='diet'?'selected':''}>饮食数据</option>
+            <option value="treatment" ${marketFilter.type==='treatment'?'selected':''}>治疗数据</option>
+            <option value="medication" ${marketFilter.type==='medication'?'selected':''}>用药记录</option>
+        </select>
+        <select onchange="marketFilter.quality=this.value;document.getElementById('assetGrid').innerHTML=renderAssetCards()">
+            <option value="all">全部评级</option>
+            <option value="S">S级</option>
+            <option value="A">A级</option>
+            <option value="B">B级</option>
+        </select>
+    </div>
+    <div class="asset-grid" id="assetGrid">${renderAssetCards()}</div>`;
+}
+
+function renderAssetCards() {
+    const filtered = ASSETS.filter(a => {
+        if (marketFilter.type !== 'all' && a.type !== marketFilter.type) return false;
+        if (marketFilter.quality !== 'all' && a.quality !== marketFilter.quality) return false;
+        if (marketFilter.search && !a.title.includes(marketFilter.search) && !a.tags.some(t=>t.includes(marketFilter.search))) return false;
+        return true;
+    });
+    if (!filtered.length) return '<div class="empty-state"><div class="empty-icon">&#128269;</div>未找到匹配的数据资产</div>';
+    return filtered.map(a => `
+    <div class="asset-card" onclick="location.hash='#detail?id=${a.id}'">
+        <div class="asset-header">
+            <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <div class="asset-type-icon" style="width:32px;height:32px;font-size:16px;background:${TYPE_BG[a.type]}">${TYPE_ICONS[a.type]}</div>
+                    <span class="badge" style="background:${TYPE_BG[a.type]};color:${a.typeColor}">${a.typeLabel}</span>
+                    ${a.quality ? `<span class="quality-badge quality-${a.quality}">${a.quality}</span>` : ''}
+                    ${a.status==='listed' ? '<span class="badge badge-listed">&#10003; 已确权</span>' : a.status==='registered' ? '<span class="badge badge-registered">审核中</span>' : '<span class="badge badge-pending">待提交</span>'}
+                </div>
+                <div class="asset-title">${a.title}</div>
+            </div>
+        </div>
+        <div class="asset-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+        <div class="asset-meta">
+            <div>${a.gender} | ${a.age}岁 | ${a.region}</div>
+            <div class="asset-price">&yen;${a.price.toFixed(2)}</div>
+        </div>
+        <div class="asset-stats">
+            <span>&#128196; ${a.volume}条数据</span>
+            <span>&#128065; ${a.views}次浏览</span>
+            <span>&#128176; ${a.purchases}次购买</span>
+            <span>&#11088; ${a.score}</span>
+        </div>
+    </div>`).join('');
+}
+
+// ---- Detail ----
+function renderDetail(id) {
+    const a = ASSETS.find(x=>x.id===id) || MY_ASSETS.find(x=>x.id===id);
+    if (!a) return '<div class="empty-state">资产未找到</div>';
+    const sampleData = getSampleData(a.type);
+    return `
+    <div class="back-btn" onclick="location.hash='#market'">&larr; 返回市场</div>
+    <div class="detail-header">
+        <div class="type-icon" style="background:${TYPE_BG[a.type]}">${TYPE_ICONS[a.type]}</div>
+        <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span class="badge" style="background:${TYPE_BG[a.type]};color:${a.typeColor}">${a.typeLabel}</span>
+                ${a.quality ? `<span class="quality-badge quality-${a.quality}">${a.quality}</span>` : ''}
+                ${a.status==='listed' ? '<span class="badge badge-listed">&#10003; 交易所已确权</span>' : '<span class="badge badge-registered">审核中</span>'}
+            </div>
+            <h2 style="font-size:20px;color:#1a3a5c;">${a.title}</h2>
+            <div class="asset-tags mt-2">${a.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-title">资产化流水线状态</div>
+        <div class="pipeline">
+            ${PIPELINE_STEPS.map((s,i) => {
+                const done = a.status==='listed' ? true : (a.status==='registered' ? i<=4 : i<=0);
+                return `<div class="pipeline-step ${done?'done':''}">${i>0?'':''}<div class="step-dot">${done?'&#10003;':(i+1)}</div><div class="step-label">${s}</div></div>${i<6?`<div class="pipeline-line ${done?'done':''}"></div>`:''}`;
+            }).join('')}
+        </div>
+    </div>
+    <div class="detail-grid">
+        <div>
+            <div class="card">
+                <div class="card-title">数据概况</div>
+                <div class="info-row"><span class="info-label">疾病/场景</span><span class="info-value">${a.disease}</span></div>
+                <div class="info-row"><span class="info-label">数据时间</span><span class="info-value">${a.timeRange}</span></div>
+                <div class="info-row"><span class="info-label">数据量</span><span class="info-value">${a.volume} 条记录</span></div>
+                <div class="info-row"><span class="info-label">提供者</span><span class="info-value">${a.gender} | ${a.age}岁 | ${a.region} (已脱敏)</span></div>
+                <div class="info-row"><span class="info-label">质量评分</span><span class="info-value">${a.score} / 5.0</span></div>
+                <div class="info-row"><span class="info-label">上传时间</span><span class="info-value">${a.createdAt}</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">数据预览（脱敏样本）</div>
+                <div class="sample-data"><pre>${sampleData}</pre></div>
+            </div>
+            <div class="card">
+                <div class="card-title">&#9939; 区块链存证记录</div>
+                <div class="timeline">
+                    ${a.txHash ? `
+                    <div class="timeline-item"><div class="tl-time">${a.createdAt} 10:00</div><div class="tl-content">数据资产确权上链</div><div class="tl-hash">TX: ${a.txHash} | Block: #${a.blockNum.toLocaleString()}</div></div>
+                    <div class="timeline-item"><div class="tl-time">${a.createdAt} 10:02</div><div class="tl-content">交易所登记确认，资产编号: ${a.exchangeId}</div><div class="tl-hash">链类型: 长安链 ChainMaker</div></div>
+                    <div class="timeline-item"><div class="tl-time">${a.createdAt} 10:05</div><div class="tl-content">数据资产正式上架交易</div><div class="tl-hash">状态: 可交易</div></div>
+                    ` : '<div style="color:#a0aec0;font-size:13px;">暂无链上记录</div>'}
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="price-box">
+                <div class="price">&yen;${a.price.toFixed(2)}</div>
+                <div style="font-size:13px;color:#718096;margin-bottom:16px;">含交易所手续费及平台服务费</div>
+                <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;" onclick="showPurchaseModal(${a.id})">&#128176; 购买此数据资产</button>
+                <div style="margin-top:16px;font-size:12px;color:#a0aec0;">
+                    <div>&#128065; ${a.views.toLocaleString()} 次浏览</div>
+                    <div>&#128176; ${a.purchases} 次购买</div>
+                    <div>&#11088; ${a.score} 评分</div>
+                </div>
+                <hr style="margin:16px 0;border:none;border-top:1px solid #edf2f7;">
+                <div style="font-size:12px;">
+                    <div style="font-weight:600;color:#4a5568;margin-bottom:8px;">交易所信息</div>
+                    <div class="info-row"><span class="info-label">交易所</span><span class="info-value">贵阳大数据交易所</span></div>
+                    <div class="info-row"><span class="info-label">资产编号</span><span class="info-value" style="font-family:monospace">${a.exchangeId||'待分配'}</span></div>
+                    <div class="info-row"><span class="info-label">结算周期</span><span class="info-value">每周一次</span></div>
+                </div>
+                <hr style="margin:16px 0;border:none;border-top:1px solid #edf2f7;">
+                <div style="font-size:12px;">
+                    <div style="font-weight:600;color:#4a5568;margin-bottom:8px;">收益分配规则</div>
+                    <div class="rev-breakdown">
+                        <div style="width:70%;background:#38a169;">提供者 70%</div>
+                        <div style="width:20%;background:#3182ce;">平台 20%</div>
+                        <div style="width:10%;background:#d69e2e;">交易所 10%</div>
+                    </div>
+                    <div style="color:#718096;margin-top:6px;">购买后如您再产生消费，区块链将自动追溯并分配分红给相关数据提供者</div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function getSampleData(type) {
+    const samples = {
+        blood_sugar: `{
+  "user_id": "DP-****-3721",
+  "records": [
+    { "date": "2025-**-15", "fasting_glucose": 8.2, "postprandial_2h": 12.5, "hba1c": 7.8, "medication": "二甲双胍 500mg x2" },
+    { "date": "2025-**-12", "fasting_glucose": 7.1, "postprandial_2h": 10.3, "hba1c": 7.2, "medication": "二甲双胍 500mg x2" },
+    { "date": "2026-**-10", "fasting_glucose": 6.4, "postprandial_2h": 8.9, "hba1c": 6.5, "medication": "二甲双胍 250mg x2" }
+  ],
+  "outcome": "血糖控制达标，HbA1c从7.8降至6.5"
+}`,
+        blood_pressure: `{
+  "user_id": "DP-****-5628",
+  "records": [
+    { "date": "2025-**-01", "systolic": 158, "diastolic": 95, "heart_rate": 78, "medication": "氨氯地平 5mg" },
+    { "date": "2025-**-15", "systolic": 142, "diastolic": 88, "heart_rate": 72, "medication": "氨氯地平 5mg" },
+    { "date": "2026-**-01", "systolic": 128, "diastolic": 82, "heart_rate": 70, "medication": "氨氯地平 5mg" }
+  ]
+}`,
+        microbiome: `{
+  "user_id": "DP-****-1892",
+  "test_type": "16S rRNA + 宏基因组",
+  "diversity": { "shannon_index": 3.82, "simpson_index": 0.91, "species_richness": 486 },
+  "key_genera": [
+    { "name": "Bacteroides", "abundance": "28.5%", "trend": "stable" },
+    { "name": "Faecalibacterium", "abundance": "12.3%", "trend": "increasing" },
+    { "name": "Bifidobacterium", "abundance": "8.7%", "trend": "increasing" }
+  ]
+}`,
+        diet: `{
+  "user_id": "DP-****-4156",
+  "daily_records": [
+    { "date": "2025-**-01", "calories": 2150, "protein_g": 65, "fat_g": 78, "carb_g": 285, "fiber_g": 12, "weight_kg": 92.5 },
+    { "date": "2025-**-01", "calories": 1680, "protein_g": 82, "fat_g": 55, "carb_g": 195, "fiber_g": 22, "weight_kg": 87.3 }
+  ]
+}`,
+        treatment: `{
+  "user_id": "DP-****-7823",
+  "diagnosis": "***病",
+  "treatment_plan": "药物治疗 + 康复训练",
+  "follow_ups": [
+    { "month": 6, "assessment": "症状改善30%", "side_effects": "轻微恶心" },
+    { "month": 12, "assessment": "症状改善55%", "side_effects": "无" },
+    { "month": 36, "assessment": "病情稳定", "side_effects": "无" }
+  ]
+}`,
+        medication: `{
+  "user_id": "DP-****-6234",
+  "medications": [
+    { "name": "***片", "dosage": "100mg", "frequency": "每日1次", "start": "2024-**", "end": "持续中", "efficacy": "有效" },
+    { "name": "***雾化剂", "dosage": "200μg", "frequency": "每日2次", "start": "2024-**", "end": "持续中", "efficacy": "有效" }
+  ],
+  "allergy_tests": [{ "allergen": "尘螨", "level": "4级(强阳性)" }]
+}`
+    };
+    return samples[type] || samples.blood_sugar;
+}
+
+// ---- Upload ----
+let uploadStep = 0;
+
+function renderUpload() {
+    return `
+    <h2 class="page-title">&#128228; 上传健康数据</h2>
+    <div class="card">
+        <div class="pipeline" id="uploadPipeline">
+            ${PIPELINE_STEPS.map((s,i) => `<div class="pipeline-step ${i===0?'active':''}" id="upStep${i}"><div class="step-dot">${i+1}</div><div class="step-label">${s}</div></div>${i<6?'<div class="pipeline-line" id="upLine${i}"></div>':''}`).join('')}
+        </div>
+        <div class="wizard-content" id="wizardContent">
+            <!-- Step 0: Upload -->
+            <div class="wizard-step active" id="ws0">
+                <h3 style="margin-bottom:16px;">选择数据类型并填写信息</h3>
+                <div class="form-group">
+                    <label>数据类型</label>
+                    <select id="uploadType" onchange="updateUploadForm()">
+                        <option value="blood_sugar">血糖监测数据</option>
+                        <option value="blood_pressure">血压监测数据</option>
+                        <option value="microbiome">肠道微生态数据</option>
+                        <option value="medication">用药记录</option>
+                        <option value="diet">饮食记录</option>
+                        <option value="treatment">治疗效果数据</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>相关疾病/场景</label><input type="text" value="2型糖尿病" id="uploadDisease"></div>
+                    <div class="form-group"><label>数据时间范围</label><input type="text" value="2024.01 - 2026.04" readonly></div>
+                </div>
+                <div class="form-group">
+                    <label>数据描述</label>
+                    <textarea rows="3" id="uploadDesc">持续3年的空腹血糖、餐后2小时血糖、HbA1c监测数据，包含二甲双胍用药记录及剂量调整过程。</textarea>
+                </div>
+                <div style="border:2px dashed #cbd5e0;border-radius:12px;padding:30px;text-align:center;color:#a0aec0;margin-top:8px;">
+                    <div style="font-size:36px;margin-bottom:8px;">&#128196;</div>
+                    <div>点击或拖拽上传体检报告、检验单等文件</div>
+                    <div style="font-size:12px;margin-top:4px;">支持 PDF、图片、CSV 格式，单文件不超过50MB</div>
+                </div>
+            </div>
+            <!-- Step 1: Desensitize -->
+            <div class="wizard-step" id="ws1">
+                <h3 style="margin-bottom:16px;">&#128274; 自动脱敏处理</h3>
+                <p style="color:#718096;margin-bottom:16px;">AI正在识别并遮蔽个人敏感信息，确保数据安全...</p>
+                <div id="desensitizeAnim"></div>
+            </div>
+            <!-- Step 2: Quality -->
+            <div class="wizard-step" id="ws2">
+                <h3 style="margin-bottom:16px;">&#11088; 数据质量评估</h3>
+                <div class="score-grid" id="scoreGrid"></div>
+                <div style="text-align:center;margin-top:20px;" id="overallScore"></div>
+            </div>
+            <!-- Step 3: Package -->
+            <div class="wizard-step" id="ws3">
+                <h3 style="margin-bottom:16px;">&#128230; 数据资产封装</h3>
+                <div class="form-group"><label>资产标题（AI生成，可修改）</label><input type="text" value="2型糖尿病3年血糖监测及用药调整数据"></div>
+                <div class="form-group"><label>资产摘要</label><textarea rows="3">本数据集包含一名51-60岁女性2型糖尿病患者自2024年1月至2026年4月的连续血糖监测记录（含空腹血糖、餐后血糖、HbA1c），以及二甲双胍用药调整过程与疗效反馈。数据完整性高，具有较强的临床参考价值。</textarea></div>
+                <div class="form-group"><label>建议定价</label><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;font-weight:700;color:#e53e3e;">&yen;</span><input type="number" value="85" style="max-width:120px;"><span style="color:#718096;font-size:13px;">（AI基于数据稀缺性、完整度、时效性推荐）</span></div></div>
+                <div class="form-group"><label>标签</label><div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="badge" style="background:#ebf4ff;color:#2b6cb0;padding:4px 10px;">糖尿病</span><span class="badge" style="background:#ebf4ff;color:#2b6cb0;padding:4px 10px;">二甲双胍</span><span class="badge" style="background:#ebf4ff;color:#2b6cb0;padding:4px 10px;">HbA1c</span><span class="badge" style="background:#ebf4ff;color:#2b6cb0;padding:4px 10px;">血糖监测</span></div></div>
+            </div>
+            <!-- Step 4: Exchange Review -->
+            <div class="wizard-step" id="ws4">
+                <h3 style="margin-bottom:16px;">&#127961; 提交交易所审核</h3>
+                <div style="text-align:center;padding:30px;" id="exchangeReview">
+                    <div style="font-size:48px;margin-bottom:12px;">&#9203;</div>
+                    <div style="font-size:16px;color:#4a5568;">正在提交至贵阳大数据交易所...</div>
+                    <div style="margin-top:16px;color:#a0aec0;">审核中，请稍候</div>
+                </div>
+            </div>
+            <!-- Step 5: On-chain -->
+            <div class="wizard-step" id="ws5">
+                <h3 style="margin-bottom:16px;">&#9939; 确权上链</h3>
+                <div style="text-align:center;padding:20px;" id="chainAnim">
+                    <div style="font-size:48px;margin-bottom:12px;">&#128279;</div>
+                    <div style="font-size:16px;color:#4a5568;">正在写入长安链(ChainMaker)...</div>
+                </div>
+            </div>
+            <!-- Step 6: Success -->
+            <div class="wizard-step" id="ws6">
+                <div class="success-anim">
+                    <div class="check-circle">&#10003;</div>
+                    <h2>数据资产上架成功!</h2>
+                    <p>您的健康数据已完成资产化，正式在贵阳大数据交易所挂牌交易</p>
+                    <div style="background:#f7fafc;border-radius:8px;padding:16px;text-align:left;max-width:400px;margin:0 auto 20px;font-size:13px;">
+                        <div class="info-row"><span class="info-label">交易所编号</span><span class="info-value" style="font-family:monospace;">GY-HDA-2026-000198</span></div>
+                        <div class="info-row"><span class="info-label">链上哈希</span><span class="info-value hash-text">0xff66...99bb</span></div>
+                        <div class="info-row"><span class="info-label">区块高度</span><span class="info-value">#15,236,198</span></div>
+                        <div class="info-row"><span class="info-label">评级</span><span class="info-value"><span class="quality-badge quality-A">A</span></span></div>
+                    </div>
+                    <div style="display:flex;gap:12px;justify-content:center;">
+                        <a class="btn btn-primary" href="#my-assets">查看我的资产</a>
+                        <a class="btn btn-outline" href="#upload" onclick="setTimeout(()=>{uploadStep=0;renderView()},50)">继续上传</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wizard-actions" id="wizardActions">
+            <button class="btn btn-outline" id="prevBtn" onclick="prevUploadStep()" style="visibility:hidden;">&larr; 上一步</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextUploadStep()">下一步 &rarr;</button>
+        </div>
+    </div>`;
+}
+
+function initUploadWizard() { uploadStep = 0; updateWizardUI(); }
+
+function nextUploadStep() {
+    if (uploadStep >= 6) return;
+    uploadStep++;
+    // Mark previous step done
+    const prev = document.getElementById('upStep'+(uploadStep-1));
+    if (prev) { prev.classList.remove('active'); prev.classList.add('done'); prev.querySelector('.step-dot').innerHTML='&#10003;'; }
+    const line = document.getElementById('upLine'+(uploadStep-1));
+    if (line) line.classList.add('done');
+    const cur = document.getElementById('upStep'+uploadStep);
+    if (cur) cur.classList.add('active');
+    // Show step content
+    document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('ws'+uploadStep).classList.add('active');
+    updateWizardUI();
+    // Animate specific steps
+    if (uploadStep === 1) animateDesensitize();
+    if (uploadStep === 2) animateScoring();
+    if (uploadStep === 4) animateExchangeReview();
+    if (uploadStep === 5) animateChain();
+}
+
+function prevUploadStep() {
+    if (uploadStep <= 0) return;
+    const cur = document.getElementById('upStep'+uploadStep);
+    if (cur) cur.classList.remove('active','done');
+    const line = document.getElementById('upLine'+(uploadStep-1));
+    if (line) line.classList.remove('done');
+    uploadStep--;
+    const prev = document.getElementById('upStep'+uploadStep);
+    if (prev) { prev.classList.remove('done'); prev.classList.add('active'); prev.querySelector('.step-dot').textContent=uploadStep+1; }
+    document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('ws'+uploadStep).classList.add('active');
+    updateWizardUI();
+}
+
+function updateWizardUI() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const actions = document.getElementById('wizardActions');
+    if (prevBtn) prevBtn.style.visibility = uploadStep > 0 && uploadStep < 6 ? 'visible' : 'hidden';
+    if (nextBtn) nextBtn.style.display = uploadStep >= 6 ? 'none' : '';
+    if (nextBtn && uploadStep === 3) nextBtn.textContent = '提交交易所审核 \u2192';
+    else if (nextBtn) nextBtn.textContent = uploadStep >= 5 ? '完成' : '下一步 \u2192';
+    if (actions) actions.style.display = uploadStep >= 6 ? 'none' : '';
+}
+
+function animateDesensitize() {
+    const rows = [
+        ['姓名: 张丽华', '姓名: ***'],
+        ['身份证: 520102198506123456', '身份证: 520102****3456'],
+        ['手机: 13812345678', '手机: 138****5678'],
+        ['贵阳市第一人民医院', '***医院'],
+        ['2024年3月15日', '2024年**月'],
+        ['家住花溪区XX路', '已移除'],
+    ];
+    const container = document.getElementById('desensitizeAnim');
+    container.innerHTML = rows.map((r,i) => `<div class="desensitize-row" style="opacity:0;transition:opacity 0.4s;transition-delay:${i*0.4}s" id="dRow${i}"><span class="original">${r[0]}</span><span class="arrow">&rarr;</span><span class="masked">${r[1]}</span></div>`).join('') + '<div style="margin-top:16px;padding:12px;background:#f0fff4;border-radius:8px;color:#22543d;font-size:13px;opacity:0;transition:opacity 0.4s;transition-delay:2.8s" id="dDone">&#10003; 脱敏完成！共处理 6 项敏感信息，数据已安全脱敏。</div>';
+    setTimeout(()=>{ rows.forEach((_,i)=>{ const el=document.getElementById('dRow'+i); if(el) el.style.opacity='1'; }); document.getElementById('dDone').style.opacity='1'; }, 100);
+}
+
+function animateScoring() {
+    const scores = [
+        { label:'数据完整度', value:4.2, high:true },
+        { label:'时间跨度', value:4.5, high:true },
+        { label:'数据维度', value:3.8, high:false },
+        { label:'验证状态', value:4.0, high:true },
+    ];
+    document.getElementById('scoreGrid').innerHTML = scores.map(s => `<div class="score-item"><div class="score-ring ${s.high?'high':''}">${s.value}</div><div class="score-label">${s.label}</div></div>`).join('');
+    document.getElementById('overallScore').innerHTML = '<div style="font-size:14px;color:#718096;margin-bottom:4px;">综合评分</div><div style="font-size:36px;font-weight:700;color:#38a169;">4.1 / 5.0</div><div style="margin-top:4px;"><span class="quality-badge quality-A" style="width:auto;padding:4px 16px;">A级</span></div>';
+}
+
+function animateExchangeReview() {
+    const el = document.getElementById('exchangeReview');
+    setTimeout(()=>{
+        el.innerHTML = '<div style="font-size:48px;margin-bottom:12px;">&#10003;</div><div style="font-size:16px;color:#22543d;font-weight:600;">贵阳大数据交易所审核通过!</div><div style="margin-top:12px;font-size:13px;color:#718096;">资产编号: <span style="font-family:monospace;color:#1a1a1a;">GY-HDA-2026-000198</span></div><div style="margin-top:4px;font-size:13px;color:#718096;">审核时间: 2026-04-12 15:32:18</div>';
+    }, 2000);
+}
+
+function animateChain() {
+    const el = document.getElementById('chainAnim');
+    setTimeout(()=>{
+        el.innerHTML = '<div style="font-size:48px;margin-bottom:12px;">&#9939;</div><div style="font-size:16px;color:#22543d;font-weight:600;">确权上链成功!</div><div style="margin-top:16px;text-align:left;max-width:400px;margin-left:auto;margin-right:auto;font-size:13px;"><div class="info-row"><span class="info-label">区块链</span><span class="info-value">长安链 ChainMaker</span></div><div class="info-row"><span class="info-label">交易哈希</span><span class="info-value hash-text">0xff6688aa99bb11cc22dd33ee44ff5566</span></div><div class="info-row"><span class="info-label">区块高度</span><span class="info-value">#15,236,198</span></div><div class="info-row"><span class="info-label">确认时间</span><span class="info-value">2026-04-12 15:32:45</span></div><div class="info-row"><span class="info-label">确权类型</span><span class="info-value">数据资产权属确认</span></div></div>';
+    }, 2000);
+}
+
+function updateUploadForm() { /* could change form based on type - simplified */ }
+
+// ---- My Assets ----
+function renderMyAssets() {
+    const totalRevenue = MY_ASSETS.reduce((s,a)=>s+(a.revenue||0),0);
+    const listed = MY_ASSETS.filter(a=>a.myStatus==='listed').length;
+    const registered = MY_ASSETS.filter(a=>a.myStatus==='registered').length;
+    const draft = MY_ASSETS.filter(a=>a.myStatus==='draft').length;
+    return `
+    <h2 class="page-title">&#128188; 我的数据资产</h2>
+    <div class="stat-grid">
+        ${statCard('&#128451;','blue', MY_ASSETS.length.toString(), '总资产数','')}
+        ${statCard('&#10003;','green', listed.toString(), '已上架','')}
+        ${statCard('&#9203;','orange', registered.toString(), '审核中','')}
+        ${statCard('&#128176;','purple', totalRevenue.toFixed(2), '累计收益(元)','')}
+    </div>
+    <div class="card">
+        <div class="flex-between mb-4">
+            <div class="card-title" style="margin:0;">资产列表</div>
+            <a class="btn btn-primary btn-sm" href="#upload">+ 上传新数据</a>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>资产名称</th><th>类型</th><th>状态</th><th>评级</th><th>定价</th><th>浏览/购买</th><th>累计收益</th><th>交易所编号</th></tr></thead>
+                <tbody>
+                    ${MY_ASSETS.map(a=>`<tr style="cursor:pointer" onclick="location.hash='#detail?id=${a.id}'">
+                        <td style="font-weight:500;max-width:240px;">${a.title}</td>
+                        <td><span class="badge" style="background:${TYPE_BG[a.type]};color:${a.typeColor}">${a.typeLabel}</span></td>
+                        <td>${a.myStatus==='listed'?'<span class="badge badge-listed">已上架</span>':a.myStatus==='registered'?'<span class="badge badge-registered">审核中</span>':'<span class="badge badge-draft">草稿</span>'}</td>
+                        <td>${a.quality?`<span class="quality-badge quality-${a.quality}">${a.quality}</span>`:'-'}</td>
+                        <td>&yen;${a.price.toFixed(2)}</td>
+                        <td>${a.views} / ${a.purchases}</td>
+                        <td style="font-weight:600;color:#38a169;">&yen;${(a.revenue||0).toFixed(2)}</td>
+                        <td class="hash-text">${a.exchangeId||'-'}</td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+        </div>
+    </div>`;
+}
+
+// ---- Revenue ----
+function renderRevenue() {
+    const weeklyRevData = [
+        {label:'W9',value:86},{label:'W10',value:123},{label:'W11',value:98},{label:'W12',value:156},
+        {label:'W13',value:189},{label:'W14',value:210},{label:'W15',value:157},{label:'本周',value:89}
+    ];
+    const maxR = Math.max(...weeklyRevData.map(d=>d.value));
+    return `
+    <h2 class="page-title">&#128176; 收益中心</h2>
+    <div class="stat-grid">
+        ${statCard('&#128178;','green','156.80','本周收益(元)','+23.5%')}
+        ${statCard('&#128178;','blue','623.40','本月收益(元)','+18.2%')}
+        ${statCard('&#127873;','purple','2,340.50','累计收益(元)','')}
+        ${statCard('&#9203;','orange','89.20','待结算(元)','下周二结算')}
+    </div>
+    <div class="two-col">
+        <div class="card">
+            <div class="card-title">近8周收益趋势(元)</div>
+            <div class="bar-chart">
+                ${weeklyRevData.map(d=>`<div class="bar-col"><div class="bar-value">${d.value}</div><div class="bar" data-h="${Math.round(d.value/maxR*130)}"></div><div class="bar-label">${d.label}</div></div>`).join('')}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">收益来源构成</div>
+            <div class="h-bar-chart" style="margin-top:12px;">
+                <div class="h-bar-row"><div class="h-bar-label">数据交易</div><div class="h-bar-track"><div class="h-bar-fill" style="width:0%;background:#3182ce" data-w="65%"></div></div><div class="h-bar-val">65%</div></div>
+                <div class="h-bar-row"><div class="h-bar-label">数据分红</div><div class="h-bar-track"><div class="h-bar-fill" style="width:0%;background:#38a169" data-w="25%"></div></div><div class="h-bar-val">25%</div></div>
+                <div class="h-bar-row"><div class="h-bar-label">浏览收益</div><div class="h-bar-track"><div class="h-bar-fill" style="width:0%;background:#d69e2e" data-w="10%"></div></div><div class="h-bar-val">10%</div></div>
+            </div>
+            <div style="margin-top:16px;padding:12px;background:#f0fff4;border-radius:8px;font-size:13px;color:#22543d;">
+                &#128161; 您的数据被 <strong>23</strong> 位用户查阅后产生了下游消费，区块链已自动分配分红 <strong>&yen;585.90</strong>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">交易明细</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>时间</th><th>类型</th><th>关联资产</th><th>消费方</th><th>我的收益</th><th>结算状态</th><th>链上哈希</th></tr></thead>
+                <tbody>
+                    ${TRANSACTIONS.map(t=>`<tr>
+                        <td style="white-space:nowrap;">${t.time}</td>
+                        <td><span class="badge ${t.type==='purchase'?'badge-listed':t.type==='dividend'?'badge-registered':'badge-draft'}">${t.typeLabel}</span></td>
+                        <td style="max-width:200px;">${t.asset}</td>
+                        <td>${t.consumer}</td>
+                        <td style="font-weight:600;color:#38a169;">+&yen;${t.myRevenue.toFixed(2)}</td>
+                        <td>${t.settled?'<span class="badge badge-listed">已结算</span>':'<span class="badge badge-pending">待结算</span>'}</td>
+                        <td class="hash-text">${t.txHash}</td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">&#9939; 区块链分红追溯</div>
+        <div class="timeline">
+            <div class="timeline-item"><div class="tl-time">2026-04-11 14:32</div><div class="tl-content">药企***查阅了您的 [2型糖尿病3年随访血糖及用药数据]</div><div class="tl-hash">查阅存证 TX: 0x3a7f...f3a2 | Block #15,236,012</div></div>
+            <div class="timeline-item"><div class="tl-time">2026-04-11 15:10</div><div class="tl-content">该查阅触发药品采购消费 &yen;85.00 &rarr; 分红 <strong style="color:#38a169;">&yen;12.50</strong> 已分配至您的账户</div><div class="tl-hash">分配存证 TX: 0x8b2c...b0c2 | Block #15,236,028</div></div>
+            <div class="timeline-item"><div class="tl-time">2026-04-10 09:15</div><div class="tl-content">科研机构***直接购买了 [个人肠道菌群年度检测数据] &yen;150.00</div><div class="tl-hash">交易存证 TX: 0xc5d7...c1d3 | Block #15,235,890</div></div>
+            <div class="timeline-item"><div class="tl-time">2026-04-09 16:45</div><div class="tl-content">保险公司***查阅 [高血压合并糖尿病联合用药记录] 后触发保险产品消费 &rarr; 分红 <strong style="color:#38a169;">&yen;8.60</strong></div><div class="tl-hash">分配存证 TX: 0xd2e4...d8e0 | Block #15,235,678</div></div>
+        </div>
+    </div>`;
+}
+
+// ==================== HELPERS ====================
+function statCard(icon, color, value, label, trend) {
+    return `<div class="stat-card"><div class="stat-icon ${color}">${icon}</div><div><div class="stat-value counter" data-target="${value}">${value}</div><div class="stat-label">${label}</div>${trend?`<div class="stat-trend">${trend}</div>`:''}</div></div>`;
+}
+
+function animateCounters() {
+    // Simple counter animation placeholder (values are already set)
+}
+
+function animateBars() {
+    setTimeout(()=>{
+        document.querySelectorAll('.bar[data-h]').forEach(b=>{ b.style.height = b.dataset.h + 'px'; });
+        document.querySelectorAll('.h-bar-fill[data-w]').forEach(b=>{ b.style.width = b.dataset.w; });
+    }, 100);
+}
+
+function showPurchaseModal(id) {
+    const a = ASSETS.find(x=>x.id===id) || MY_ASSETS.find(x=>x.id===id);
+    if (!a) return;
+    const modal = document.getElementById('purchaseModal');
+    document.getElementById('modalContent').innerHTML = `
+        <h3>确认购买数据资产</h3>
+        <div style="background:#f7fafc;border-radius:8px;padding:14px;margin-bottom:16px;">
+            <div style="font-weight:600;margin-bottom:6px;">${a.title}</div>
+            <div style="font-size:13px;color:#718096;">交易所编号: ${a.exchangeId}</div>
+        </div>
+        <div class="info-row"><span class="info-label">资产价格</span><span class="info-value" style="color:#e53e3e;font-weight:700;">&yen;${a.price.toFixed(2)}</span></div>
+        <div class="info-row"><span class="info-label">交易所</span><span class="info-value">贵阳大数据交易所</span></div>
+        <div class="info-row"><span class="info-label">结算方式</span><span class="info-value">周结算</span></div>
+        <div style="margin-top:12px;font-size:12px;color:#718096;padding:10px;background:#fffff0;border-radius:6px;">
+            &#128161; 购买后，您查阅此数据及后续消费行为将通过区块链记录。当您的消费触发时，收益将自动分配给数据提供者。
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="confirmPurchase(${a.id})">确认支付 &yen;${a.price.toFixed(2)}</button>
+            <button class="btn btn-outline" onclick="closePurchaseModal()">取消</button>
+        </div>`;
+    modal.classList.add('show');
+}
+
+function closePurchaseModal() { document.getElementById('purchaseModal').classList.remove('show'); }
+
+function confirmPurchase(id) {
+    closePurchaseModal();
+    showToast('购买成功! 交易已上链存证，区块链将追踪后续数据使用与收益分配。');
+}
+
+function showToast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(), 3000);
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', () => {
+    navigate(location.hash || '#dashboard');
+});
+
+// Close modal on overlay click
+document.getElementById('purchaseModal').addEventListener('click', function(e) {
+    if (e.target === this) closePurchaseModal();
+});
+</script>
+</body>
+</html>

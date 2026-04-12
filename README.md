@@ -1,4 +1,4 @@
-# sys1 - 医案通：疑难杂症病例知识交易平台
+# sys1 - 微生态健康数据资产交易平台
 
 ## 项目文档目录
 
@@ -6,28 +6,28 @@
 sys1/
 ├── README.md                          ← 你在这里
 ├── 01-overview/
-│   └── README.md                      项目概述、愿景、目标用户
+│   └── README.md                      项目概述、愿景、目标用户、数据交易所合作
 ├── 02-business/
-│   ├── business-model.md              商业模式、收入模型、竞争分析、融资规划
+│   ├── business-model.md              商业模式、数据资产定价、收益分配、融资规划
 │   └── team-plan.md                   团队规划（各阶段人员配置）
 ├── 03-architecture/
-│   ├── tech-stack.md                  技术架构、选型、基础设施
-│   └── database-design.md             数据库ER设计、核心表DDL、安全策略
+│   ├── tech-stack.md                  技术架构、选型、区块链溯源、基础设施
+│   └── database-design.md             数据库ER设计、核心表DDL、数据脱敏策略
 ├── 04-modules/
-│   ├── user-service.md                模块一：用户服务（注册/认证/信用/钱包）
-│   ├── case-service.md                模块二：病例服务（录入/脱敏/审核/展示）
-│   ├── transaction-service.md         模块三：交易服务（支付/分账/退款/结算）
-│   ├── search-service.md              模块四：搜索与推荐（ES/语义搜索/推荐）
-│   ├── ai-service.md                  模块五：AI服务（脱敏/提取/审核/问答）
-│   └── admin-service.md               模块六：管理后台（审核/运营/数据分析）
+│   ├── user-service.md                模块一：用户服务（注册/认证/数据授权/钱包）
+│   ├── data-asset-service.md          模块二：数据资产服务（采集/脱敏/资产封装/确权）
+│   ├── transaction-service.md         模块三：交易服务（挂牌/撮合/结算/区块链分账）
+│   ├── search-service.md              模块四：搜索与推荐（数据资产检索/标签匹配）
+│   ├── ai-service.md                  模块五：AI服务（脱敏/结构化/质量评估/合规检测）
+│   └── admin-service.md               模块六：管理后台（审核/运营/交易监控/合规报告）
 ├── 05-iteration/
 │   ├── roadmap.md                     整体迭代路线图（MVP → V3.0）
 │   └── mvp-sprint-plan.md             MVP详细Sprint计划（4个Sprint/8周）
 ├── 06-compliance/
-│   ├── legal-compliance.md            法律合规（资质/数据/免责/知识产权）
-│   └── security-guide.md             安全开发规范（防注入/越权/限流/加密/审计）
+│   ├── legal-compliance.md            法律合规（数据交易所规范/数据出境/个人信息保护/确权）
+│   └── security-guide.md             安全开发规范（数据脱敏/区块链审计/加密/访问控制）
 └── 07-operations/
-    ├── growth-strategy.md             运营增长策略（冷启动/增长/企业客户/社区）
+    ├── growth-strategy.md             运营增长策略（C端数据采集/交易所对接/B端客户拓展）
     └── risk-management.md             风险管理（风险矩阵/预案）
 ```
 
@@ -43,7 +43,7 @@ sys1/
 | 有哪些功能模块 | [04-modules/](04-modules/) |
 | 开发节奏怎么安排 | [05-iteration/roadmap.md](05-iteration/roadmap.md) |
 | MVP具体做什么 | [05-iteration/mvp-sprint-plan.md](05-iteration/mvp-sprint-plan.md) |
-| 法律合规要注意什么 | [06-compliance/legal-compliance.md](06-compliance/legal-compliance.md) |
+| 数据合规要注意什么 | [06-compliance/legal-compliance.md](06-compliance/legal-compliance.md) |
 | 安全怎么做 | [06-compliance/security-guide.md](06-compliance/security-guide.md) |
 | 怎么获取用户 | [07-operations/growth-strategy.md](07-operations/growth-strategy.md) |
 | 有什么风险 | [07-operations/risk-management.md](07-operations/risk-management.md) |

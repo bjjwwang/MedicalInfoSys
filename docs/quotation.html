@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目报价方案 - 微生态健康数据资产交易平台</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    font-size: 14px; line-height: 1.7; color: #2d3748; background: #f0f4f8;
+    padding: 20px;
+}
+.container { max-width: 900px; margin: 0 auto; }
+
+/* Header */
+.quote-header {
+    background: linear-gradient(135deg, #1a3a5c 0%, #2c5282 100%);
+    color: #fff; border-radius: 16px; padding: 40px 44px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+}
+.quote-header::after {
+    content: ''; position: absolute; right: -40px; top: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+}
+.quote-header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+.quote-header .subtitle { font-size: 15px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+.quote-header .meta { display: flex; flex-wrap: wrap; gap: 24px; font-size: 13px; color: rgba(255,255,255,0.6); }
+.quote-header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Section */
+.section {
+    background: #fff; border-radius: 14px; padding: 28px 32px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05); margin-bottom: 20px;
+}
+.section-title {
+    font-size: 18px; font-weight: 700; color: #1a3a5c;
+    padding-bottom: 10px; border-bottom: 2px solid #ebf4ff; margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+}
+
+/* Table */
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+thead { background: #f7fafc; }
+th { padding: 10px 14px; text-align: left; font-weight: 600; color: #4a5568; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+td { padding: 10px 14px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
+tbody tr:hover { background: #fafcff; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.price { font-weight: 700; color: #2c5282; }
+.price-old { text-decoration: line-through; color: #a0aec0; font-size: 12px; }
+.subtotal-row td { font-weight: 600; background: #f7fafc; border-top: 2px solid #e2e8f0; }
+.total-row td { font-weight: 700; font-size: 16px; background: #ebf4ff; color: #1a3a5c; border-top: 3px solid #2c5282; }
+
+/* Highlight box */
+.highlight {
+    border-radius: 10px; padding: 18px 22px; margin: 16px 0; font-size: 13px;
+}
+.highlight-blue { background: #ebf4ff; border-left: 4px solid #3182ce; }
+.highlight-green { background: #f0fff4; border-left: 4px solid #38a169; }
+.highlight-orange { background: #fffaf0; border-left: 4px solid #dd6b20; }
+.highlight-purple { background: #faf5ff; border-left: 4px solid #805ad5; }
+.highlight strong { color: #1a3a5c; }
+
+/* Comparison */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+.compare-card {
+    border-radius: 10px; padding: 20px; text-align: center;
+}
+.compare-card.old { background: #f7fafc; border: 1px solid #e2e8f0; }
+.compare-card.new { background: #ebf4ff; border: 2px solid #3182ce; }
+.compare-card .label { font-size: 12px; color: #718096; margin-bottom: 6px; }
+.compare-card .value { font-size: 28px; font-weight: 700; }
+.compare-card.old .value { color: #a0aec0; text-decoration: line-through; }
+.compare-card.new .value { color: #2c5282; }
+.compare-card .desc { font-size: 12px; color: #718096; margin-top: 6px; }
+.save-badge {
+    display: inline-block; background: #38a169; color: #fff;
+    padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    margin: 12px 0;
+}
+
+/* Timeline */
+.timeline { position: relative; padding-left: 28px; margin: 16px 0; }
+.timeline::before { content:''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
+.tl-item { position: relative; margin-bottom: 20px; }
+.tl-item::before {
+    content: ''; position: absolute; left: -22px; top: 4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #3182ce; border: 2px solid #fff; box-shadow: 0 0 0 2px #3182ce;
+}
+.tl-item .tl-title { font-weight: 600; color: #1a3a5c; font-size: 14px; }
+.tl-item .tl-desc { font-size: 13px; color: #718096; margin-top: 2px; }
+.tl-item .tl-time {
+    display: inline-block; background: #edf2f7; color: #4a5568;
+    padding: 1px 10px; border-radius: 4px; font-size: 12px; margin-top: 4px;
+}
+
+/* Check list */
+.checklist { list-style: none; padding: 0; margin: 10px 0; }
+.checklist li { padding: 4px 0; font-size: 13px; display: flex; align-items: flex-start; gap: 8px; }
+.checklist li::before { content: ''; flex-shrink: 0; }
+.check-yes::before { content: '\2705'; }
+.check-no::before { content: '\274C'; }
+
+/* Footer */
+.quote-footer {
+    text-align: center; padding: 24px; font-size: 12px; color: #a0aec0;
+}
+
+/* Print */
+@media print {
+    body { background: #fff; padding: 0; font-size: 12px; }
+    .section { box-shadow: none; border: 1px solid #eee; page-break-inside: avoid; }
+    .quote-header { border-radius: 0; }
+    .no-print { display: none; }
+}
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .quote-header { padding: 24px; }
+    .section { padding: 20px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    th, td { padding: 8px 10px; }
+}
+
+/* Badge */
+.phase-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+}
+.phase-1 { background: #e6ffed; color: #22543d; }
+.phase-2 { background: #ebf4ff; color: #2b6cb0; }
+.phase-3 { background: #faf5ff; color: #6b46c1; }
+
+a.back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #718096; font-size: 13px; text-decoration: none; margin-bottom: 16px;
+}
+a.back-link:hover { color: #3182ce; }
+
+.btn-print {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #2c5282; color: #fff; padding: 8px 20px; border-radius: 8px;
+    font-size: 13px; border: none; cursor: pointer; text-decoration: none;
+}
+.btn-print:hover { background: #1a3a5c; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<a href="index.html" class="back-link no-print">&larr; 返回文档首页</a>
+
+<!-- ==================== Header ==================== -->
+<div class="quote-header">
+    <h1>项目开发报价方案</h1>
+    <div class="subtitle">微生态健康数据资产交易平台（健数通）</div>
+    <div class="meta">
+        <span>&#128197; 报价日期: 2026年4月12日</span>
+        <span>&#9202; 有效期: 30天</span>
+        <span>&#128196; 版本: V2.0</span>
+    </div>
+</div>
+
+<!-- ==================== 开发模式说明 ==================== -->
+<div class="section">
+    <div class="section-title">&#128161; 为什么本项目成本远低于行业报价</div>
+
+    <div class="compare-grid">
+        <div class="compare-card old">
+            <div class="label">传统外包开发模式</div>
+            <div class="value">&yen;35-50万</div>
+            <div class="desc">5-7人团队 | 4-6个月 | 纯人工开发</div>
+        </div>
+        <div class="compare-card new">
+            <div class="label">本方案（高效精干模式）</div>
+            <div class="value">&yen;5.8万</div>
+            <div class="desc">精干团队 | 约11周 | 自动化工具链加速</div>
+        </div>
+    </div>
+    <div style="text-align:center;"><span class="save-badge">节省约 80% 开发成本</span></div>
+
+    <div class="highlight highlight-blue">
+        <strong>为什么能做到？</strong><br>
+        我们团队采用<strong>自动化工具链 + AI辅助编程</strong>的工程化开发流程，大幅提升开发效率：
+        <ul style="margin:8px 0 0 20px;">
+            <li><strong>成熟的组件库与脚手架：</strong>核心模块（用户认证、支付、搜索等）基于自有积累快速搭建，避免从零开发</li>
+            <li><strong>AI辅助编码：</strong>利用前沿AI编程工具辅助代码生成、测试用例编写、文档生成，人工把控架构与业务逻辑</li>
+            <li><strong>精干团队、低沟通成本：</strong>无需大团队协调，需求变更可快速响应</li>
+            <li><strong>质量有保障：</strong>自动化测试 + 人工Code Review，关键业务逻辑由资深工程师编写</li>
+        </ul>
+    </div>
+
+    <div class="highlight highlight-orange">
+        <strong>&#9888; 需要说明的是：</strong> 自动化工具提升的主要是<strong>编码效率</strong>，以下环节仍需专业人工投入——<br>
+        架构设计与技术决策、区块链节点部署与调试、贵阳大数据交易所接口对接（需线下沟通）、数据合规与法律文件、UI/UX设计、安全审计与测试。这些在报价中已体现。
+    </div>
+</div>
+
+<!-- ==================== 项目范围 ==================== -->
+<div class="section">
+    <div class="section-title">&#128203; 项目范围概述</div>
+    <table>
+        <thead>
+            <tr><th>维度</th><th>内容</th></tr>
+        </thead>
+        <tbody>
+            <tr><td style="font-weight:600;width:120px;">产品名称</td><td>健数通 — 微生态健康数据资产交易平台</td></tr>
+            <tr><td style="font-weight:600;">核心定位</td><td>健康数据资产服务商，帮助个人将健康数据资产化，通过贵阳大数据交易所合规交易</td></tr>
+            <tr><td style="font-weight:600;">核心流程</td><td>数据上传 &rarr; 脱敏 &rarr; 资产封装 &rarr; 交易所登记确权 &rarr; 挂牌交易 &rarr; 区块链溯源分账</td></tr>
+            <tr><td style="font-weight:600;">技术栈</td><td>FastAPI + React/Next.js + PostgreSQL + Elasticsearch + 长安链/FISCO BCOS + 交易所API</td></tr>
+            <tr><td style="font-weight:600;">交付端</td><td>Web端（PC+移动适配）+ 管理后台 | 小程序（V1.5阶段）</td></tr>
+            <tr><td style="font-weight:600;">开发模式</td><td>自有工具链 + AI辅助编程，精干团队高效交付</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ==================== 分阶段报价 ==================== -->
+<div class="section">
+    <div class="section-title">&#128176; 分阶段报价明细</div>
+
+    <h3 style="margin:16px 0 10px;color:#22543d;font-size:15px;"><span class="phase-badge phase-1">第一阶段</span> MVP &rarr; V1.0 — 核心平台完整交付（约8周）</h3>
+    <p style="color:#718096;font-size:13px;margin-bottom:12px;">覆盖从零搭建到完整可用的全流程：数据资产上传 &rarr; 脱敏 &rarr; 资产封装 &rarr; 交易所对接 &rarr; 区块链确权 &rarr; 交易结算 &rarr; 收益分配</p>
+    <table>
+        <thead>
+            <tr><th>模块</th><th>内容</th><th>工作量</th><th class="text-right">报价</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">后端基础架构</td>
+                <td>FastAPI项目搭建、用户注册登录、JWT认证、数据库设计与迁移（PostgreSQL）、基础API框架</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">数据资产模块</td>
+                <td>健康数据上传（结构化模板）、规则引擎脱敏、数据资产封装流水线、质量评分</td>
+                <td class="text-center">5天</td>
+                <td class="text-right price">&yen;4,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">交易所对接</td>
+                <td>贵阳大数据交易所API全流程对接——资产登记、确权、上架、周结算、对账</td>
+                <td class="text-center">6天</td>
+                <td class="text-right price">&yen;5,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">区块链集成</td>
+                <td>长安链/FISCO节点部署、智能合约（确权+访问记录+收益分配）、SDK集成</td>
+                <td class="text-center">5天</td>
+                <td class="text-right price">&yen;5,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">前端Web（完整）</td>
+                <td>Next.js项目、数据市场、资产详情、上传向导、个人资产页、收益看板、区块链溯源可视化</td>
+                <td class="text-center">7天</td>
+                <td class="text-right price">&yen;5,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">搜索服务</td>
+                <td>Elasticsearch集成、关键词搜索、分类筛选、排序</td>
+                <td class="text-center">2天</td>
+                <td class="text-right price">&yen;1,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">交易与结算</td>
+                <td>微信支付/支付宝对接、订单管理、收益分配引擎、余额与提现</td>
+                <td class="text-center">5天</td>
+                <td class="text-right price">&yen;4,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">AI脱敏引擎</td>
+                <td>NER模型部署（医疗领域fine-tuned BERT）、多层脱敏流水线</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">管理后台</td>
+                <td>数据资产审核、用户管理、交易所对接仪表盘、结算管理</td>
+                <td class="text-center">4天</td>
+                <td class="text-right price">&yen;3,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">UI/UX设计</td>
+                <td>全站UI设计稿、组件规范、交互原型</td>
+                <td class="text-center">5天</td>
+                <td class="text-right price">&yen;3,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">部署 & 测试</td>
+                <td>Docker容器化、云服务器部署、域名SSL、基础监控、功能测试、接口测试</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">项目管理</td>
+                <td>需求对齐、进度管理、阶段验收、文档交付</td>
+                <td class="text-center">持续</td>
+                <td class="text-right price">&yen;1,500</td>
+            </tr>
+            <tr class="subtotal-row">
+                <td colspan="3" style="font-weight:700;">第一阶段小计（MVP &rarr; V1.0）</td>
+                <td class="text-right" style="font-size:16px;">&yen;40,000</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlight highlight-blue" style="margin-top:6px;">
+        第一阶段交付后即可投入<strong>实际运营</strong>——数据提供者可上传数据、完成资产化、在交易所挂牌；消费方可浏览购买；区块链确权与收益分配全流程可用。
+    </div>
+
+    <h3 style="margin:28px 0 10px;color:#6b46c1;font-size:15px;"><span class="phase-badge phase-3">第二阶段</span> V1.5 — 智能化 + 生态扩展（约3周）</h3>
+    <p style="color:#718096;font-size:13px;margin-bottom:12px;">在V1.0稳定运行基础上，补齐智能搜索、小程序端、安全合规等能力，支撑规模化增长</p>
+    <table>
+        <thead>
+            <tr><th>模块</th><th>内容</th><th>工作量</th><th class="text-right">报价</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">语义搜索 & 推荐</td>
+                <td>向量检索（Milvus/Qdrant）、自然语言查询理解、相似资产推荐、个性化推荐</td>
+                <td class="text-center">4天</td>
+                <td class="text-right price">&yen;3,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">数据资产扩展</td>
+                <td>更多数据类型模板、AI辅助录入（结构化提取）、自动摘要生成、智能定价建议</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">管理后台完善</td>
+                <td>区块链监控面板、数据分析报表、运营工具（推荐位/专题/通知）</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">小程序端</td>
+                <td>UniApp开发——数据上传、市场浏览、收益查看、资产管理核心功能</td>
+                <td class="text-center">5天</td>
+                <td class="text-right price">&yen;4,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">安全加固</td>
+                <td>等保适配、渗透测试、安全审计、数据加密加固、审计日志完善</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">测试 & 项目管理</td>
+                <td>全面回归测试、兼容性测试、验收、文档更新</td>
+                <td class="text-center">2天</td>
+                <td class="text-right price">&yen;1,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">开发工具与环境</td>
+                <td>开发工具授权、开发/测试环境维护</td>
+                <td class="text-center">-</td>
+                <td class="text-right price">&yen;1,000</td>
+            </tr>
+            <tr class="subtotal-row">
+                <td colspan="3" style="font-weight:700;">第二阶段小计（V1.5）</td>
+                <td class="text-right" style="font-size:16px;">&yen;18,000</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- TOTAL -->
+    <table style="margin-top:24px;">
+        <tr class="total-row">
+            <td>项目总报价（两阶段全部交付）</td>
+            <td class="text-right" style="font-size:22px;">&yen;58,000</td>
+        </tr>
+    </table>
+
+    <div class="highlight highlight-green" style="margin-top:16px;">
+        <strong>&#128073; 可灵活选择交付范围</strong><br>
+        <ul style="margin:6px 0 0 16px;">
+            <li>如果希望先验证核心模式再扩展，可以仅启动<strong>第一阶段</strong>（&yen;40,000），V1.0交付后即可运营</li>
+            <li>第一阶段交付后再决定是否继续V1.5，已付费用全额计入总价</li>
+            <li>两阶段一起签约，总价 <strong>&yen;58,000</strong> 不变</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ==================== 详细时间表 ==================== -->
+<div class="section">
+    <div class="section-title">&#128197; 项目时间表（约11周）</div>
+
+    <p style="color:#718096;font-size:13px;margin-bottom:16px;">以下为按周细分的开发计划，自项目正式启动之日起计算。</p>
+
+    <!-- Gantt Chart -->
+    <div style="overflow-x:auto;margin-bottom:24px;">
+    <table style="min-width:820px;font-size:12px;">
+        <thead>
+            <tr>
+                <th style="min-width:180px;">工作项</th>
+                <th class="text-center" style="width:52px;">第1周</th>
+                <th class="text-center" style="width:52px;">第2周</th>
+                <th class="text-center" style="width:52px;">第3周</th>
+                <th class="text-center" style="width:52px;">第4周</th>
+                <th class="text-center" style="width:52px;">第5周</th>
+                <th class="text-center" style="width:52px;">第6周</th>
+                <th class="text-center" style="width:52px;">第7周</th>
+                <th class="text-center" style="width:52px;">第8周</th>
+                <th class="text-center" style="width:52px;">第9周</th>
+                <th class="text-center" style="width:52px;">第10周</th>
+                <th class="text-center" style="width:52px;">第11周</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Phase 0 -->
+            <tr><td colspan="12" style="background:#f7fafc;font-weight:700;color:#4a5568;padding:6px 14px;">准备阶段</td></tr>
+            <tr><td>需求确认 & 架构设计</td><td style="background:#bee3f8;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>UI/UX设计</td><td style="background:#bee3f8;" class="text-center">&#9679;</td><td style="background:#bee3f8;" class="text-center">&#9679;</td><td style="background:#bee3f8;opacity:0.5" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>交易所技术文档对接</td><td style="background:#bee3f8;" class="text-center">&#9679;</td><td style="background:#bee3f8;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+
+            <!-- Phase 1: MVP → V1.0 -->
+            <tr><td colspan="12" style="background:#e6ffed;font-weight:700;color:#22543d;padding:6px 14px;">第一阶段 · MVP &rarr; V1.0（核心平台完整交付）</td></tr>
+            <tr><td>后端基础架构 & 数据库</td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>数据资产模块（上传/脱敏/封装）</td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>交易所对接（登记/确权/结算）</td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>前端Web（完整功能）</td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>搜索服务（ES集成/筛选）</td><td></td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td style="font-weight:600;color:#22543d;">&#127937; MVP内部验证（核心闭环可演示）</td><td></td><td></td><td></td><td style="background:#276749;color:#fff;" class="text-center">&#9733;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>区块链集成（节点/合约/SDK）</td><td></td><td></td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>交易结算 & 收益分配引擎</td><td></td><td></td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>支付集成（微信/支付宝）</td><td></td><td></td><td></td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>AI脱敏引擎（NER模型）</td><td></td><td></td><td></td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>管理后台 & 部署测试</td><td></td><td></td><td></td><td></td><td></td><td></td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td style="background:#9ae6b4;" class="text-center">&#9679;</td><td></td><td></td><td></td></tr>
+            <tr><td style="font-weight:600;color:#22543d;">&#127937; V1.0交付验收</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="background:#276749;color:#fff;" class="text-center">&#9733;</td><td></td><td></td><td></td></tr>
+
+            <!-- Phase 2: V1.5 -->
+            <tr><td colspan="12" style="background:#faf5ff;font-weight:700;color:#6b46c1;padding:6px 14px;">第二阶段 · V1.5（智能化 + 生态扩展）</td></tr>
+            <tr><td>语义搜索 & 智能推荐</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="background:#d6bcfa;" class="text-center">&#9679;</td><td style="background:#d6bcfa;" class="text-center">&#9679;</td><td></td></tr>
+            <tr><td>数据资产扩展 & AI辅助录入</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="background:#d6bcfa;" class="text-center">&#9679;</td><td style="background:#d6bcfa;" class="text-center">&#9679;</td><td></td></tr>
+            <tr><td>管理后台完善 & 数据报表</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="background:#d6bcfa;" class="text-center">&#9679;</td><td></td></tr>
+            <tr><td>小程序开发（UniApp）</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="background:#d6bcfa;" class="text-center">&#9679;</td><td style="background:#d6bcfa;" class="text-center">&#9679;</td><td style="background:#d6bcfa;" class="text-center">&#9679;</td></tr>
+            <tr><td>安全加固 & 全面测试</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="background:#d6bcfa;" class="text-center">&#9679;</td><td style="background:#d6bcfa;" class="text-center">&#9679;</td></tr>
+            <tr><td style="font-weight:600;color:#6b46c1;">&#127937; V1.5最终交付 & 上线</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="background:#6b46c1;color:#fff;" class="text-center">&#9733;</td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#718096;margin-bottom:20px;">
+        <span>&#9679; <span style="display:inline-block;width:12px;height:12px;background:#bee3f8;border-radius:2px;vertical-align:middle;"></span> 准备阶段</span>
+        <span>&#9679; <span style="display:inline-block;width:12px;height:12px;background:#9ae6b4;border-radius:2px;vertical-align:middle;"></span> 第一阶段（MVP &rarr; V1.0）</span>
+        <span>&#9679; <span style="display:inline-block;width:12px;height:12px;background:#d6bcfa;border-radius:2px;vertical-align:middle;"></span> 第二阶段（V1.5）</span>
+        <span>&#9733; 验收节点</span>
+    </div>
+
+    <!-- 里程碑 -->
+    <div class="section-title" style="margin-top:8px;">&#127937; 关键里程碑</div>
+    <table>
+        <thead>
+            <tr><th>里程碑</th><th>时间节点</th><th>交付标志</th><th>验收标准</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">M0 · 项目启动</td>
+                <td>第1周</td>
+                <td>需求文档确认、架构方案敲定</td>
+                <td>双方签字确认需求范围</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">M1 · 内部原型</td>
+                <td>第3周</td>
+                <td>后端API可调用、前端页面框架可浏览</td>
+                <td>核心API通过Swagger测试</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;color:#22543d;">M2 · MVP内部验证</td>
+                <td style="font-weight:600;">第4周</td>
+                <td>核心闭环跑通：上传 &rarr; 资产化 &rarr; 交易所登记 &rarr; 浏览/购买</td>
+                <td>可演示完整数据流；管理后台可审核</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;color:#22543d;">M3 · V1.0正式交付</td>
+                <td style="font-weight:600;">第8周</td>
+                <td>区块链确权上链、支付闭环、收益自动分配、管理后台完善</td>
+                <td>链上存证可查；支付 &rarr; 分账 &rarr; 结算全流程通过</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;color:#6b46c1;">M4 · V1.5最终交付</td>
+                <td style="font-weight:600;">第11周</td>
+                <td>智能搜索、小程序、安全测试通过、全功能上线</td>
+                <td>全部功能验收清单通过；源码+文档移交</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlight highlight-green" style="margin-top:16px;">
+        <strong>沟通机制：</strong>
+        <ul style="margin:6px 0 0 20px;">
+            <li>每周一次进度同步会议（线上30分钟）</li>
+            <li>每个里程碑前安排一次演示 & 验收会</li>
+            <li>日常问题通过微信/飞书即时沟通</li>
+            <li>如交易所对接需要线下配合，提前协调安排</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ==================== 包含/不包含 ==================== -->
+<div class="section">
+    <div class="section-title">&#9989; 交付内容</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+            <h4 style="color:#22543d;margin-bottom:8px;">报价包含</h4>
+            <ul class="checklist">
+                <li class="check-yes">全部源代码（前端+后端+智能合约）及Git仓库</li>
+                <li class="check-yes">数据库设计文档及DDL脚本</li>
+                <li class="check-yes">API接口文档（OpenAPI/Swagger自动生成）</li>
+                <li class="check-yes">部署文档及Docker配置</li>
+                <li class="check-yes">交付后30天免费Bug修复期</li>
+                <li class="check-yes">项目文档（即当前MedicalInfoSys文档体系）</li>
+                <li class="check-yes">一次需求范围内的设计修改</li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color:#c53030;margin-bottom:8px;">报价不包含</h4>
+            <ul class="checklist">
+                <li class="check-no">云服务器费用（阿里云/腾讯云，约 &yen;1,000-5,000/月）</li>
+                <li class="check-no">域名及SSL证书费用</li>
+                <li class="check-no">贵阳大数据交易所接入年费（需与交易所确认）</li>
+                <li class="check-no">法律文件起草（用户协议、隐私政策等，建议委托律师）</li>
+                <li class="check-no">等保测评费用（¥50,000-150,000，如需要）</li>
+                <li class="check-no">微信/支付宝支付通道申请费</li>
+                <li class="check-no">需求范围外的功能开发</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 付款方式 ==================== -->
+<div class="section">
+    <div class="section-title">&#128179; 付款方式</div>
+
+    <h4 style="margin-bottom:10px;color:#2c5282;">方案A：两阶段全部交付（推荐）</h4>
+    <table>
+        <thead><tr><th>节点</th><th>金额</th><th>触发条件</th></tr></thead>
+        <tbody>
+            <tr><td>项目启动</td><td class="price">&yen;12,000 (21%)</td><td>合同签署后，启动开发</td></tr>
+            <tr><td>MVP内部验证</td><td class="price">&yen;10,000 (17%)</td><td>第4周，核心闭环可演示</td></tr>
+            <tr><td>V1.0交付</td><td class="price">&yen;18,000 (31%)</td><td>第8周，第一阶段验收通过</td></tr>
+            <tr><td>V1.5最终交付</td><td class="price">&yen;18,000 (31%)</td><td>第11周，全部功能验收通过</td></tr>
+            <tr class="total-row"><td>合计</td><td colspan="2">&yen;58,000</td></tr>
+        </tbody>
+    </table>
+
+    <h4 style="margin:20px 0 10px;color:#2c5282;">方案B：仅第一阶段（MVP &rarr; V1.0）</h4>
+    <table>
+        <tbody>
+            <tr><td>启动款</td><td class="price">&yen;15,000</td><td>合同签署后</td></tr>
+            <tr><td>MVP内部验证</td><td class="price">&yen;10,000</td><td>核心闭环可演示</td></tr>
+            <tr><td>V1.0交付款</td><td class="price">&yen;15,000</td><td>第一阶段验收通过</td></tr>
+            <tr class="total-row"><td>合计</td><td colspan="2">&yen;40,000</td></tr>
+        </tbody>
+    </table>
+
+    <div class="highlight highlight-purple" style="margin-top:16px;">
+        <strong>说明：</strong> 选择方案B后如继续V1.5阶段，剩余费用为 &yen;18,000，按交付验收后付款。
+    </div>
+</div>
+
+<!-- ==================== 后续运维 ==================== -->
+<div class="section">
+    <div class="section-title">&#128736; 后续运维与迭代（可选）</div>
+    <table>
+        <thead><tr><th>服务</th><th>内容</th><th class="text-right">费用</th></tr></thead>
+        <tbody>
+            <tr><td style="font-weight:600;">月度运维</td><td>服务器监控、Bug修复、小功能调整、安全更新</td><td class="text-right price">&yen;3,000/月</td></tr>
+            <tr><td style="font-weight:600;">功能迭代</td><td>新功能开发（按需求评估工作量后报价）</td><td class="text-right price">&yen;800-1,500/人天</td></tr>
+            <tr><td style="font-weight:600;">紧急响应</td><td>线上故障紧急修复（4小时内响应）</td><td class="text-right">含在月度运维内</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ==================== 技术保障 ==================== -->
+<div class="section">
+    <div class="section-title">&#128737; 质量保障</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+        <div style="text-align:center;padding:16px;">
+            <div style="font-size:32px;margin-bottom:8px;">&#128187;</div>
+            <div style="font-weight:600;margin-bottom:4px;">全栈源码交付</div>
+            <div style="font-size:12px;color:#718096;">源代码100%交付<br>含完整Git历史</div>
+        </div>
+        <div style="text-align:center;padding:16px;">
+            <div style="font-size:32px;margin-bottom:8px;">&#128272;</div>
+            <div style="font-weight:600;margin-bottom:4px;">安全优先</div>
+            <div style="font-size:12px;color:#718096;">OWASP Top 10 防护<br>数据加密存储传输</div>
+        </div>
+        <div style="text-align:center;padding:16px;">
+            <div style="font-size:32px;margin-bottom:8px;">&#128196;</div>
+            <div style="font-weight:600;margin-bottom:4px;">完整文档</div>
+            <div style="font-size:12px;color:#718096;">API文档+部署文档<br>+运维手册</div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== Print ==================== -->
+<div class="no-print" style="text-align:center;margin:20px 0;">
+    <button class="btn-print" onclick="window.print()">&#128424; 打印/导出PDF</button>
+    <a href="index.html" class="btn-print" style="background:#718096;margin-left:8px;text-decoration:none;">返回文档首页</a>
+</div>
+
+<div class="quote-footer">
+    本报价方案由 健数通 项目团队提供 | 报价有效期30天 | 最终价格以签署合同为准
+</div>
+
+</div>
+</body>
+</html>

@@ -176,403 +176,510 @@ hr {
 <body>
 <nav class="nav-bar"><a href="01-项目概述.html">项目概述</a><a href="02-商业模式与团队规划.html">商业模式</a><a href="03-技术架构与数据库设计.html">技术架构</a><a href="04-功能模块设计.html" class="active">功能模块</a><a href="05-开发迭代路线图.html">迭代路线</a><a href="06-合规与安全规范.html">合规安全</a><a href="07-运营与风险管理.html">运营风险</a></nav>
 <div class="container">
-<h1 id="_1">模块一：用户服务</h1>
-<h2 id="_2">功能清单</h2>
-<h3 id="11">1.1 注册/登录</h3>
+
+<!-- ==================== 模块一：用户服务 ==================== -->
+<h1 id="module-1">模块一：用户服务</h1>
+
+<h2 id="m1-features">功能清单</h2>
+
+<h3>1.1 注册/登录</h3>
 <ul>
 <li>手机号 + 验证码注册登录</li>
 <li>微信/支付宝 OAuth 登录</li>
 <li>小程序静默登录</li>
 <li>JWT Token 管理（access_token + refresh_token）</li>
 </ul>
-<h3 id="12">1.2 用户资料</h3>
+
+<h3>1.2 用户资料</h3>
 <ul>
 <li>基本信息管理（昵称、头像、简介）</li>
-<li>角色选择（患者/医生/机构）</li>
-<li>个人主页（发布的案例、收到的评价）</li>
+<li>角色选择（患者/数据提供者/医生/药企/医疗机构/保险机构）</li>
+<li>区块链钱包地址绑定（用于数据确权和收益分配）</li>
+<li>个人主页（发布的数据资产、收到的评价）</li>
 </ul>
-<h3 id="13">1.3 医生认证</h3>
+
+<h3>1.3 数据提供者认证</h3>
 <ul>
-<li>认证流程：</li>
+<li><strong>个人数据提供者认证：</strong>
+<ol>
+<li>实名认证（姓名 + 身份证）</li>
+<li>绑定区块链钱包地址</li>
+<li>签署数据授权协议</li>
+<li>审核通过，获得数据提供者标识</li>
+</ol>
+</li>
+<li><strong>医生认证流程：</strong>
+<ol>
 <li>填写真实姓名、医院、科室、职称</li>
 <li>上传执业医师资格证照片</li>
 <li>上传工作证/胸牌（辅助验证）</li>
 <li>后台人工审核（对接国家医师注册查询系统校验）</li>
 <li>审核通过，获得认证标识</li>
-<li>认证等级：</li>
-<li>初级认证：基本信息 + 资格证</li>
-<li>高级认证：+ 医院官方确认函 / 学术成果</li>
+</ol>
+</li>
+<li><strong>机构认证（药企/医院/保险公司）：</strong>
+<ol>
+<li>上传营业执照及相关资质</li>
+<li>法人信息验证</li>
+<li>绑定企业区块链钱包地址</li>
+<li>审核通过，获得机构认证标识</li>
+</ol>
+</li>
 </ul>
-<h3 id="14">1.4 信用体系</h3>
+
+<h3>1.4 我的数据资产（数据资产组合视图）</h3>
 <ul>
-<li>信用分维度：</li>
-<li>案例质量（同行评审得分）</li>
+<li>已上传的健康数据资产列表</li>
+<li>资产状态跟踪：草稿 / 脱敏中 / 待确权 / 已上架交易所 / 已下架</li>
+<li>各资产被浏览次数、被购买次数</li>
+<li>数据资产总估值</li>
+</ul>
+
+<h3>1.5 收益看板</h3>
+<ul>
+<li>总收益概览（累计收益、本月收益、待结算收益）</li>
+<li>收益来源明细：
+<ul>
+<li>数据资产直接交易收益</li>
+<li>数据分红收益（消费追溯分成）</li>
+</ul>
+</li>
+<li>收益趋势图表</li>
+<li>区块链分账记录查询（链上可验证）</li>
+</ul>
+
+<h3>1.6 信用体系</h3>
+<ul>
+<li><strong>信用分维度：</strong>
+<ul>
+<li>数据资产质量（完整度、验证状态、交易所评级）</li>
 <li>交易信誉（纠纷率、退款率）</li>
-<li>活跃贡献（上传频率、讨论参与度）</li>
-<li>信用分影响：</li>
-<li>高分：案例优先展示、更高提现额度</li>
+<li>活跃贡献（上传频率、数据更新频率）</li>
+</ul>
+</li>
+<li><strong>信用分影响：</strong>
+<ul>
+<li>高分：数据资产优先展示、更高收益分成比例</li>
 <li>低分：限制上传、降低曝光</li>
 </ul>
-<h3 id="15">1.5 钱包与提现</h3>
-<ul>
-<li>余额管理</li>
-<li>充值（微信/支付宝）</li>
-<li>提现（银行卡，T+1到账）</li>
-<li>收支明细</li>
+</li>
 </ul>
-<h2 id="api">API 设计（核心接口）</h2>
+
+<h3>1.7 钱包与提现</h3>
+<ul>
+<li>平台余额管理</li>
+<li>区块链钱包余额查看</li>
+<li>充值（微信/支付宝）</li>
+<li>提现（银行卡，T+1到账；区块链钱包提取）</li>
+<li>收支明细（含链上交易记录）</li>
+</ul>
+
+<h2 id="m1-api">API 设计（核心接口）</h2>
+
 <pre><code>POST   /api/v1/auth/sms-code          发送验证码
 POST   /api/v1/auth/login              登录
 POST   /api/v1/auth/refresh            刷新token
 GET    /api/v1/users/me                获取当前用户信息
 PUT    /api/v1/users/me                更新用户信息
-POST   /api/v1/users/certification     提交医生认证
+POST   /api/v1/users/certification     提交认证（数据提供者/医生/机构）
 GET    /api/v1/users/{id}/profile      获取用户公开资料
-GET    /api/v1/users/me/wallet         获取钱包信息
+PUT    /api/v1/users/me/wallet-bindng  绑定区块链钱包地址
+GET    /api/v1/users/me/wallet         获取钱包信息（含链上余额）
 POST   /api/v1/users/me/withdraw       申请提现
-</code></pre>
-<h2 id="_3">迭代计划</h2>
+GET    /api/v1/users/me/assets         我的数据资产列表
+GET    /api/v1/users/me/assets/summary 数据资产组合概览
+GET    /api/v1/users/me/revenue        收益看板数据
+GET    /api/v1/users/me/revenue/details 收益明细（含分红记录）
+GET    /api/v1/users/me/revenue/chain-records 链上分账记录</code></pre>
+
+<h2 id="m1-iteration">迭代计划</h2>
+
 <table>
 <thead>
-<tr>
-<th>版本</th>
-<th>功能</th>
-<th>优先级</th>
-</tr>
+<tr><th>版本</th><th>功能</th><th>优先级</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>MVP</td>
-<td>手机号登录、基本资料、医生认证（人工）</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.0</td>
-<td>微信登录、信用体系基础版、钱包</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.5</td>
-<td>机构账号、认证自动化、信用分高级规则</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V2.0</td>
-<td>多端统一账号、社交关系（关注/粉丝）</td>
-<td>P2</td>
-</tr>
+<tr><td>MVP</td><td>手机号登录、基本资料、数据提供者认证、区块链钱包绑定</td><td>P0</td></tr>
+<tr><td>V1.0</td><td>微信登录、我的数据资产视图、收益看板、钱包</td><td>P0</td></tr>
+<tr><td>V1.5</td><td>机构账号、医生认证、信用体系基础版、链上收益查询</td><td>P1</td></tr>
+<tr><td>V2.0</td><td>多端统一账号、完整收益分析、信用分高级规则</td><td>P2</td></tr>
 </tbody>
 </table>
-<hr />
-<h1 id="_4">模块二：病例服务（核心模块）</h1>
-<h2 id="_5">功能清单</h2>
-<h3 id="21">2.1 病例录入</h3>
+
+<div class="page-break"></div>
+
+<!-- ==================== 模块二：数据资产服务 ==================== -->
+<h1 id="module-2">模块二：数据资产服务（核心模块）</h1>
+
+<h2 id="m2-features">功能清单</h2>
+
+<h3>2.1 健康数据上传</h3>
 <ul>
-<li><strong>结构化模板录入</strong></li>
-<li>预设模板：按病种提供不同的结构化模板</li>
+<li><strong>结构化模板录入</strong>
+<ul>
+<li>预设模板：按数据类型提供不同的结构化模板（健康指标、用药记录、饮食记录、治疗结果、肠道微生物数据等）</li>
 <li>字段引导：每个字段有示例和说明</li>
 <li>草稿保存：支持分多次填写</li>
-<li><strong>AI 辅助录入</strong></li>
-<li>上传非结构化病历文档（PDF/图片）</li>
+</ul>
+</li>
+<li><strong>AI 辅助录入</strong>
+<ul>
+<li>上传非结构化健康数据文档（PDF/图片/体检报告）</li>
 <li>AI 自动提取结构化信息，用户确认修正</li>
-<li>智能推荐 ICD 编码和标签</li>
-<li><strong>影像/报告上传</strong></li>
-<li>支持 CT、MRI、X光、病理报告、检验报告</li>
+<li>智能推荐数据分类标签</li>
+</ul>
+</li>
+<li><strong>数据文件上传</strong>
+<ul>
+<li>支持体检报告、检验报告、可穿戴设备数据、基因检测报告、肠道微生物检测报告</li>
+<li>支持 CT、MRI、X光等影像资料</li>
 <li>自动水印和脱敏处理</li>
 </ul>
-<h3 id="22">2.2 自动脱敏流水线</h3>
-<pre><code>原始内容 → NER识别PII → 规则引擎补充 → 人工复核 → 脱敏完成
-</code></pre>
-<p>脱敏范围：<br />
-- 患者姓名 → 隐去<br />
-- 身份证号 → 隐去<br />
-- 手机号/地址 → 隐去<br />
-- 医院名称 → 可选保留/隐去<br />
-- 日期 → 模糊化（精确到月或相对时间）<br />
-- 影像中的文字信息 → OCR检测 + 遮蔽</p>
-<h3 id="23">2.3 内容审核</h3>
-<p>审核维度：<br />
-1. <strong>脱敏完整性</strong>: PII是否完全清除<br />
-2. <strong>医学合理性</strong>: 诊断和治疗方案是否合理<br />
-3. <strong>内容真实性</strong>: 是否有明显杜撰/抄袭迹象<br />
-4. <strong>合规性</strong>: 是否涉及违禁药品/非法疗法</p>
-<p>审核流程：</p>
-<pre><code>AI自动审核 → 通过则发布 / 存疑则转人工 → 人工审核 → 通过/驳回/要求修改
-</code></pre>
-<h3 id="24">2.4 病例展示</h3>
-<p>公开展示（免费）：<br />
-- 标题、疾病分类、患者基本信息（年龄段/性别）<br />
-- 主诉和症状摘要<br />
-- 治疗类型和疗效结果<br />
-- 评分和评价摘要</p>
-<p>付费解锁内容：<br />
-- 完整诊断过程<br />
-- 详细治疗方案（用药/手术/中医细节）<br />
-- 影像资料和检查报告<br />
-- 随访记录</p>
-<h3 id="25">2.5 病例搜索</h3>
-<p>搜索维度：<br />
-- 关键词全文搜索<br />
-- 按疾病分类/ICD编码筛选<br />
-- 按症状组合筛选<br />
-- 按治疗类型筛选<br />
-- 按疗效结果筛选<br />
-- 按评分/价格/时间排序</p>
-<p>高级搜索：<br />
-- AI 语义搜索（"60岁男性反复发热两周找不到原因"）<br />
-- 相似病例推荐（基于向量相似度）</p>
-<h3 id="26">2.6 病例质量分级</h3>
-<table>
-<thead>
-<tr>
-<th>等级</th>
-<th>标准</th>
-<th>展示权益</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>S级</td>
-<td>罕见病 + 治愈 + 完整随访 + 同行高分</td>
-<td>首页推荐、专题收录</td>
-</tr>
-<tr>
-<td>A级</td>
-<td>信息完整 + 疗效确切 + 有随访</td>
-<td>分类推荐</td>
-</tr>
-<tr>
-<td>B级</td>
-<td>基本完整，有参考价值</td>
-<td>正常展示</td>
-</tr>
-<tr>
-<td>C级</td>
-<td>信息不够完整，但有部分参考</td>
-<td>低优先展示</td>
-</tr>
-</tbody>
-</table>
-<h2 id="api_1">API 设计（核心接口）</h2>
-<pre><code>POST   /api/v1/cases                   创建病例（草稿）
-PUT    /api/v1/cases/{id}              更新病例
-POST   /api/v1/cases/{id}/publish      提交审核/发布
-GET    /api/v1/cases/{id}              获取病例详情（根据权限返回不同内容）
-GET    /api/v1/cases/{id}/full         获取完整病例（需购买或作者本人）
-DELETE /api/v1/cases/{id}              删除病例
-GET    /api/v1/cases                   病例列表（支持筛选排序分页）
-GET    /api/v1/cases/search            搜索病例
-GET    /api/v1/cases/{id}/similar      获取相似病例
-POST   /api/v1/cases/{id}/media        上传病例附件
-POST   /api/v1/cases/ai-extract        AI提取结构化信息
-GET    /api/v1/cases/me                我的病例列表
-</code></pre>
-<h2 id="_6">迭代计划</h2>
-<table>
-<thead>
-<tr>
-<th>版本</th>
-<th>功能</th>
-<th>优先级</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>MVP</td>
-<td>结构化模板录入、基础脱敏（规则引擎）、关键词搜索、免费浏览</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.0</td>
-<td>AI辅助录入、NER脱敏、付费查看、筛选排序</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.5</td>
-<td>影像上传脱敏、同行评审、质量分级</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V2.0</td>
-<td>语义搜索、相似病例推荐、AI自动审核</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V3.0</td>
-<td>多语言支持、跨平台数据互通</td>
-<td>P2</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h1 id="_7">模块三：交易服务</h1>
-<h2 id="_8">功能清单</h2>
-<h3 id="31">3.1 定价策略</h3>
-<ul>
-<li>作者自主定价（平台建议价格范围）</li>
-<li>价格区间参考：</li>
-<li>常见病案例：¥9-29</li>
-<li>疑难病案例：¥29-99</li>
-<li>罕见病/重大突破：¥99-299</li>
-<li>平台可设置最高限价，防止漫天要价</li>
-<li>动态定价建议（根据病种稀缺度、同类案例数量）</li>
+</li>
 </ul>
-<h3 id="32">3.2 购买流程</h3>
-<pre><code>浏览摘要 → 决定购买 → 选择支付方式 → 支付 → 解锁完整内容
-            ↓
-        已购买则直接查看
-</code></pre>
-<h3 id="33">3.3 支付集成</h3>
+
+<h3>2.2 数据资产打包流水线</h3>
+
+<pre><code>原始健康数据 → AI结构化提取 → 自动脱敏 → 质量评分 → 资产打包 → 提交交易所审核 → 确权登记 → 上架交易</code></pre>
+
+<p>打包流程：</p>
+<ol>
+<li><strong>结构化处理</strong>: 将原始数据转为标准化结构</li>
+<li><strong>脱敏处理</strong>: NER识别PII → 规则引擎补充 → 人工复核 → 脱敏完成</li>
+<li><strong>质量评分</strong>: 数据完整度、时间跨度、验证状态等多维度评分</li>
+<li><strong>资产打包</strong>: 生成数据资产描述、摘要、预览信息</li>
+<li><strong>交易所注册</strong>: 提交至贵阳大数据交易所进行合规审核</li>
+<li><strong>确权登记</strong>: 审核通过后完成数据确权，写入区块链</li>
+</ol>
+
+<p>脱敏范围：</p>
+<ul>
+<li>患者姓名 → 隐去</li>
+<li>身份证号 → 隐去</li>
+<li>手机号/地址 → 隐去</li>
+<li>医院名称 → 可选保留/隐去</li>
+<li>日期 → 模糊化（精确到月或相对时间）</li>
+<li>影像中的文字信息 → OCR检测 + 遮蔽</li>
+</ul>
+
+<h3>2.3 交易所注册与确权</h3>
+<ul>
+<li>自动生成交易所要求的数据资产描述文件</li>
+<li>提交贵阳大数据交易所审核</li>
+<li>审核状态跟踪（待审核/审核中/已通过/已驳回）</li>
+<li>确权完成后获得数据资产唯一标识</li>
+<li>确权信息上链存证</li>
+</ul>
+
+<h3>2.4 内容审核（交易所合规审核）</h3>
+
+<p>审核维度：</p>
+<ol>
+<li><strong>脱敏完整性</strong>: PII是否完全清除</li>
+<li><strong>数据真实性</strong>: 数据是否有明显伪造/篡改迹象</li>
+<li><strong>合规性</strong>: 是否符合交易所数据交易规范</li>
+<li><strong>数据质量</strong>: 信息完整度、可用性评估</li>
+</ol>
+
+<p>审核流程：</p>
+<pre><code>AI自动审核 → 通过则提交交易所 / 存疑则转人工 → 人工审核 → 通过/驳回/要求修改 → 交易所终审</code></pre>
+
+<h3>2.5 数据资产展示</h3>
+
+<p><strong>公开展示（免费预览）：</strong></p>
+<ul>
+<li>数据资产标题、数据类型分类</li>
+<li>数据提供者基本信息（年龄段/性别）</li>
+<li>健康状况概要、数据覆盖时间范围</li>
+<li>质量评分和交易所认证状态</li>
+</ul>
+
+<p><strong>付费解锁内容：</strong></p>
+<ul>
+<li>完整健康数据详情</li>
+<li>详细用药记录、治疗方案</li>
+<li>检查检验报告、影像资料</li>
+<li>长期随访和疗效跟踪数据</li>
+</ul>
+
+<h3>2.6 数据资产质量分级</h3>
+
+<table>
+<thead>
+<tr><th>等级</th><th>标准</th><th>展示权益</th></tr>
+</thead>
+<tbody>
+<tr><td>S级</td><td>罕见病数据 + 长期随访 + 多维度完整 + 已确权</td><td>交易所首页推荐、专题收录</td></tr>
+<tr><td>A级</td><td>数据完整 + 已脱敏验证 + 已确权</td><td>分类推荐</td></tr>
+<tr><td>B级</td><td>基本完整，有参考价值，待确权</td><td>正常展示</td></tr>
+<tr><td>C级</td><td>信息不够完整，但有部分参考价值</td><td>低优先展示</td></tr>
+</tbody>
+</table>
+
+<h2 id="m2-api">API 设计（核心接口）</h2>
+
+<pre><code>POST   /api/v1/data-assets                    创建数据资产（草稿）
+PUT    /api/v1/data-assets/{id}               更新数据资产
+POST   /api/v1/data-assets/{id}/package       触发资产打包流水线
+POST   /api/v1/data-assets/{id}/submit        提交交易所审核
+GET    /api/v1/data-assets/{id}               获取数据资产详情（根据权限返回不同内容）
+GET    /api/v1/data-assets/{id}/full          获取完整数据（需购买或资产所有者）
+DELETE /api/v1/data-assets/{id}               删除数据资产
+GET    /api/v1/data-assets                    数据资产列表（支持筛选排序分页）
+GET    /api/v1/data-assets/search             搜索数据资产
+GET    /api/v1/data-assets/{id}/similar       获取相似数据资产
+POST   /api/v1/data-assets/{id}/media         上传数据附件
+POST   /api/v1/data-assets/ai-extract         AI提取结构化信息
+GET    /api/v1/data-assets/me                 我的数据资产列表
+GET    /api/v1/data-assets/{id}/exchange-status 查询交易所审核/确权状态</code></pre>
+
+<h2 id="m2-iteration">迭代计划</h2>
+
+<table>
+<thead>
+<tr><th>版本</th><th>功能</th><th>优先级</th></tr>
+</thead>
+<tbody>
+<tr><td>MVP</td><td>结构化模板录入、基础脱敏（规则引擎）、资产打包、免费预览</td><td>P0</td></tr>
+<tr><td>V1.0</td><td>AI辅助录入、NER脱敏、交易所注册与确权、付费查看</td><td>P0</td></tr>
+<tr><td>V1.5</td><td>影像上传脱敏、质量分级、交易所合规审核</td><td>P1</td></tr>
+<tr><td>V2.0</td><td>语义搜索、相似资产推荐、AI自动审核</td><td>P1</td></tr>
+<tr><td>V3.0</td><td>多类型数据源接入（可穿戴设备/基因检测）、跨交易所互通</td><td>P2</td></tr>
+</tbody>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ==================== 模块三：数据资产交易服务 ==================== -->
+<h1 id="module-3">模块三：数据资产交易服务</h1>
+
+<h2 id="m3-features">功能清单</h2>
+
+<h3>3.1 定价策略</h3>
+<ul>
+<li>基于数据资产属性的定价模型：
+<ul>
+<li>数据完整度（字段覆盖率、时间跨度）</li>
+<li>数据稀缺度（罕见病种、特殊治疗方案）</li>
+<li>验证状态（是否已通过交易所确权）</li>
+<li>数据维度丰富度（单一指标 vs 多维度健康数据）</li>
+</ul>
+</li>
+<li>价格区间参考：
+<ul>
+<li>基础健康指标数据：&yen;5-20</li>
+<li>完整诊疗过程数据：&yen;20-100</li>
+<li>罕见病/长期随访/多维度数据：&yen;100-500</li>
+<li>批量数据集（脱敏聚合）：协议定价</li>
+</ul>
+</li>
+<li>平台可设置最高限价，防止漫天要价</li>
+<li>动态定价建议（根据数据稀缺度、同类资产数量、市场供需）</li>
+</ul>
+
+<h3>3.2 交易所交易流程</h3>
+
+<pre><code>浏览数据资产预览 → 决定购买 → 通过交易所下单 → 支付 → 交易所确认 → 解锁完整数据
+                    ↓
+                已购买则直接查看</code></pre>
+
+<p>交易通道：</p>
+<ul>
+<li><strong>交易所通道</strong>: 通过贵阳大数据交易所撮合交易，适用于已确权资产</li>
+<li><strong>平台直购通道</strong>: 平台内小额数据资产直接购买（未上交易所的资产）</li>
+</ul>
+
+<h3>3.3 支付集成</h3>
 <ul>
 <li>微信支付（小程序支付 / H5支付 / Native支付）</li>
 <li>支付宝支付</li>
 <li>余额支付</li>
+<li>交易所结算通道（大额/批量交易）</li>
 <li>苹果IAP（如有iOS App，需走苹果支付，30%抽成）</li>
 </ul>
-<h3 id="34">3.4 分账规则</h3>
+
+<h3>3.4 区块链追溯与收益分配</h3>
+
+<h4>数据浏览追溯机制：</h4>
+<pre><code>用户浏览数据资产 → 区块链记录浏览行为（资产ID、浏览者ID、时间戳）
+        ↓
+用户后续产生消费行为（购药、问诊、购买保险等）
+        ↓
+系统追溯该用户此前浏览过的数据资产
+        ↓
+将消费金额的一定比例分配给被浏览数据的提供者（数据分红）</code></pre>
+
+<h4>收益分配规则：</h4>
+
 <table>
 <thead>
-<tr>
-<th>角色</th>
-<th>分成比例</th>
-<th>说明</th>
-</tr>
+<tr><th>角色</th><th>分成来源</th><th>说明</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>案例作者</td>
-<td>70-80%</td>
-<td>核心贡献者</td>
-</tr>
-<tr>
-<td>平台</td>
-<td>20-30%</td>
-<td>运营、审核、技术</td>
-</tr>
+<tr><td>数据提供者（患者/个人）</td><td>数据资产交易收入 60-70% + 数据分红</td><td>核心数据贡献者</td></tr>
+<tr><td>平台（数据资产服务商）</td><td>交易服务费 15-20%</td><td>资产打包、脱敏、技术服务</td></tr>
+<tr><td>交易所</td><td>交易手续费 5-10%</td><td>撮合交易、确权服务</td></tr>
+<tr><td>数据加工方（医生/机构）</td><td>数据增值收入 5-10%</td><td>数据标注、验证、解读增值</td></tr>
 </tbody>
 </table>
-<p>VIP作者（高信用分/高产出）可提升至 85% 分成。</p>
-<h3 id="35">3.5 退款机制</h3>
+
+<p>VIP数据提供者（高信用分/高质量数据）可提升至 75% 分成。</p>
+
+<h3>3.5 数据分红机制（消费追溯分成）</h3>
 <ul>
-<li>购买后24小时内可申请退款</li>
-<li>退款条件：</li>
-<li>内容与描述严重不符</li>
-<li>案例信息明显虚假</li>
-<li>重复购买</li>
-<li>退款流程：<br />
-<code>买方申请 → 平台审核 → 同意则原路退款 / 拒绝则通知原因 → 可申诉</code></li>
+<li>区块链记录所有数据浏览行为</li>
+<li>当浏览者产生关联消费（购药、问诊、购买保险等）时触发分红</li>
+<li>分红计算：
+<ul>
+<li>消费金额 &times; 分红比例（2-5%）</li>
+<li>按浏览时间衰减权重分配给所有被浏览数据的提供者</li>
+<li>单次消费分红上限设置</li>
 </ul>
-<h3 id="36">3.6 订阅管理</h3>
-<ul>
-<li>订阅套餐的开通/续费/取消</li>
-<li>到期前提醒</li>
-<li>自动续费（需用户明确授权）</li>
-<li>套餐升降级</li>
+</li>
+<li>分红结算周期：每周结算一次</li>
+<li>分红记录上链存证，可审计追溯</li>
 </ul>
-<h3 id="37">3.7 结算与提现</h3>
+
+<h3>3.6 交易所订单管理</h3>
 <ul>
-<li>交易完成后T+7确认收入（给退款窗口期）</li>
-<li>最低提现金额：¥100</li>
-<li>提现到银行卡，T+1到账</li>
+<li>交易所挂单/撤单</li>
+<li>订单状态同步（交易所 &harr; 平台）</li>
+<li>交易所交割确认</li>
+<li>批量数据集交易管理</li>
+</ul>
+
+<h3>3.7 结算与提现</h3>
+<ul>
+<li>交易所结算：每周与贵阳大数据交易所进行一次结算对账</li>
+<li>平台内结算：交易完成后T+7确认收入（给退款窗口期）</li>
+<li>数据分红结算：每周计算并分配</li>
+<li>最低提现金额：&yen;50</li>
+<li>提现到银行卡/区块链钱包</li>
 <li>需实名认证后才可提现</li>
 <li>发票/税务：代扣代缴个人所得税（劳务报酬）</li>
 </ul>
-<h2 id="api_2">API 设计</h2>
-<pre><code>POST   /api/v1/orders                  创建订单
-POST   /api/v1/orders/{id}/pay         发起支付
-GET    /api/v1/orders/{id}             查询订单状态
-POST   /api/v1/orders/{id}/refund      申请退款
-GET    /api/v1/orders/me               我的订单列表
-POST   /api/v1/subscriptions           开通订阅
-PUT    /api/v1/subscriptions/{id}      升降级订阅
-DELETE /api/v1/subscriptions/{id}      取消订阅
-GET    /api/v1/income/summary          收入概览
-GET    /api/v1/income/details          收入明细
-POST   /api/v1/withdrawals             申请提现
-</code></pre>
-<h2 id="_9">支付安全</h2>
+
+<h3>3.8 退款机制</h3>
+<ul>
+<li>购买后24小时内可申请退款</li>
+<li>退款条件：
+<ul>
+<li>数据内容与描述严重不符</li>
+<li>数据信息明显虚假或质量低于承诺</li>
+<li>重复购买</li>
+</ul>
+</li>
+<li>退款流程：
+<pre><code>买方申请 → 平台审核 → 同意则原路退款 / 拒绝则通知原因 → 可申诉 → 交易所介入仲裁</code></pre>
+</li>
+</ul>
+
+<h2 id="m3-api">API 设计</h2>
+
+<pre><code>POST   /api/v1/orders                        创建订单（平台直购）
+POST   /api/v1/orders/exchange                创建交易所订单
+POST   /api/v1/orders/{id}/pay               发起支付
+GET    /api/v1/orders/{id}                   查询订单状态
+POST   /api/v1/orders/{id}/refund            申请退款
+GET    /api/v1/orders/me                     我的订单列表
+GET    /api/v1/exchange/orders               交易所订单列表
+GET    /api/v1/exchange/orders/{id}/status    交易所订单状态同步
+POST   /api/v1/exchange/settlement/weekly    触发每周结算对账
+GET    /api/v1/income/summary                收入概览（含交易收入+分红收入）
+GET    /api/v1/income/details                收入明细
+GET    /api/v1/income/dividends              数据分红明细
+GET    /api/v1/income/chain-records          链上分配记录
+POST   /api/v1/withdrawals                   申请提现
+GET    /api/v1/dividends/trace/{consumer_id} 消费追溯分红详情</code></pre>
+
+<h2 id="m3-security">支付与交易安全</h2>
 <ul>
 <li>所有支付操作幂等处理（防止重复支付）</li>
 <li>支付回调签名验证</li>
-<li>对账机制：每日与支付渠道对账</li>
+<li>对账机制：每日与支付渠道对账，每周与交易所对账</li>
 <li>资金流水完整记录，支持审计</li>
+<li>区块链存证：关键交易记录上链，不可篡改</li>
+<li>数据浏览记录上链：确保分红追溯的公正透明</li>
 </ul>
-<h2 id="_10">迭代计划</h2>
+
+<h2 id="m3-iteration">迭代计划</h2>
+
 <table>
 <thead>
-<tr>
-<th>版本</th>
-<th>功能</th>
-<th>优先级</th>
-</tr>
+<tr><th>版本</th><th>功能</th><th>优先级</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>MVP</td>
-<td>单次购买（微信支付）、基础分账</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.0</td>
-<td>支付宝、余额支付、退款、提现</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.5</td>
-<td>订阅套餐、自动续费</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V2.0</td>
-<td>动态定价建议、打赏、企业批量采购</td>
-<td>P2</td>
-</tr>
+<tr><td>MVP</td><td>平台直购（微信支付）、基础收益分配</td><td>P0</td></tr>
+<tr><td>V1.0</td><td>交易所对接、区块链浏览追溯、每周结算、支付宝支付</td><td>P0</td></tr>
+<tr><td>V1.5</td><td>数据分红机制、交易所订单管理、退款</td><td>P1</td></tr>
+<tr><td>V2.0</td><td>动态定价、批量数据集交易、企业采购通道</td><td>P2</td></tr>
 </tbody>
 </table>
-<hr />
-<h1 id="_11">模块四：搜索与推荐服务</h1>
-<h2 id="_12">功能清单</h2>
-<h3 id="41-elasticsearch">4.1 基础搜索（Elasticsearch）</h3>
+
+<div class="page-break"></div>
+
+<!-- ==================== 模块四：搜索与推荐服务 ==================== -->
+<h1 id="module-4">模块四：搜索与推荐服务</h1>
+
+<h2 id="m4-features">功能清单</h2>
+
+<h3>4.1 基础搜索（Elasticsearch）</h3>
 <ul>
 <li>全文关键词搜索（中文分词：IK Analyzer）</li>
-<li>多字段加权搜索（标题权重 &gt; 疾病名 &gt; 症状 &gt; 正文）</li>
-<li>筛选条件组合：疾病分类、治疗类型、疗效、价格区间、评分</li>
+<li>多字段加权搜索（标题权重 &gt; 健康状况 &gt; 数据类型 &gt; 正文描述）</li>
+<li>筛选条件组合：健康状况分类、数据类型、治疗方式、质量评级、价格区间、交易所认证状态</li>
 <li>排序：相关度 / 最新 / 最热 / 评分最高 / 价格</li>
 <li>搜索建议（输入联想）</li>
 <li>搜索高亮</li>
 </ul>
-<h3 id="42">4.2 语义搜索（向量检索）</h3>
+
+<h3>4.2 语义搜索（向量检索）</h3>
 <ul>
-<li>用户用自然语言描述症状或情况</li>
+<li>用户用自然语言描述健康状况或数据需求</li>
 <li>LLM 将查询转为结构化意图 + 向量</li>
 <li>Milvus/Qdrant 向量相似度检索</li>
 <li>结合 ES 关键词搜索做混合排序</li>
 </ul>
+
 <p>示例查询：</p>
-<blockquote>
-<p>"我爸65岁，糖尿病十年，最近脚趾发黑，医院说要截肢，有没有保住的案例？"</p>
-</blockquote>
-<p>→ 系统识别：糖尿病足/坏疽，65岁男性，寻求保肢治疗方案</p>
-<h3 id="43">4.3 相似病例推荐</h3>
+<blockquote>"有没有糖尿病患者长期服用二甲双胍同时配合饮食控制的完整健康数据？包含血糖监测和肠道菌群检测的优先。"</blockquote>
+
+<p>→ 系统识别：糖尿病，二甲双胍用药，饮食干预，血糖监测+肠道微生物数据，长期跟踪数据</p>
+
+<h3>4.3 相似数据资产推荐</h3>
 <ul>
-<li>基于当前查看病例，推荐相似案例</li>
-<li>相似度维度：疾病类型、症状组合、患者特征、治疗方式</li>
+<li>基于当前查看的数据资产，推荐相似资产</li>
+<li>相似度维度：健康状况类型、数据覆盖维度、数据提供者特征、治疗方式</li>
 <li>"看了又看"协同过滤推荐</li>
 </ul>
-<h3 id="44">4.4 个性化推荐</h3>
+
+<h3>4.4 交易所数据资产分类搜索</h3>
 <ul>
-<li>医生端：根据科室和擅长领域推荐新案例</li>
-<li>患者端：根据搜索历史和收藏推荐相关案例</li>
+<li>按交易所数据资产类目体系浏览</li>
+<li>交易所认证资产专区搜索</li>
+<li>已确权资产筛选</li>
+<li>交易所热门资产同步展示</li>
+</ul>
+
+<h3>4.5 个性化推荐</h3>
+<ul>
+<li>医生/研究者端：根据研究方向和关注领域推荐新数据资产</li>
+<li>药企端：根据药品管线推荐相关疾病领域数据</li>
+<li>保险机构端：根据险种推荐相关健康数据</li>
 <li>首页推荐流：热门 + 个性化混合</li>
 </ul>
-<h3 id="45">4.5 热门与趋势</h3>
+
+<h3>4.6 热门与趋势</h3>
 <ul>
-<li>热搜病种排行</li>
-<li>近期热门案例</li>
-<li>新增稀缺病种提醒</li>
+<li>热搜健康数据类型排行</li>
+<li>近期热门数据资产</li>
+<li>新增稀缺数据资产提醒</li>
+<li>交易所热门交易趋势</li>
 </ul>
-<h2 id="_13">技术实现</h2>
-<h3 id="_14">搜索流水线</h3>
+
+<h2 id="m4-tech">技术实现</h2>
+
+<h3>搜索流水线</h3>
 <pre><code>用户查询
   ↓
 查询理解（分词/纠错/同义词扩展/意图识别）
@@ -581,321 +688,340 @@ POST   /api/v1/withdrawals             申请提现
   ↓
 结果融合（RRF排序）
   ↓
-业务过滤（权限/状态/付费）
+业务过滤（权限/状态/确权状态/付费）
   ↓
-返回结果 + 推荐
-</code></pre>
-<h3 id="_15">索引设计</h3>
-<pre><code class="language-json">{
-  &quot;case_index&quot;: {
-    &quot;title&quot;: { &quot;type&quot;: &quot;text&quot;, &quot;analyzer&quot;: &quot;ik_max_word&quot;, &quot;boost&quot;: 3 },
-    &quot;disease_name&quot;: { &quot;type&quot;: &quot;text&quot;, &quot;analyzer&quot;: &quot;ik_smart&quot;, &quot;boost&quot;: 2 },
-    &quot;symptoms&quot;: { &quot;type&quot;: &quot;text&quot;, &quot;analyzer&quot;: &quot;ik_max_word&quot;, &quot;boost&quot;: 2 },
-    &quot;chief_complaint&quot;: { &quot;type&quot;: &quot;text&quot;, &quot;analyzer&quot;: &quot;ik_max_word&quot; },
-    &quot;treatment_plan&quot;: { &quot;type&quot;: &quot;text&quot;, &quot;analyzer&quot;: &quot;ik_max_word&quot; },
-    &quot;icd_code&quot;: { &quot;type&quot;: &quot;keyword&quot; },
-    &quot;disease_category&quot;: { &quot;type&quot;: &quot;keyword&quot; },
-    &quot;treatment_type&quot;: { &quot;type&quot;: &quot;keyword&quot; },
-    &quot;outcome&quot;: { &quot;type&quot;: &quot;keyword&quot; },
-    &quot;price&quot;: { &quot;type&quot;: &quot;float&quot; },
-    &quot;quality_score&quot;: { &quot;type&quot;: &quot;float&quot; },
-    &quot;published_at&quot;: { &quot;type&quot;: &quot;date&quot; },
-    &quot;embedding&quot;: { &quot;type&quot;: &quot;dense_vector&quot;, &quot;dims&quot;: 1024 }
+返回结果 + 推荐</code></pre>
+
+<h3>索引设计</h3>
+<pre><code>{
+  "data_asset_index": {
+    "title": { "type": "text", "analyzer": "ik_max_word", "boost": 3 },
+    "health_condition": { "type": "text", "analyzer": "ik_smart", "boost": 2 },
+    "data_types": { "type": "text", "analyzer": "ik_max_word", "boost": 2 },
+    "data_summary": { "type": "text", "analyzer": "ik_max_word" },
+    "treatment_method": { "type": "text", "analyzer": "ik_max_word" },
+    "icd_code": { "type": "keyword" },
+    "health_category": { "type": "keyword" },
+    "data_category": { "type": "keyword" },
+    "exchange_category": { "type": "keyword" },
+    "exchange_certified": { "type": "boolean" },
+    "verification_status": { "type": "keyword" },
+    "price": { "type": "float" },
+    "quality_score": { "type": "float" },
+    "data_completeness": { "type": "float" },
+    "data_time_span_days": { "type": "integer" },
+    "published_at": { "type": "date" },
+    "embedding": { "type": "dense_vector", "dims": 1024 }
   }
-}
-</code></pre>
-<h2 id="_16">迭代计划</h2>
+}</code></pre>
+
+<h2 id="m4-iteration">迭代计划</h2>
+
 <table>
 <thead>
-<tr>
-<th>版本</th>
-<th>功能</th>
-<th>优先级</th>
-</tr>
+<tr><th>版本</th><th>功能</th><th>优先级</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>MVP</td>
-<td>ES关键词搜索 + 基础筛选</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.0</td>
-<td>搜索建议、高亮、排序优化</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.5</td>
-<td>相似病例推荐、热门排行</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V2.0</td>
-<td>语义搜索、个性化推荐</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V3.0</td>
-<td>多模态搜索（上传检查报告图片搜索）</td>
-<td>P2</td>
-</tr>
+<tr><td>MVP</td><td>ES关键词搜索 + 基础筛选</td><td>P0</td></tr>
+<tr><td>V1.0</td><td>搜索建议、高亮、排序优化、交易所分类搜索</td><td>P0</td></tr>
+<tr><td>V1.5</td><td>相似数据资产推荐、热门排行</td><td>P1</td></tr>
+<tr><td>V2.0</td><td>语义搜索、个性化推荐</td><td>P1</td></tr>
+<tr><td>V3.0</td><td>多模态搜索（上传检查报告图片搜索相关数据资产）</td><td>P2</td></tr>
 </tbody>
 </table>
-<hr />
-<h1 id="ai">模块五：AI 服务</h1>
-<h2 id="_17">功能清单</h2>
-<h3 id="51">5.1 自动脱敏引擎</h3>
-<p><strong>技术方案:</strong><br />
-- 第一层：正则表达式（手机号、身份证、邮箱等固定格式）<br />
-- 第二层：NER模型（人名、地名、机构名等实体识别）<br />
-- 第三层：LLM复核（检查是否有遗漏的敏感信息）</p>
-<p><strong>模型选型:</strong><br />
-- 基础NER：fine-tuned BERT (医疗领域语料)<br />
-- 复核：Claude/GPT API调用<br />
-- 影像OCR脱敏：PaddleOCR + 区域遮蔽</p>
-<h3 id="52">5.2 病历结构化提取</h3>
-<p>输入：非结构化病历文本/图片<br />
-输出：结构化JSON</p>
+
+<div class="page-break"></div>
+
+<!-- ==================== 模块五：AI 服务 ==================== -->
+<h1 id="module-5">模块五：AI 服务</h1>
+
+<h2 id="m5-features">功能清单</h2>
+
+<h3>5.1 自动脱敏引擎</h3>
+
+<h4>技术方案:</h4>
+<ul>
+<li>第一层：正则表达式（手机号、身份证、邮箱等固定格式）</li>
+<li>第二层：NER模型（人名、地名、机构名等实体识别）</li>
+<li>第三层：LLM复核（检查是否有遗漏的敏感信息）</li>
+</ul>
+
+<h4>模型选型:</h4>
+<ul>
+<li>基础NER：fine-tuned BERT (医疗领域语料)</li>
+<li>复核：Claude/GPT API调用</li>
+<li>影像OCR脱敏：PaddleOCR + 区域遮蔽</li>
+</ul>
+
+<h3>5.2 数据资产打包自动化</h3>
+
+<h4>健康数据结构化提取：</h4>
+
+<p>输入：非结构化健康数据文本/图片/报告<br>输出：结构化JSON</p>
+
 <pre><code>原始文本:
-&quot;患者张某，男，58岁，因反复胸闷气短3个月入院。
-既往有高血压病史10年，糖尿病5年...&quot;
+"患者张某，男，58岁，因反复胸闷气短3个月入院。
+既往有高血压病史10年，糖尿病5年。长期服用二甲双胍和厄贝沙坦。
+肠道菌群检测显示双歧杆菌偏低..."
 
 → 提取结果:
 {
-  &quot;patient_age_range&quot;: &quot;51-60&quot;,
-  &quot;patient_gender&quot;: &quot;male&quot;,
-  &quot;chief_complaint&quot;: &quot;反复胸闷气短3个月&quot;,
-  &quot;symptoms&quot;: [
-    {&quot;name&quot;: &quot;胸闷&quot;, &quot;duration&quot;: &quot;3个月&quot;, &quot;severity&quot;: &quot;反复发作&quot;},
-    {&quot;name&quot;: &quot;气短&quot;, &quot;duration&quot;: &quot;3个月&quot;}
+  "patient_age_range": "51-60",
+  "patient_gender": "male",
+  "chief_complaint": "反复胸闷气短3个月",
+  "symptoms": [
+    {"name": "胸闷", "duration": "3个月", "severity": "反复发作"},
+    {"name": "气短", "duration": "3个月"}
   ],
-  &quot;medical_history&quot;: [&quot;高血压10年&quot;, &quot;糖尿病5年&quot;],
-  &quot;suggested_icd&quot;: &quot;I50.9&quot;,
-  &quot;suggested_tags&quot;: [&quot;心力衰竭&quot;, &quot;高血压&quot;, &quot;糖尿病&quot;]
-}
-</code></pre>
-<h3 id="53">5.3 病例摘要生成</h3>
+  "medical_history": ["高血压10年", "糖尿病5年"],
+  "medications": ["二甲双胍", "厄贝沙坦"],
+  "microbiome_data": {"bifidobacterium": "偏低"},
+  "suggested_icd": "I50.9",
+  "suggested_tags": ["心力衰竭", "高血压", "糖尿病", "肠道菌群"],
+  "data_types": ["诊疗记录", "用药记录", "微生物检测"]
+}</code></pre>
+
+<h4>资产打包自动化流程：</h4>
+<ol>
+<li>AI 提取结构化数据</li>
+<li>自动生成数据资产描述和摘要</li>
+<li>自动分类和标签推荐</li>
+<li>生成交易所所需的数据资产说明文件</li>
+<li>预估数据资产价值</li>
+</ol>
+
+<h3>5.3 数据质量评分（交易所合规）</h3>
 <ul>
-<li>自动为长病例生成 200 字以内的摘要</li>
-<li>摘要包含：核心诊断、治疗亮点、疗效概述</li>
-<li>用于搜索结果展示和 SEO</li>
+<li>数据完整度评分：字段覆盖率、关键信息缺失检测</li>
+<li>数据时间跨度评分：长期跟踪数据加分</li>
+<li>数据一致性检查：多维度数据之间的逻辑一致性</li>
+<li>数据稀缺度评估：同类数据市场供给分析</li>
+<li>交易所合规性检查：是否满足交易所上架标准</li>
+<li>输出：质量评分（0-100）+ 合规报告 + 改进建议</li>
 </ul>
-<h3 id="54">5.4 内容审核</h3>
-<p>AI审核维度：<br />
-1. <strong>脱敏检查</strong>: 是否残留PII<br />
-2. <strong>合理性检查</strong>: 诊断与症状是否逻辑一致<br />
-3. <strong>原创性检查</strong>: 与已有案例的文本相似度<br />
-4. <strong>合规检查</strong>: 是否涉及违禁内容<br />
-5. <strong>质量评估</strong>: 信息完整度打分</p>
-<p>输出：通过 / 需人工复核 / 驳回（附理由）</p>
-<h3 id="55">5.5 智能问答（后期）</h3>
+
+<h3>5.4 智能匹配（健康画像匹配）</h3>
 <ul>
-<li>用户上传自己的病历，AI基于平台案例库给出参考建议</li>
+<li>基于健康数据画像匹配相似数据资产</li>
+<li>匹配维度：疾病类型、症状组合、年龄段、治疗方式、数据维度</li>
+<li>为数据需求方（药企、研究者、保险机构）推荐匹配的数据资产</li>
+<li>为数据提供者推荐可参考的同类数据定价</li>
+</ul>
+
+<h3>5.5 数据资产摘要生成</h3>
+<ul>
+<li>自动为数据资产生成 200 字以内的摘要</li>
+<li>摘要包含：核心健康状况、数据覆盖维度、数据亮点</li>
+<li>用于搜索结果展示和交易所资产描述</li>
+</ul>
+
+<h3>5.6 内容审核（交易所合规审核）</h3>
+
+<p>AI审核维度：</p>
+<ol>
+<li><strong>脱敏检查</strong>: 是否残留PII</li>
+<li><strong>数据真实性检查</strong>: 数据是否逻辑一致、无明显伪造</li>
+<li><strong>原创性检查</strong>: 与已有数据资产的相似度检测</li>
+<li><strong>合规检查</strong>: 是否符合交易所数据交易规范</li>
+<li><strong>质量评估</strong>: 数据完整度和可用性打分</li>
+</ol>
+
+<p>输出：通过 / 需人工复核 / 驳回（附理由和合规改进建议）</p>
+
+<h3>5.7 智能问答（后期）</h3>
+<ul>
+<li>用户上传自己的健康数据，AI基于平台数据资产库给出参考建议</li>
 <li>明确标注"仅供参考，不构成诊疗建议"</li>
-<li>引用具体案例来源</li>
+<li>引用具体数据资产来源</li>
 </ul>
-<h2 id="_18">模型部署策略</h2>
+
+<h2 id="m5-deploy">模型部署策略</h2>
+
 <table>
 <thead>
-<tr>
-<th>模型</th>
-<th>部署方式</th>
-<th>理由</th>
-</tr>
+<tr><th>模型</th><th>部署方式</th><th>理由</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>NER脱敏模型</td>
-<td>自部署 (GPU服务器)</td>
-<td>敏感数据不出域</td>
-</tr>
-<tr>
-<td>OCR模型</td>
-<td>自部署</td>
-<td>影像数据不出域</td>
-</tr>
-<tr>
-<td>LLM (摘要/提取)</td>
-<td>API调用 (Claude)</td>
-<td>性价比高，输入已脱敏</td>
-</tr>
-<tr>
-<td>向量模型</td>
-<td>自部署 (text2vec)</td>
-<td>频繁调用，成本控制</td>
-</tr>
-<tr>
-<td>内容审核</td>
-<td>API + 自部署混合</td>
-<td>平衡准确率和成本</td>
-</tr>
+<tr><td>NER脱敏模型</td><td>自部署 (GPU服务器)</td><td>敏感数据不出域</td></tr>
+<tr><td>OCR模型</td><td>自部署</td><td>影像数据不出域</td></tr>
+<tr><td>LLM (摘要/提取/打包)</td><td>API调用 (Claude)</td><td>性价比高，输入已脱敏</td></tr>
+<tr><td>向量模型</td><td>自部署 (text2vec)</td><td>频繁调用，成本控制</td></tr>
+<tr><td>内容审核/合规检查</td><td>API + 自部署混合</td><td>平衡准确率和成本</td></tr>
+<tr><td>质量评分模型</td><td>自部署</td><td>频繁调用，需定制化</td></tr>
 </tbody>
 </table>
+
 <p><strong>安全原则: 脱敏前的原始数据绝不发送到外部API</strong></p>
-<h2 id="_19">迭代计划</h2>
+
+<h2 id="m5-iteration">迭代计划</h2>
+
 <table>
 <thead>
-<tr>
-<th>版本</th>
-<th>功能</th>
-<th>优先级</th>
-</tr>
+<tr><th>版本</th><th>功能</th><th>优先级</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>MVP</td>
-<td>规则引擎脱敏（正则）</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.0</td>
-<td>NER脱敏模型、LLM结构化提取</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.5</td>
-<td>AI审核、摘要生成、OCR脱敏</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V2.0</td>
-<td>语义搜索向量化、相似度计算</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V3.0</td>
-<td>智能问答、多模态理解</td>
-<td>P2</td>
-</tr>
+<tr><td>MVP</td><td>规则引擎脱敏（正则）、基础结构化提取</td><td>P0</td></tr>
+<tr><td>V1.0</td><td>NER脱敏模型、LLM结构化提取、数据资产打包自动化</td><td>P0</td></tr>
+<tr><td>V1.5</td><td>数据质量评分、交易所合规审核、摘要生成、OCR脱敏</td><td>P1</td></tr>
+<tr><td>V2.0</td><td>智能匹配、语义搜索向量化、相似度计算</td><td>P1</td></tr>
+<tr><td>V3.0</td><td>智能问答、多模态理解、可穿戴设备数据自动解析</td><td>P2</td></tr>
 </tbody>
 </table>
-<hr />
-<h1 id="_20">模块六：管理后台</h1>
-<h2 id="_21">功能清单</h2>
-<h3 id="61">6.1 仪表盘</h3>
+
+<div class="page-break"></div>
+
+<!-- ==================== 模块六：管理后台 ==================== -->
+<h1 id="module-6">模块六：管理后台</h1>
+
+<h2 id="m6-features">功能清单</h2>
+
+<h3>6.1 仪表盘</h3>
 <ul>
-<li>核心数据概览：用户数、案例数、交易额、日活/月活</li>
-<li>趋势图表：注册趋势、案例增长、收入曲线</li>
-<li>实时监控：在线用户、正在进行的交易</li>
+<li>核心数据概览：用户数、数据资产数、交易额、数据分红总额、日活/月活</li>
+<li>趋势图表：注册趋势、数据资产增长、交易收入曲线、分红分配趋势</li>
+<li>实时监控：在线用户、正在进行的交易、交易所订单状态</li>
+<li>交易所对接状态：连接状态、待审核资产数、本周结算状态</li>
 </ul>
-<h3 id="62">6.2 用户管理</h3>
+
+<h3>6.2 交易所对接管理（交易所集成仪表盘）</h3>
+<ul>
+<li>交易所连接状态监控</li>
+<li>数据资产提交审核管理（批量提交/撤回）</li>
+<li>交易所审核结果同步与通知</li>
+<li>确权状态跟踪（待确权/已确权/确权失败）</li>
+<li>交易所数据资产类目映射管理</li>
+<li>交易所API调用日志与异常告警</li>
+</ul>
+
+<h3>6.3 区块链监控</h3>
+<ul>
+<li>链上交易记录浏览</li>
+<li>数据浏览记录上链状态监控</li>
+<li>确权信息上链验证</li>
+<li>区块链节点健康状态</li>
+<li>智能合约执行日志</li>
+<li>异常链上行为告警</li>
+</ul>
+
+<h3>6.4 用户管理</h3>
 <ul>
 <li>用户列表（搜索、筛选、导出）</li>
-<li>用户详情查看</li>
+<li>用户详情查看（含区块链钱包信息、数据资产持有情况）</li>
 <li>账号状态管理（激活/暂停/封禁）</li>
-<li>医生认证审核</li>
+<li>认证审核（数据提供者/医生/机构）</li>
 <li>信用分手动调整（需审批）</li>
 </ul>
-<h3 id="63">6.3 内容管理</h3>
+
+<h3>6.5 数据资产合规审核队列</h3>
 <ul>
-<li>病例审核队列</li>
-<li>待审核列表（按提交时间排序）</li>
-<li>AI预审结果展示</li>
+<li>待审核数据资产列表（按提交时间排序）</li>
+<li>AI预审结果展示（含脱敏检查、质量评分、合规检查报告）</li>
 <li>审核操作：通过/驳回/要求修改</li>
 <li>批量审核</li>
-<li>病例管理</li>
+<li>交易所驳回资产的复审处理</li>
+<li>脱敏问题紧急处理（下架+修正）</li>
+</ul>
+
+<h3>6.6 数据资产管理</h3>
+<ul>
+<li>数据资产列表管理
+<ul>
 <li>下架/恢复</li>
 <li>编辑（紧急修正脱敏问题）</li>
 <li>推荐/取消推荐</li>
+</ul>
+</li>
+<li>数据资产质量分布统计</li>
 <li>举报处理</li>
 </ul>
-<h3 id="64">6.4 交易管理</h3>
+
+<h3>6.7 交易管理</h3>
 <ul>
-<li>交易流水查看</li>
+<li>交易流水查看（平台内交易 + 交易所交易）</li>
 <li>退款审批</li>
 <li>异常交易监控</li>
 <li>提现审批</li>
-<li>对账管理</li>
+<li>对账管理（每日支付渠道对账 + 每周交易所对账）</li>
 </ul>
-<h3 id="65">6.5 运营工具</h3>
+
+<h3>6.8 每周结算管理</h3>
+<ul>
+<li>交易所每周结算发起与确认</li>
+<li>结算差异处理（平台记录 vs 交易所记录对比）</li>
+<li>数据分红每周计算与分配</li>
+<li>结算报表生成与导出</li>
+<li>历史结算记录查询</li>
+</ul>
+
+<h3>6.9 收益分配监管</h3>
+<ul>
+<li>收益分配总览（交易收益 + 分红收益）</li>
+<li>分配规则配置（各角色分成比例）</li>
+<li>异常分配告警（单笔异常高额、频繁退款后再分配等）</li>
+<li>链上分配记录与平台记录一致性校验</li>
+<li>数据分红追溯审计（消费行为 → 浏览记录 → 分红分配链路）</li>
+</ul>
+
+<h3>6.10 运营工具</h3>
 <ul>
 <li>首页推荐位管理</li>
 <li>Banner管理</li>
-<li>专题/合集管理</li>
+<li>专题/合集管理（按疾病、按数据类型等）</li>
 <li>站内通知/公告发送</li>
-<li>优惠券/促销活动管理</li>
+<li>数据资产促销活动管理</li>
 </ul>
-<h3 id="66">6.6 数据分析</h3>
+
+<h3>6.11 数据分析</h3>
 <ul>
-<li>用户分析：注册转化漏斗、留存率、用户画像</li>
-<li>内容分析：病种分布、案例质量分布、热门搜索词</li>
-<li>交易分析：GMV、客单价、付费转化率</li>
+<li>用户分析：注册转化漏斗、留存率、用户画像（按角色分类）</li>
+<li>数据资产分析：数据类型分布、质量分布、热门搜索词、交易所上架率</li>
+<li>交易分析：GMV、客单价、付费转化率、交易所交易占比</li>
+<li>分红分析：分红总额、分红触发率、人均分红收入</li>
 <li>导出报表</li>
 </ul>
-<h3 id="67">6.7 系统设置</h3>
+
+<h3>6.12 系统设置</h3>
 <ul>
 <li>角色权限管理（RBAC）</li>
 <li>操作日志查看</li>
-<li>系统参数配置（分成比例、价格范围等）</li>
+<li>系统参数配置（分成比例、分红比例、价格范围、结算周期等）</li>
 <li>审核规则配置</li>
+<li>交易所对接参数配置（API密钥、回调地址等）</li>
+<li>区块链节点配置</li>
 </ul>
-<h2 id="_22">权限角色</h2>
+
+<h2 id="m6-roles">权限角色</h2>
+
 <table>
 <thead>
-<tr>
-<th>角色</th>
-<th>权限</th>
-</tr>
+<tr><th>角色</th><th>权限</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>超级管理员</td>
-<td>全部权限</td>
-</tr>
-<tr>
-<td>运营主管</td>
-<td>用户管理、内容管理、运营工具</td>
-</tr>
-<tr>
-<td>内容审核员</td>
-<td>病例审核、举报处理</td>
-</tr>
-<tr>
-<td>财务</td>
-<td>交易管理、提现审批、对账</td>
-</tr>
-<tr>
-<td>数据分析师</td>
-<td>数据分析（只读）</td>
-</tr>
-<tr>
-<td>客服</td>
-<td>用户查询、纠纷处理</td>
-</tr>
+<tr><td>超级管理员</td><td>全部权限</td></tr>
+<tr><td>运营主管</td><td>用户管理、数据资产管理、运营工具</td></tr>
+<tr><td>合规审核员</td><td>数据资产合规审核、举报处理、脱敏复核</td></tr>
+<tr><td>交易所对接管理员</td><td>交易所对接管理、确权管理、每周结算</td></tr>
+<tr><td>财务</td><td>交易管理、提现审批、对账、收益分配监管</td></tr>
+<tr><td>区块链管理员</td><td>区块链监控、链上记录审计</td></tr>
+<tr><td>数据分析师</td><td>数据分析（只读）</td></tr>
+<tr><td>客服</td><td>用户查询、纠纷处理</td></tr>
 </tbody>
 </table>
-<h2 id="_23">迭代计划</h2>
+
+<h2 id="m6-iteration">迭代计划</h2>
+
 <table>
 <thead>
-<tr>
-<th>版本</th>
-<th>功能</th>
-<th>优先级</th>
-</tr>
+<tr><th>版本</th><th>功能</th><th>优先级</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>MVP</td>
-<td>病例审核、用户管理（基础）</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.0</td>
-<td>仪表盘、交易管理、医生认证审核</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>V1.5</td>
-<td>运营工具、数据分析基础版</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>V2.0</td>
-<td>完整数据分析、权限体系、高级运营工具</td>
-<td>P2</td>
-</tr>
+<tr><td>MVP</td><td>数据资产合规审核、用户管理（基础）</td><td>P0</td></tr>
+<tr><td>V1.0</td><td>仪表盘、交易管理、交易所对接管理、认证审核</td><td>P0</td></tr>
+<tr><td>V1.5</td><td>区块链监控、每周结算管理、收益分配监管、运营工具</td><td>P1</td></tr>
+<tr><td>V2.0</td><td>完整数据分析、权限体系、高级运营工具</td><td>P2</td></tr>
 </tbody>
 </table>
+
 </div>
 <a href="#" class="back-top" title="返回顶部">&uarr;</a>
 </body>

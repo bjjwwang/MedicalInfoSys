@@ -1,11 +1,13 @@
 # 安全开发规范
 
-## 安全优先级（前4条挡住90%攻击）
+## 安全优先级（前6条挡住90%攻击）
 
 1. 用ORM，别拼SQL — 防注入
 2. 每个API校验权限 — 防越权
 3. 所有接口加限流 — 防刷
 4. 全站HTTPS + 云WAF — 防中间人+常见Web攻击
+5. 交易所API双向签名 + 加密传输 — 防篡改+防伪造
+6. 数据资产哈希上链 — 防篡改+可追溯
 
 ---
 
@@ -323,7 +325,172 @@ async def upload_media(file: UploadFile, current_user = Depends(get_current_user
 
 ---
 
-## 七、支付安全
+## 七、区块链安全
+
+### 智能合约安全
+
+```solidity
+// 智能合约安全原则
+
+// 1. 使用经过审计的标准库（如 OpenZeppelin）
+// 2. 所有合约上线前必须通过第三方安全审计
+// 3. 实现紧急暂停机制（Pausable）
+// 4. 避免重入攻击（使用 ReentrancyGuard）
+// 5. 整数溢出保护（Solidity 0.8+ 内置，或使用 SafeMath）
+```
+
+### 区块链节点安全
+- 联盟链节点部署在私有网络，不对外暴露
+- 节点间通信使用TLS加密
+- 节点访问需证书认证（mTLS）
+- 定期更新节点软件，修补已知漏洞
+- 私钥使用HSM（硬件安全模块）管理，不存储在应用服务器
+
+### 链上数据安全原则
+- **不存原始数据**: 链上仅存储哈希摘要、交易元数据、确权记录
+- **隐私保护**: 敏感字段使用零知识证明或同态加密
+- **不可篡改验证**: 定期对比链上哈希与链下数据一致性
+- **密钥管理**: 用户签名密钥妥善保管，支持密钥恢复机制
+
+### 智能合约安全检查清单
+- [ ] 合约通过第三方安全审计（至少一家知名审计机构）
+- [ ] 实现紧急暂停（pause/unpause）功能
+- [ ] 权限控制完整（仅授权地址可执行管理操作）
+- [ ] 无重入漏洞
+- [ ] 上线前在测试网充分测试
+- [ ] 合约升级方案明确（代理模式或版本管理）
+
+---
+
+## 八、数据交易所接口安全
+
+### 交易所API通信安全
+
+```python
+import hashlib
+import hmac
+import time
+import requests
+
+class ExchangeAPIClient:
+    """贵阳大数据交易所API安全通信封装"""
+
+    def __init__(self, app_id: str, app_secret: str, base_url: str):
+        self.app_id = app_id
+        self.app_secret = app_secret
+        self.base_url = base_url
+
+    def _sign_request(self, params: dict, timestamp: str) -> str:
+        """请求签名 — 防止篡改和伪造"""
+        # 1. 参数按字典序排列
+        sorted_params = "&".join(f"{k}={v}" for k, v in sorted(params.items()))
+        # 2. 拼接待签名字符串
+        sign_string = f"{self.app_id}&{timestamp}&{sorted_params}&{self.app_secret}"
+        # 3. HMAC-SHA256签名
+        return hmac.new(
+            self.app_secret.encode(), sign_string.encode(), hashlib.sha256
+        ).hexdigest()
+
+    def _request(self, method: str, path: str, data: dict = None):
+        """安全请求封装"""
+        timestamp = str(int(time.time()))
+        params = data or {}
+        signature = self._sign_request(params, timestamp)
+
+        headers = {
+            "X-App-Id": self.app_id,
+            "X-Timestamp": timestamp,
+            "X-Signature": signature,
+            "Content-Type": "application/json",
+        }
+
+        # 全部使用HTTPS加密传输
+        resp = requests.request(
+            method, f"{self.base_url}{path}",
+            json=params, headers=headers,
+            timeout=30,
+            verify=True  # 强制验证SSL证书
+        )
+
+        # 验证响应签名（防止中间人篡改响应）
+        if not self._verify_response_signature(resp):
+            raise SecurityError("交易所响应签名验证失败")
+
+        return resp.json()
+```
+
+### 交易所接口安全原则
+1. **双向签名**: 请求和响应均需签名验证，防止篡改
+2. **加密传输**: 全部使用HTTPS/TLS 1.2+，强制验证证书
+3. **时间戳校验**: 请求携带时间戳，超过5分钟的请求拒绝（防重放）
+4. **幂等设计**: 关键交易接口使用唯一请求ID，防止重复提交
+5. **IP白名单**: 交易所接口仅允许备案的服务器IP访问
+6. **密钥轮换**: 定期更换API密钥，旧密钥设置过渡期后作废
+
+### 交易所接口安全检查清单
+- [ ] API密钥从KMS/环境变量获取，不硬编码
+- [ ] 请求签名算法与交易所规范一致
+- [ ] 响应签名验证已实现
+- [ ] 时间戳防重放机制已实现
+- [ ] 关键接口幂等处理已实现
+- [ ] IP白名单已配置
+- [ ] SSL证书验证已开启（不跳过verify）
+- [ ] 异常响应有告警和重试机制
+- [ ] 接口调用日志完整记录（含请求/响应摘要，不含密钥）
+
+---
+
+## 九、数据资产完整性保护（防篡改）
+
+### 数据资产完整性校验
+
+```python
+import hashlib
+import json
+
+def generate_asset_hash(asset_data: dict) -> str:
+    """生成数据资产包哈希指纹 — 用于完整性校验和链上存证"""
+    # 1. 规范化序列化（保证相同数据产生相同哈希）
+    canonical = json.dumps(asset_data, sort_keys=True, ensure_ascii=False)
+    # 2. 多重哈希（SHA-256 + 文件内容哈希）
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+def verify_asset_integrity(asset_data: dict, expected_hash: str) -> bool:
+    """验证数据资产包是否被篡改"""
+    current_hash = generate_asset_hash(asset_data)
+    return hmac.compare_digest(current_hash, expected_hash)
+
+# 完整性校验时机：
+# 1. 资产包生成时 → 计算哈希 → 存数据库 + 上链
+# 2. 交易所登记时 → 重新计算哈希 → 与存储哈希对比
+# 3. 买方下载时 → 重新计算哈希 → 与链上哈希对比
+# 4. 定期巡检 → 批量校验所有资产包哈希
+```
+
+### 数据资产防篡改机制
+1. **生成即锁定**: 数据资产包一旦生成并上链，原始数据包不可修改（只能新建版本）
+2. **链上存证**: 资产包哈希、元数据哈希均上链，任何篡改可通过链上记录检测
+3. **多点校验**: 数据库哈希、对象存储哈希、区块链哈希三方一致性校验
+4. **审计日志**: 所有对数据资产包的访问和操作均记录审计日志
+5. **版本控制**: 数据资产更新通过版本机制，旧版本不可覆盖
+
+### 脱敏不可逆保障
+- 脱敏后的数据资产包不保留原始数据的映射关系
+- 原始数据与脱敏数据物理隔离存储
+- 脱敏过程使用不可逆算法（如K-匿名、L-多样性、差分隐私）
+- 定期进行反向识别风险评估
+
+### 数据资产完整性检查清单
+- [ ] 资产包哈希生成算法一致（全平台统一）
+- [ ] 哈希上链机制已实现
+- [ ] 三方一致性校验定时任务已配置
+- [ ] 资产包不可变存储已实现（对象存储WORM模式或版本控制）
+- [ ] 脱敏不可逆已验证（无法从脱敏数据反推原始数据）
+- [ ] 反向识别风险评估已完成
+
+---
+
+## 十、支付安全
 
 ### 核心原则：不信任客户端，金额从服务端取
 
@@ -388,7 +555,7 @@ async def wechat_notify(request: Request):
 
 ---
 
-## 八、基础设施安全
+## 十一、基础设施安全
 
 ### Nginx配置
 
@@ -499,18 +666,23 @@ service-account.json
 
 ---
 
-## 九、审计日志
+## 十二、审计日志
 
 ### 需要记录的操作
 
 | 操作 | 记录内容 | 保留时间 |
 |------|---------|---------|
 | 登录/登出 | 用户ID, IP, User-Agent, 成功/失败 | 1年 |
-| 查看完整病例 | 用户ID, 病例ID, IP | 2年 |
-| 下载附件 | 用户ID, 文件ID, IP | 2年 |
-| 创建/修改/删除病例 | 用户ID, 病例ID, 变更内容 | 永久 |
+| 上传健康数据 | 用户ID, 数据类型, 数据哈希, IP | 永久 |
+| 数据资产包生成 | 用户ID, 资产ID, 资产哈希 | 永久 |
+| 交易所资产登记 | 资产ID, 交易所登记号, 状态 | 永久 |
+| 数据资产交易 | 买方ID, 卖方ID, 资产ID, 金额, 链上交易哈希 | 5年 |
+| 数据资产下载 | 用户ID, 资产ID, IP | 2年 |
+| 收益分配 | 用户ID, 金额, 分配明细, 链上记录 | 5年 |
+| 交易所结算 | 结算批次, 金额, 结算状态 | 5年 |
 | 支付/退款 | 用户ID, 订单ID, 金额 | 5年 |
 | 管理员操作 | 管理员ID, 操作类型, 目标对象 | 永久 |
+| 区块链操作 | 操作类型, 交易哈希, 区块号 | 永久 |
 | 导出数据 | 用户ID, 导出范围 | 2年 |
 | 修改账户信息 | 用户ID, 修改字段 | 1年 |
 
@@ -548,7 +720,7 @@ async def get_full_case(case_id: int, request: Request, current_user = Depends(g
 
 ---
 
-## 十、开发流程安全
+## 十三、开发流程安全
 
 ### 依赖安全
 
@@ -608,7 +780,7 @@ repos:
 
 ---
 
-## 十一、应急响应流程
+## 十四、应急响应流程
 
 ### 发现安全事件后
 
@@ -635,8 +807,9 @@ repos:
 ## 总结：安全不是一次性的事
 
 ```
-开发阶段: ORM + 输入验证 + 权限校验 + 代码审计
-部署阶段: HTTPS + WAF + 安全组 + 最小权限
-运行阶段: 监控告警 + 审计日志 + 定期扫描
-持续改进: 依赖更新 + 渗透测试（年度）+ 应急演练
+开发阶段: ORM + 输入验证 + 权限校验 + 代码审计 + 智能合约审计
+部署阶段: HTTPS + WAF + 安全组 + 最小权限 + 区块链节点安全
+运行阶段: 监控告警 + 审计日志 + 定期扫描 + 数据资产完整性巡检
+交易安全: 交易所API签名 + 加密传输 + 幂等处理 + 结算对账
+持续改进: 依赖更新 + 渗透测试（年度）+ 应急演练 + 智能合约升级审计
 ```
