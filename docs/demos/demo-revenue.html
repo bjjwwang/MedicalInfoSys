@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 收益看板</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.chart-title {
+    font-size: 15px; font-weight: 600; color: #1a3a5c; margin-bottom: 16px;
+}
+.breakdown-legend {
+    display: flex; gap: 20px; margin-top: 12px; flex-wrap: wrap;
+}
+.breakdown-legend .legend-item {
+    display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4a5568;
+}
+.breakdown-legend .legend-dot {
+    width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0;
+}
+.tx-list { list-style: none; }
+.tx-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 0; border-bottom: 1px solid #edf2f7;
+    font-size: 13px;
+}
+.tx-item:last-child { border-bottom: none; }
+.tx-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+}
+.tx-info { flex: 1; }
+.tx-info .tx-name { font-weight: 600; color: #1a3a5c; margin-bottom: 2px; }
+.tx-info .tx-date { font-size: 12px; color: #a0aec0; }
+.tx-amount { font-weight: 700; font-size: 15px; }
+.tx-amount.income { color: #38a169; }
+.tx-amount.frozen { color: #dd6b20; }
+.tx-status { font-size: 11px; text-align: right; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">前端Web</span>
+    <h1>收益看板</h1>
+    <p>直观展示数据资产收益概况，包括累计收益、月度趋势、收入构成分析及近期交易明细。</p>
+</div>
+<div class="demo-container">
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue">💰</div>
+            <div>
+                <div class="stat-value">¥4,340.50</div>
+                <div class="stat-label">累计收益</div>
+                <div class="stat-trend">+32.1% vs 去年</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">📈</div>
+            <div>
+                <div class="stat-value">¥892.00</div>
+                <div class="stat-label">本月收益</div>
+                <div class="stat-trend">+18.3% vs 上月</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">💳</div>
+            <div>
+                <div class="stat-value">¥3,210.00</div>
+                <div class="stat-label">可提现</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">🔒</div>
+            <div>
+                <div class="stat-value">¥450.00</div>
+                <div class="stat-label">冻结中</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="two-col">
+        <!-- Monthly Trend -->
+        <div class="card">
+            <div class="chart-title">月度收益趋势</div>
+            <div class="bar-chart" id="monthly-chart">
+                <div class="bar-col">
+                    <div class="bar-value">¥420</div>
+                    <div class="bar" data-height="42"></div>
+                    <div class="bar-label">11月</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-value">¥580</div>
+                    <div class="bar" data-height="58"></div>
+                    <div class="bar-label">12月</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-value">¥510</div>
+                    <div class="bar" data-height="51"></div>
+                    <div class="bar-label">1月</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-value">¥690</div>
+                    <div class="bar" data-height="69"></div>
+                    <div class="bar-label">2月</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-value">¥755</div>
+                    <div class="bar" data-height="76"></div>
+                    <div class="bar-label">3月</div>
+                </div>
+                <div class="bar-col">
+                    <div class="bar-value">¥892</div>
+                    <div class="bar" data-height="89" style="background:linear-gradient(180deg,#68d391,#38a169);"></div>
+                    <div class="bar-label">4月</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Breakdown -->
+        <div class="card">
+            <div class="chart-title">收入构成分析</div>
+            <div style="margin-bottom:12px;">
+                <div class="rev-breakdown">
+                    <div style="width:70%;background:linear-gradient(90deg,#3182ce,#63b3ed);">70%</div>
+                    <div style="width:22%;background:#38a169;">22%</div>
+                    <div style="width:8%;background:#dd6b20;">8%</div>
+                </div>
+            </div>
+            <div class="breakdown-legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#3182ce;"></div>
+                    数据交易 70%（¥3,038.35）
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#38a169;"></div>
+                    数据分红 22%（¥954.91）
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#dd6b20;"></div>
+                    浏览收益 8%（¥347.24）
+                </div>
+            </div>
+
+            <div style="margin-top:24px;">
+                <div class="h-bar-chart">
+                    <div class="h-bar-row">
+                        <div class="h-bar-label">数据交易</div>
+                        <div class="h-bar-track">
+                            <div class="h-bar-fill" style="width:0%;background:linear-gradient(90deg,#3182ce,#63b3ed);" data-width="70"></div>
+                        </div>
+                        <div class="h-bar-val">70%</div>
+                    </div>
+                    <div class="h-bar-row">
+                        <div class="h-bar-label">数据分红</div>
+                        <div class="h-bar-track">
+                            <div class="h-bar-fill" style="width:0%;background:#38a169;" data-width="22"></div>
+                        </div>
+                        <div class="h-bar-val">22%</div>
+                    </div>
+                    <div class="h-bar-row">
+                        <div class="h-bar-label">浏览收益</div>
+                        <div class="h-bar-track">
+                            <div class="h-bar-fill" style="width:0%;background:#dd6b20;" data-width="8"></div>
+                        </div>
+                        <div class="h-bar-val">8%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="card mt-4">
+        <div class="chart-title">近期交易明细</div>
+        <ul class="tx-list">
+            <li class="tx-item">
+                <div class="tx-icon" style="background:#e6ffed;">🛒</div>
+                <div class="tx-info">
+                    <div class="tx-name">2型糖尿病3年随访血糖及用药数据</div>
+                    <div class="tx-date">2026-04-15 14:32 · 数据交易</div>
+                </div>
+                <div>
+                    <div class="tx-amount income">+¥128.00</div>
+                    <div class="tx-status"><span class="badge badge-success">已到账</span></div>
+                </div>
+            </li>
+            <li class="tx-item">
+                <div class="tx-icon" style="background:#ebf4ff;">📊</div>
+                <div class="tx-info">
+                    <div class="tx-name">高血压24小时动态血压监测数据</div>
+                    <div class="tx-date">2026-04-14 09:18 · 数据交易</div>
+                </div>
+                <div>
+                    <div class="tx-amount income">+¥96.00</div>
+                    <div class="tx-status"><span class="badge badge-success">已到账</span></div>
+                </div>
+            </li>
+            <li class="tx-item">
+                <div class="tx-icon" style="background:#faf5ff;">💎</div>
+                <div class="tx-info">
+                    <div class="tx-name">肠道微生物组数据 — 季度分红</div>
+                    <div class="tx-date">2026-04-10 00:00 · 数据分红</div>
+                </div>
+                <div>
+                    <div class="tx-amount income">+¥245.00</div>
+                    <div class="tx-status"><span class="badge badge-success">已到账</span></div>
+                </div>
+            </li>
+            <li class="tx-item">
+                <div class="tx-icon" style="background:#fff5eb;">🔒</div>
+                <div class="tx-info">
+                    <div class="tx-name">帕金森病治疗反应数据</div>
+                    <div class="tx-date">2026-04-08 16:45 · 数据交易</div>
+                </div>
+                <div>
+                    <div class="tx-amount frozen">+¥180.00</div>
+                    <div class="tx-status"><span class="badge badge-warning">冻结中</span></div>
+                </div>
+            </li>
+            <li class="tx-item">
+                <div class="tx-icon" style="background:#e6ffed;">👁</div>
+                <div class="tx-info">
+                    <div class="tx-name">本周浏览收益结算</div>
+                    <div class="tx-date">2026-04-07 00:00 · 浏览收益</div>
+                </div>
+                <div>
+                    <div class="tx-amount income">+¥34.50</div>
+                    <div class="tx-status"><span class="badge badge-success">已到账</span></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="text-center mt-4">
+        <button class="btn btn-success btn-lg" onclick="showToast('提现申请已提交，预计1-3个工作日到账')">申请提现 (¥3,210.00)</button>
+    </div>
+</div>
+
+<script>
+function showToast(msg) {
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+
+// Animate bars on load
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        document.querySelectorAll('.bar[data-height]').forEach(function(bar) {
+            bar.style.height = bar.getAttribute('data-height') + '%';
+        });
+        document.querySelectorAll('.h-bar-fill[data-width]').forEach(function(bar) {
+            bar.style.width = bar.getAttribute('data-width') + '%';
+        });
+    }, 200);
+});
+</script>
+</body>
+</html>

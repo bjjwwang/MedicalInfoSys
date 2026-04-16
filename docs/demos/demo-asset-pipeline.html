@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 数据资产封装流水线</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.pipeline-wrap { background: #fff; border-radius: 12px; padding: 28px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 24px; }
+.active-step-card { border-left: 4px solid #3182ce; }
+.json-preview {
+    background: #1a202c; color: #e2e8f0; border-radius: 10px; padding: 20px;
+    font-family: "Fira Code", "SF Mono", "Courier New", monospace; font-size: 13px;
+    line-height: 1.8; overflow-x: auto; position: relative;
+}
+.json-preview .j-key { color: #63b3ed; }
+.json-preview .j-str { color: #68d391; }
+.json-preview .j-num { color: #fc8181; }
+.json-preview .j-brace { color: #fbd38d; }
+.json-preview .j-comment { color: #718096; font-style: italic; }
+.json-preview .copy-btn {
+    position: absolute; top: 10px; right: 12px; background: rgba(255,255,255,0.1);
+    border: none; color: #a0aec0; padding: 4px 10px; border-radius: 4px;
+    font-size: 12px; cursor: pointer;
+}
+.json-preview .copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+.meta-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.meta-item { background: #f7fafc; border-radius: 8px; padding: 12px 14px; }
+.meta-item .meta-label { font-size: 11px; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.meta-item .meta-val { font-size: 14px; font-weight: 600; color: #1a3a5c; }
+
+.step-indicator {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #718096; margin-bottom: 16px;
+}
+.step-indicator .si-num {
+    width: 24px; height: 24px; border-radius: 50%; background: #3182ce; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+}
+
+.complete-animation {
+    text-align: center; padding: 40px 20px; display: none;
+}
+.complete-animation .check-circle {
+    width: 80px; height: 80px; border-radius: 50%; background: #38a169;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; color: #fff; margin: 0 auto 16px;
+    animation: scaleIn 0.4s ease-out;
+}
+.complete-animation h2 { font-size: 20px; color: #1a3a5c; margin-bottom: 8px; }
+.complete-animation p { font-size: 14px; color: #718096; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">数据资产模块</span>
+    <h1>数据资产封装流水线</h1>
+    <p>从数据上传到资产发布的全流程自动化流水线，经过格式校验、隐私脱敏、质量评分等环节，将原始数据封装为可交易的标准化数据资产。</p>
+</div>
+<div class="demo-container">
+
+    <!-- Pipeline stepper -->
+    <div class="pipeline-wrap">
+        <div class="pipeline" id="pipelineStepper">
+            <div class="pipeline-step done">
+                <div class="step-dot">&#x2713;</div>
+                <div class="step-label">数据上传</div>
+            </div>
+            <div class="pipeline-line done"></div>
+            <div class="pipeline-step done">
+                <div class="step-dot">&#x2713;</div>
+                <div class="step-label">格式校验</div>
+            </div>
+            <div class="pipeline-line done"></div>
+            <div class="pipeline-step done">
+                <div class="step-dot">&#x2713;</div>
+                <div class="step-label">数据脱敏</div>
+            </div>
+            <div class="pipeline-line done"></div>
+            <div class="pipeline-step done">
+                <div class="step-dot">&#x2713;</div>
+                <div class="step-label">质量评分</div>
+            </div>
+            <div class="pipeline-line"></div>
+            <div class="pipeline-step active" id="step5">
+                <div class="step-dot">5</div>
+                <div class="step-label">资产封装</div>
+            </div>
+            <div class="pipeline-line" id="line56"></div>
+            <div class="pipeline-step" id="step6">
+                <div class="step-dot">6</div>
+                <div class="step-label">提交审核</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active step card -->
+    <div class="card active-step-card" id="packagingCard">
+        <div class="step-indicator"><span class="si-num">5</span> 当前步骤：资产封装</div>
+        <div class="card-title">资产元数据配置</div>
+        <div class="card-subtitle">填写数据资产的描述信息，系统将自动生成资产包</div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>资产名称</label>
+                <input type="text" value="2型糖尿病患者血糖监测数据集(2025Q3-2026Q1)" id="assetName">
+            </div>
+            <div class="form-group">
+                <label>数据类型</label>
+                <select id="assetType">
+                    <option selected>血糖监测数据</option>
+                    <option>血压监测数据</option>
+                    <option>肠道菌群检测</option>
+                    <option>用药记录</option>
+                    <option>综合健康数据</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>数据描述</label>
+            <textarea rows="3" id="assetDesc">包含 1,247 名 2 型糖尿病患者在 2025 年 7 月至 2026 年 3 月期间的连续血糖监测数据。数据涵盖空腹血糖、餐后血糖、糖化血红蛋白(HbA1c)等核心指标，已完成隐私脱敏处理，适用于糖尿病管理研究与 AI 模型训练。</textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>时间范围</label>
+                <input type="text" value="2025-07-01 至 2026-03-31" id="assetRange">
+            </div>
+            <div class="form-group">
+                <label>建议定价 (元)</label>
+                <input type="number" value="28000" id="assetPrice">
+                <div class="hint">系统根据数据质量、规模和市场行情自动建议</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asset package preview -->
+    <div class="card">
+        <div class="card-title">&#x1F4E6; 资产包预览</div>
+        <div class="card-subtitle">系统自动生成的资产包元信息，将随数据一同上链存证</div>
+
+        <div class="meta-preview">
+            <div class="meta-item">
+                <div class="meta-label">资产编号</div>
+                <div class="meta-val" style="font-family:monospace;">DA-2026-0416-A7F3</div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">数据哈希</div>
+                <div class="meta-val hash-text" style="font-size:12px;">0x8a3f...b72e</div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">记录数量</div>
+                <div class="meta-val">38,412 条</div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">质量评分</div>
+                <div class="meta-val"><span class="quality-badge quality-S" style="margin-right:6px;">S</span> 92 / 100</div>
+            </div>
+        </div>
+
+        <div class="json-preview">
+            <button class="copy-btn" onclick="copyJSON()">&#x1F4CB; 复制</button>
+<span class="j-brace">{</span>
+  <span class="j-key">"asset_id"</span>: <span class="j-str">"DA-2026-0416-A7F3"</span>,
+  <span class="j-key">"data_hash"</span>: <span class="j-str">"0x8a3f7c2d1e5b9a0f4c6d8e2b7a1f3c5d9e0b2a4f6c8d0e2b4a6f8c0d2e4b72e"</span>,
+  <span class="j-key">"schema_version"</span>: <span class="j-str">"v2.1.0"</span>,
+  <span class="j-key">"data_type"</span>: <span class="j-str">"blood_glucose_monitoring"</span>,
+  <span class="j-key">"record_count"</span>: <span class="j-num">38412</span>,
+  <span class="j-key">"patient_count"</span>: <span class="j-num">1247</span>,
+  <span class="j-key">"quality_score"</span>: <span class="j-num">92</span>,
+  <span class="j-key">"quality_grade"</span>: <span class="j-str">"S"</span>,
+  <span class="j-key">"desensitized"</span>: <span class="j-num">true</span>,
+  <span class="j-key">"time_range"</span>: <span class="j-brace">{</span>
+    <span class="j-key">"start"</span>: <span class="j-str">"2025-07-01"</span>,
+    <span class="j-key">"end"</span>: <span class="j-str">"2026-03-31"</span>
+  <span class="j-brace">}</span>,
+  <span class="j-key">"fields"</span>: [<span class="j-str">"date"</span>, <span class="j-str">"fasting_glucose"</span>, <span class="j-str">"postprandial_glucose"</span>, <span class="j-str">"hba1c"</span>, <span class="j-str">"medication"</span>],
+  <span class="j-key">"created_at"</span>: <span class="j-str">"2026-04-16T10:32:00+08:00"</span>,
+  <span class="j-key">"suggested_price"</span>: <span class="j-num">28000</span>,
+  <span class="j-key">"license"</span>: <span class="j-str">"research_only"</span>
+<span class="j-brace">}</span>
+        </div>
+    </div>
+
+    <!-- Action -->
+    <div class="text-center" style="margin: 24px 0;">
+        <button class="btn btn-primary btn-lg" id="completeBtn" onclick="completePackage()">&#x1F4E6; 完成封装</button>
+    </div>
+
+    <!-- Complete animation -->
+    <div class="complete-animation" id="completeAnim">
+        <div class="check-circle">&#x2713;</div>
+        <h2>资产封装完成</h2>
+        <p>数据资产 DA-2026-0416-A7F3 已成功封装，正在提交审核...</p>
+        <div style="margin-top: 20px;">
+            <div class="badge badge-pending" style="font-size:13px; padding:6px 16px;">&#x23F3; 审核中 - 预计 1-2 个工作日</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function completePackage() {
+    var btn = document.getElementById('completeBtn');
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.textContent = '封装中...';
+
+    setTimeout(function() {
+        // Update pipeline
+        var step5 = document.getElementById('step5');
+        step5.classList.remove('active');
+        step5.classList.add('done');
+        step5.querySelector('.step-dot').innerHTML = '&#x2713;';
+
+        var line56 = document.getElementById('line56');
+        line56.classList.add('done');
+
+        var step6 = document.getElementById('step6');
+        step6.classList.add('active');
+
+        // Hide form, show complete
+        document.getElementById('packagingCard').style.display = 'none';
+        btn.style.display = 'none';
+        var anim = document.getElementById('completeAnim');
+        anim.style.display = 'block';
+
+        // Toast
+        var toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = '资产封装成功！已自动提交审核。';
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 3000);
+    }, 1500);
+}
+
+function copyJSON() {
+    var text = document.querySelector('.json-preview').textContent.replace('复制', '').trim();
+    navigator.clipboard.writeText(text).then(function() {
+        var toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = 'JSON 已复制到剪贴板';
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 3000);
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 收益分配引擎</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.flow-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 30px 10px;
+    overflow-x: auto;
+}
+.flow-node {
+    border-radius: 14px;
+    padding: 18px 22px;
+    text-align: center;
+    min-width: 140px;
+    position: relative;
+    flex-shrink: 0;
+}
+.flow-node.source {
+    background: linear-gradient(135deg, #3182ce, #2b6cb0);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(49,130,206,0.3);
+}
+.flow-node.target {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.flow-node .node-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 4px;
+}
+.flow-node.target .node-label {
+    color: #718096;
+}
+.flow-node .node-amount {
+    font-size: 22px;
+    font-weight: 700;
+}
+.flow-node.target .node-amount {
+    color: #1a3a5c;
+}
+.flow-node .node-percent {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+.flow-node.target .node-percent {
+    color: #a0aec0;
+}
+.flow-node.provider { border-color: #38a169; }
+.flow-node.provider .node-amount { color: #38a169; }
+.flow-node.platform { border-color: #3182ce; }
+.flow-node.platform .node-amount { color: #3182ce; }
+.flow-node.exchange { border-color: #dd6b20; }
+.flow-node.exchange .node-amount { color: #dd6b20; }
+.flow-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 8px;
+    flex-shrink: 0;
+}
+.flow-arrow .arrow-line {
+    width: 40px;
+    height: 3px;
+    background: #cbd5e0;
+    position: relative;
+}
+.flow-arrow .arrow-line::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: -4px;
+    border: 5px solid transparent;
+    border-left-color: #cbd5e0;
+}
+.flow-arrow .arrow-label {
+    font-size: 11px;
+    color: #a0aec0;
+    white-space: nowrap;
+    margin-bottom: 6px;
+}
+.split-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    padding: 0 6px;
+    flex-shrink: 0;
+}
+.split-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+.split-line {
+    width: 50px;
+    height: 3px;
+    position: relative;
+}
+.split-line.green { background: #38a169; }
+.split-line.blue { background: #3182ce; }
+.split-line.orange { background: #dd6b20; }
+.split-line::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: -4px;
+    border: 5px solid transparent;
+}
+.split-line.green::after { border-left-color: #38a169; }
+.split-line.blue::after { border-left-color: #3182ce; }
+.split-line.orange::after { border-left-color: #dd6b20; }
+.split-pct {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.split-pct.green { background: #e6ffed; color: #22543d; }
+.split-pct.blue { background: #ebf4ff; color: #2b6cb0; }
+.split-pct.orange { background: #fffaf0; color: #c05621; }
+
+.target-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.connector-area {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+.connector-stem {
+    width: 30px;
+    height: 3px;
+    background: #cbd5e0;
+}
+.connector-branch {
+    width: 3px;
+    height: 120px;
+    background: #cbd5e0;
+    position: relative;
+}
+.branch-arms {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 120px;
+}
+.branch-arm {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.arm-line {
+    width: 30px;
+    height: 3px;
+    position: relative;
+}
+.arm-line.green { background: #38a169; }
+.arm-line.blue { background: #3182ce; }
+.arm-line.orange { background: #dd6b20; }
+.arm-line::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: -4px;
+    border: 5px solid transparent;
+}
+.arm-line.green::after { border-left-color: #38a169; }
+.arm-line.blue::after { border-left-color: #3182ce; }
+.arm-line.orange::after { border-left-color: #dd6b20; }
+
+/* Simplified flow for responsiveness */
+.flow-simple {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+}
+.flow-source-box {
+    background: linear-gradient(135deg, #3182ce, #2b6cb0);
+    color: #fff;
+    border-radius: 14px;
+    padding: 20px 32px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(49,130,206,0.3);
+}
+.flow-source-box .fs-label { font-size: 13px; opacity: 0.8; }
+.flow-source-box .fs-amount { font-size: 28px; font-weight: 700; }
+.flow-down-arrow {
+    font-size: 24px;
+    color: #cbd5e0;
+    line-height: 1;
+}
+.flow-targets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    width: 100%;
+}
+.flow-target-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+.flow-target-box:hover {
+    transform: translateY(-2px);
+}
+.flow-target-box.provider { border-color: #38a169; }
+.flow-target-box.platform { border-color: #3182ce; }
+.flow-target-box.exchange { border-color: #dd6b20; }
+.flow-target-box .ft-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+.flow-target-box .ft-role {
+    font-size: 13px;
+    color: #718096;
+    margin-bottom: 4px;
+}
+.flow-target-box .ft-pct {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.flow-target-box.provider .ft-pct { color: #38a169; }
+.flow-target-box.platform .ft-pct { color: #3182ce; }
+.flow-target-box.exchange .ft-pct { color: #dd6b20; }
+.flow-target-box .ft-amount {
+    font-size: 14px;
+    color: #4a5568;
+    font-weight: 600;
+}
+.rev-bar-visual {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 32px;
+    margin: 16px 0;
+}
+.rev-bar-visual div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #fff;
+    font-weight: 600;
+}
+.rev-bar-visual .seg-provider { background: #38a169; width: 70%; }
+.rev-bar-visual .seg-platform { background: #3182ce; width: 20%; }
+.rev-bar-visual .seg-exchange { background: #dd6b20; width: 10%; }
+
+.smart-contract-box {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    border-radius: 12px;
+    padding: 20px 24px;
+    color: #e2e8f0;
+    margin-top: 20px;
+}
+.smart-contract-box .sc-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.smart-contract-box .sc-desc {
+    font-size: 13px;
+    color: #a0aec0;
+    line-height: 1.8;
+}
+.smart-contract-box .sc-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 14px;
+}
+.smart-contract-box .sc-feat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #cbd5e0;
+}
+.smart-contract-box .sc-feat .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #68d391;
+    flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+    .flow-targets { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">交易与结算</span>
+    <h1>收益分配引擎</h1>
+    <p>基于智能合约的自动化收益分配机制，每笔交易完成后实时拆分收益至各参与方账户。</p>
+</div>
+<div class="demo-container">
+    <!-- Flow Diagram -->
+    <div class="card">
+        <div class="card-title">💰 收益分配流程</div>
+        <div class="flow-simple">
+            <div class="flow-source-box">
+                <div class="fs-label">买方支付</div>
+                <div class="fs-amount">¥128.00</div>
+            </div>
+            <div class="flow-down-arrow">▼ 智能合约自动拆分 ▼</div>
+            <div class="flow-targets">
+                <div class="flow-target-box provider">
+                    <div class="ft-icon">🏥</div>
+                    <div class="ft-role">数据提供者</div>
+                    <div class="ft-pct">70%</div>
+                    <div class="ft-amount">¥89.60</div>
+                </div>
+                <div class="flow-target-box platform">
+                    <div class="ft-icon">🖥️</div>
+                    <div class="ft-role">平台服务费</div>
+                    <div class="ft-pct">20%</div>
+                    <div class="ft-amount">¥25.60</div>
+                </div>
+                <div class="flow-target-box exchange">
+                    <div class="ft-icon">🏛️</div>
+                    <div class="ft-role">交易所费用</div>
+                    <div class="ft-pct">10%</div>
+                    <div class="ft-amount">¥12.80</div>
+                </div>
+            </div>
+            <div class="rev-bar-visual" style="width:100%;">
+                <div class="seg-provider">70%</div>
+                <div class="seg-platform">20%</div>
+                <div class="seg-exchange">10%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribution Rules -->
+    <div class="card">
+        <div class="card-title">⚙️ 分配规则配置</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>角色</th>
+                        <th>分配比例</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-success">数据提供者</span></td>
+                        <td><strong style="color:#38a169;">70%</strong></td>
+                        <td>数据采集、脱敏处理、质量保证等工作的核心收益方</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-info">平台服务费</span></td>
+                        <td><strong style="color:#3182ce;">20%</strong></td>
+                        <td>平台提供数据确权、交易撮合、安全保障等技术服务</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">交易所费用</span></td>
+                        <td><strong style="color:#dd6b20;">10%</strong></td>
+                        <td>数据交易所提供合规审核、登记结算、监管对接等服务</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="highlight highlight-blue mt-4">
+            <strong>规则说明：</strong>分配比例可根据数据类型和交易规模进行差异化配置。批量采购订单可享受平台服务费优惠，最低可降至 15%。
+        </div>
+    </div>
+
+    <!-- Distribution Records -->
+    <div class="card">
+        <div class="card-title">📋 分配记录</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>交易ID</th>
+                        <th>交易金额</th>
+                        <th>提供者收益</th>
+                        <th>平台收益</th>
+                        <th>交易所收益</th>
+                        <th>分配时间</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-family:monospace; font-size:12px; color:#4a6fa5;">TXN20260415001</td>
+                        <td style="font-weight:600;">¥128.00</td>
+                        <td style="color:#38a169; font-weight:600;">¥89.60</td>
+                        <td style="color:#3182ce; font-weight:600;">¥25.60</td>
+                        <td style="color:#dd6b20; font-weight:600;">¥12.80</td>
+                        <td>2026-04-15 17:23:45</td>
+                        <td><span class="badge badge-success">已分配</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace; font-size:12px; color:#4a6fa5;">TXN20260414002</td>
+                        <td style="font-weight:600;">¥256.00</td>
+                        <td style="color:#38a169; font-weight:600;">¥179.20</td>
+                        <td style="color:#3182ce; font-weight:600;">¥51.20</td>
+                        <td style="color:#dd6b20; font-weight:600;">¥25.60</td>
+                        <td>2026-04-14 09:16:12</td>
+                        <td><span class="badge badge-success">已分配</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace; font-size:12px; color:#4a6fa5;">TXN20260413003</td>
+                        <td style="font-weight:600;">¥450.00</td>
+                        <td style="color:#38a169; font-weight:600;">¥315.00</td>
+                        <td style="color:#3182ce; font-weight:600;">¥90.00</td>
+                        <td style="color:#dd6b20; font-weight:600;">¥45.00</td>
+                        <td>2026-04-13 14:52:33</td>
+                        <td><span class="badge badge-success">已分配</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace; font-size:12px; color:#4a6fa5;">TXN20260412004</td>
+                        <td style="font-weight:600;">¥89.00</td>
+                        <td style="color:#38a169; font-weight:600;">¥62.30</td>
+                        <td style="color:#3182ce; font-weight:600;">¥17.80</td>
+                        <td style="color:#dd6b20; font-weight:600;">¥8.90</td>
+                        <td>2026-04-12 11:08:27</td>
+                        <td><span class="badge badge-success">已分配</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace; font-size:12px; color:#4a6fa5;">TXN20260411005</td>
+                        <td style="font-weight:600;">¥320.00</td>
+                        <td style="color:#38a169; font-weight:600;">¥224.00</td>
+                        <td style="color:#3182ce; font-weight:600;">¥64.00</td>
+                        <td style="color:#dd6b20; font-weight:600;">¥32.00</td>
+                        <td>2026-04-11 16:41:09</td>
+                        <td><span class="badge badge-pending">分配中</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Smart Contract Explanation -->
+    <div class="smart-contract-box">
+        <div class="sc-title">🔗 智能合约自动分配机制</div>
+        <div class="sc-desc">
+            健数通采用基于区块链的智能合约技术实现收益自动分配。每笔交易完成支付后，智能合约自动触发，按照预设规则将资金实时拆分至各参与方账户，全程无需人工干预，确保分配过程透明、可追溯、不可篡改。
+        </div>
+        <div class="sc-features">
+            <div class="sc-feat"><span class="dot"></span>T+0 实时到账，交易即分配</div>
+            <div class="sc-feat"><span class="dot"></span>全程上链，分配记录不可篡改</div>
+            <div class="sc-feat"><span class="dot"></span>支持动态比例，按数据类型差异化配置</div>
+            <div class="sc-feat"><span class="dot"></span>异常交易自动冻结，人工复核后释放</div>
+            <div class="sc-feat"><span class="dot"></span>退款自动逆向回退各方收益</div>
+            <div class="sc-feat"><span class="dot"></span>完整审计日志，满足合规要求</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

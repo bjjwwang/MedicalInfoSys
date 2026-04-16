@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 数据资产审核</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.top-bar { background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 100%); }
+.badge-reviewing { background: #ebf4ff; color: #2b6cb0; }
+.badge-approved { background: #e6ffed; color: #22543d; }
+.badge-rejected { background: #fed7d7; color: #9b2c2c; }
+.badge-pending-review { background: #fefcbf; color: #744210; }
+
+.review-panel {
+    background: #fff; border: 2px solid #3182ce; border-radius: 12px;
+    padding: 24px; margin-top: 16px; display: none; animation: fadeIn 0.4s;
+}
+.review-panel.show { display: block; }
+.review-panel h3 { font-size: 16px; color: #1a3a5c; margin-bottom: 16px; }
+
+.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.review-info-item { font-size: 13px; }
+.review-info-item .label { color: #718096; margin-bottom: 2px; }
+.review-info-item .value { color: #1a1a1a; font-weight: 500; }
+
+.checklist { list-style: none; padding: 0; margin: 16px 0; }
+.checklist li {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    background: #f0fff4; border-radius: 6px; margin-bottom: 6px; font-size: 13px;
+}
+.checklist li .check-icon { color: #38a169; font-size: 16px; font-weight: 700; }
+.checklist li.warning { background: #fffaf0; }
+.checklist li.warning .check-icon { color: #dd6b20; }
+
+.quality-ring {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 4px solid #38a169; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; color: #38a169; margin: 0 auto;
+}
+.quality-ring.medium { border-color: #d69e2e; color: #d69e2e; }
+
+.review-actions { display: flex; gap: 12px; margin-top: 16px; align-items: flex-start; }
+.review-actions textarea {
+    flex: 1; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+    font-size: 13px; resize: vertical; min-height: 60px; font-family: inherit;
+}
+.review-actions textarea:focus { outline: none; border-color: #3182ce; }
+.review-btns { display: flex; flex-direction: column; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">管理后台</span>
+    <h1>数据资产审核</h1>
+    <p>平台管理员对提交的数据资产进行质量审核、脱敏合规检查及内容合规判定，确保上架资产符合交易所标准。</p>
+</div>
+<div class="demo-container">
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon orange" style="font-size:22px;">&#x1F4CB;</div>
+            <div><div class="stat-value">12</div><div class="stat-label">待审核</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green" style="font-size:22px;">&#x2705;</div>
+            <div><div class="stat-value">8</div><div class="stat-label">今日已审核</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple" style="font-size:22px;">&#x274C;</div>
+            <div><div class="stat-value">2</div><div class="stat-label">本周驳回</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue" style="font-size:22px;">&#x23F1;</div>
+            <div><div class="stat-value">2.3h</div><div class="stat-label">平均审核时长</div></div>
+        </div>
+    </div>
+
+    <!-- Review Queue -->
+    <div class="card">
+        <div class="card-title">&#x1F4CB; 审核队列</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>资产ID</th><th>资产名称</th><th>提交者</th><th>提交时间</th>
+                        <th>数据类型</th><th>数据量</th><th>状态</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-family:monospace;">DA-20260415-001</td>
+                        <td>贵阳社区2型糖尿病随访数据集</td>
+                        <td>贵医附院</td>
+                        <td>2026-04-15 09:32</td>
+                        <td>随访数据</td>
+                        <td>12,450条</td>
+                        <td><span class="badge badge-pending-review">待审核</span></td>
+                        <td><button class="btn btn-primary btn-sm" onclick="showReview(0)">审核</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace;">DA-20260414-003</td>
+                        <td>南明区居民血压监测年度报告</td>
+                        <td>南明卫健委</td>
+                        <td>2026-04-14 16:18</td>
+                        <td>统计报告</td>
+                        <td>8,230条</td>
+                        <td><span class="badge badge-reviewing">审核中</span></td>
+                        <td><button class="btn btn-outline btn-sm" onclick="showReview(1)">继续</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace;">DA-20260414-002</td>
+                        <td>肠道菌群与代谢综合征关联数据</td>
+                        <td>华大基因贵阳</td>
+                        <td>2026-04-14 11:05</td>
+                        <td>组学数据</td>
+                        <td>3,280条</td>
+                        <td><span class="badge badge-pending-review">待审核</span></td>
+                        <td><button class="btn btn-primary btn-sm" onclick="showReview(2)">审核</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace;">DA-20260413-001</td>
+                        <td>慢性病用药依从性追踪数据</td>
+                        <td>云岩社区医院</td>
+                        <td>2026-04-13 14:42</td>
+                        <td>用药数据</td>
+                        <td>5,670条</td>
+                        <td><span class="badge badge-approved">已通过</span></td>
+                        <td><button class="btn btn-outline btn-sm" disabled>已完成</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace;">DA-20260412-002</td>
+                        <td>某民营体检中心年度体检数据</td>
+                        <td>康健体检</td>
+                        <td>2026-04-12 10:15</td>
+                        <td>体检数据</td>
+                        <td>18,900条</td>
+                        <td><span class="badge badge-rejected">已驳回</span></td>
+                        <td><button class="btn btn-outline btn-sm" onclick="showReview(4)">查看</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Review Detail Panel -->
+        <div class="review-panel" id="reviewPanel">
+            <div class="flex-between mb-4">
+                <h3 id="reviewTitle">资产审核详情</h3>
+                <button class="btn btn-outline btn-sm" onclick="hideReview()">&#x2715; 关闭</button>
+            </div>
+
+            <div class="review-grid">
+                <div class="review-info-item">
+                    <div class="label">资产名称</div>
+                    <div class="value" id="rvName">贵阳社区2型糖尿病随访数据集</div>
+                </div>
+                <div class="review-info-item">
+                    <div class="label">数据提供者</div>
+                    <div class="value" id="rvProvider">贵医附院</div>
+                </div>
+                <div class="review-info-item">
+                    <div class="label">数据类型</div>
+                    <div class="value" id="rvType">随访数据 / CSV格式</div>
+                </div>
+                <div class="review-info-item">
+                    <div class="label">数据量</div>
+                    <div class="value" id="rvCount">12,450条 / 28.6MB</div>
+                </div>
+                <div class="review-info-item">
+                    <div class="label">字段数</div>
+                    <div class="value" id="rvFields">42个字段</div>
+                </div>
+                <div class="review-info-item">
+                    <div class="label">时间范围</div>
+                    <div class="value" id="rvRange">2024-01 至 2026-03</div>
+                </div>
+            </div>
+
+            <div class="two-col" style="gap:16px; margin:16px 0;">
+                <div style="text-align:center;">
+                    <div class="quality-ring" id="rvQualityRing">92</div>
+                    <div style="font-size:12px; color:#718096; margin-top:6px;">数据质量评分</div>
+                </div>
+                <div>
+                    <div style="font-size:13px; font-weight:600; color:#1a3a5c; margin-bottom:8px;">脱敏检查结果</div>
+                    <div style="font-size:13px; color:#38a169; margin-bottom:4px;">&#x2705; 已通过NER模型脱敏</div>
+                    <div style="font-size:13px; color:#38a169; margin-bottom:4px;">&#x2705; 已通过正则规则校验</div>
+                    <div style="font-size:13px; color:#38a169;">&#x2705; 抽样复核通过 (50条)</div>
+                </div>
+            </div>
+
+            <div style="font-size:13px; font-weight:600; color:#1a3a5c; margin-bottom:8px;">审核检查项</div>
+            <ul class="checklist" id="rvChecklist">
+                <li><span class="check-icon">&#x2713;</span> 数据完整性 - 缺失率 &lt; 5%，字段完整</li>
+                <li><span class="check-icon">&#x2713;</span> 脱敏合规 - 所有隐私字段已脱敏处理</li>
+                <li><span class="check-icon">&#x2713;</span> 格式规范 - 符合交易所数据格式要求</li>
+                <li><span class="check-icon">&#x2713;</span> 内容合规 - 无违规/敏感内容</li>
+            </ul>
+
+            <div class="review-actions">
+                <textarea id="rvReason" placeholder="审核意见（驳回时必填）..."></textarea>
+                <div class="review-btns">
+                    <button class="btn btn-success" onclick="approveAsset()">&#x2705; 通过</button>
+                    <button class="btn btn-danger" onclick="rejectAsset()">&#x274C; 驳回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+var reviewData = [
+    { name: '贵阳社区2型糖尿病随访数据集', provider: '贵医附院', type: '随访数据 / CSV格式', count: '12,450条 / 28.6MB', fields: '42个字段', range: '2024-01 至 2026-03', quality: 92 },
+    { name: '南明区居民血压监测年度报告', provider: '南明卫健委', type: '统计报告 / Excel格式', count: '8,230条 / 15.2MB', fields: '36个字段', range: '2025-01 至 2025-12', quality: 88 },
+    { name: '肠道菌群与代谢综合征关联数据', provider: '华大基因贵阳', type: '组学数据 / CSV格式', count: '3,280条 / 142MB', fields: '128个字段', range: '2025-06 至 2026-02', quality: 95 },
+    { name: '慢性病用药依从性追踪数据', provider: '云岩社区医院', type: '用药数据 / JSON格式', count: '5,670条 / 8.4MB', fields: '28个字段', range: '2024-06 至 2026-03', quality: 90 },
+    { name: '某民营体检中心年度体检数据', provider: '康健体检', type: '体检数据 / Excel格式', count: '18,900条 / 52MB', fields: '65个字段', range: '2025-01 至 2025-12', quality: 61 }
+];
+
+function showReview(idx) {
+    var d = reviewData[idx];
+    document.getElementById('rvName').textContent = d.name;
+    document.getElementById('rvProvider').textContent = d.provider;
+    document.getElementById('rvType').textContent = d.type;
+    document.getElementById('rvCount').textContent = d.count;
+    document.getElementById('rvFields').textContent = d.fields;
+    document.getElementById('rvRange').textContent = d.range;
+    var ring = document.getElementById('rvQualityRing');
+    ring.textContent = d.quality;
+    if (d.quality >= 80) {
+        ring.className = 'quality-ring';
+    } else {
+        ring.className = 'quality-ring medium';
+    }
+    document.getElementById('reviewPanel').classList.add('show');
+    document.getElementById('reviewPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideReview() {
+    document.getElementById('reviewPanel').classList.remove('show');
+}
+
+function approveAsset() {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = '审核通过！资产已进入上架流程';
+    toast.style.background = '#38a169';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+    hideReview();
+}
+
+function rejectAsset() {
+    var reason = document.getElementById('rvReason').value;
+    if (!reason.trim()) {
+        document.getElementById('rvReason').style.borderColor = '#e53e3e';
+        document.getElementById('rvReason').placeholder = '请填写驳回原因！';
+        return;
+    }
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = '已驳回，驳回通知已发送至提交者';
+    toast.style.background = '#e53e3e';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+    hideReview();
+}
+</script>
+</body>
+</html>

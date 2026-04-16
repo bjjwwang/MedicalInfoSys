@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 数据市场</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.search-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+}
+.search-section .search-bar select {
+    min-width: 120px;
+}
+.results-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #718096;
+}
+.asset-card .card-top {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+.asset-card .asset-desc {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.asset-card .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #f0f4f8;
+}
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+    font-size: 15px;
+}
+.no-results .icon { font-size: 48px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">前端Web</span>
+    <h1>数据市场</h1>
+    <p>浏览和搜索平台上架的健康数据资产，支持按类型筛选和多维排序，快速发现高质量医疗数据。</p>
+</div>
+<div class="demo-container">
+    <div class="search-section">
+        <div class="search-bar">
+            <input type="text" id="keyword-input" placeholder="搜索数据资产名称、关键词...">
+            <select id="category-filter">
+                <option value="全部">全部类型</option>
+                <option value="血糖">血糖</option>
+                <option value="血压">血压</option>
+                <option value="微生态">微生态</option>
+                <option value="用药">用药</option>
+                <option value="饮食">饮食</option>
+            </select>
+            <select id="sort-select">
+                <option value="最新">最新上架</option>
+                <option value="最热">最热门</option>
+                <option value="价格">价格排序</option>
+            </select>
+            <button class="btn btn-primary" onclick="filterCards()">搜索</button>
+        </div>
+    </div>
+
+    <div class="results-info">
+        <span id="results-count">共 4 条数据资产</span>
+        <span>默认按最新上架排序</span>
+    </div>
+
+    <div class="asset-grid" id="asset-grid">
+        <!-- Card 1 -->
+        <div class="asset-card" data-category="血糖" data-title="2型糖尿病3年随访血糖及用药数据" data-price="128" data-views="3420" data-time="2026-04">
+            <div class="card-top">
+                <div class="asset-type-icon" style="background:#fff5f5;color:#e53e3e;">🩸</div>
+                <div style="flex:1;">
+                    <div class="asset-title">2型糖尿病3年随访血糖及用药数据</div>
+                    <div class="asset-tags">
+                        <span>血糖监测</span>
+                        <span>糖尿病</span>
+                        <span>随访</span>
+                    </div>
+                </div>
+                <div class="quality-badge quality-S">S</div>
+            </div>
+            <div class="asset-desc">包含1200例2型糖尿病患者3年连续随访数据，涵盖空腹血糖、餐后血糖、HbA1c指标及对应用药方案，数据完整率98.5%。</div>
+            <div class="card-footer">
+                <div class="asset-price">¥128</div>
+                <div class="asset-stats">
+                    <span>👁 3,420</span>
+                    <span>🛒 286</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="asset-card" data-category="血压" data-title="高血压患者24小时动态血压监测数据" data-price="96" data-views="2150" data-time="2026-03">
+            <div class="card-top">
+                <div class="asset-type-icon" style="background:#ebf4ff;color:#3182ce;">💓</div>
+                <div style="flex:1;">
+                    <div class="asset-title">高血压患者24小时动态血压监测数据</div>
+                    <div class="asset-tags">
+                        <span>血压监测</span>
+                        <span>高血压</span>
+                        <span>动态监测</span>
+                    </div>
+                </div>
+                <div class="quality-badge quality-A">A</div>
+            </div>
+            <div class="asset-desc">800例原发性高血压患者24小时动态血压监测数据，包含收缩压、舒张压、心率等指标，采样频率15分钟/次，已完成四级脱敏处理。</div>
+            <div class="card-footer">
+                <div class="asset-price">¥96</div>
+                <div class="asset-stats">
+                    <span>👁 2,150</span>
+                    <span>🛒 173</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="asset-card" data-category="微生态" data-title="肠道微生物组16S rRNA测序及代谢组学数据" data-price="256" data-views="1890" data-time="2026-02">
+            <div class="card-top">
+                <div class="asset-type-icon" style="background:#f0fff4;color:#38a169;">🦠</div>
+                <div style="flex:1;">
+                    <div class="asset-title">肠道微生物组16S rRNA测序及代谢组学数据</div>
+                    <div class="asset-tags">
+                        <span>微生态</span>
+                        <span>肠道菌群</span>
+                        <span>代谢组学</span>
+                    </div>
+                </div>
+                <div class="quality-badge quality-S">S</div>
+            </div>
+            <div class="asset-desc">500例健康对照与肠易激综合征患者的肠道菌群16S rRNA测序数据，配套短链脂肪酸代谢组学分析结果，含完整实验方案。</div>
+            <div class="card-footer">
+                <div class="asset-price">¥256</div>
+                <div class="asset-stats">
+                    <span>👁 1,890</span>
+                    <span>🛒 94</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="asset-card" data-category="用药" data-title="帕金森病多巴胺类药物治疗反应数据" data-price="180" data-views="1340" data-time="2026-01">
+            <div class="card-top">
+                <div class="asset-type-icon" style="background:#faf5ff;color:#805ad5;">💊</div>
+                <div style="flex:1;">
+                    <div class="asset-title">帕金森病多巴胺类药物治疗反应数据</div>
+                    <div class="asset-tags">
+                        <span>用药记录</span>
+                        <span>帕金森</span>
+                        <span>治疗反应</span>
+                    </div>
+                </div>
+                <div class="quality-badge quality-B">B</div>
+            </div>
+            <div class="asset-desc">320例帕金森病患者左旋多巴及多巴胺受体激动剂治疗数据，记录UPDRS评分变化、剂量调整及不良反应，随访周期2年。</div>
+            <div class="card-footer">
+                <div class="asset-price">¥180</div>
+                <div class="asset-stats">
+                    <span>👁 1,340</span>
+                    <span>🛒 67</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="no-results" id="no-results" style="display:none;">
+        <div class="icon">📭</div>
+        <div>未找到匹配的数据资产</div>
+        <div class="text-sm mt-2">请尝试更换筛选条件</div>
+    </div>
+</div>
+
+<script>
+function showToast(msg) {
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+
+function filterCards() {
+    var keyword = document.getElementById('keyword-input').value.trim().toLowerCase();
+    var category = document.getElementById('category-filter').value;
+    var sortBy = document.getElementById('sort-select').value;
+    var cards = document.querySelectorAll('.asset-card');
+    var visible = 0;
+
+    cards.forEach(function(card) {
+        var cardCategory = card.getAttribute('data-category');
+        var cardTitle = card.getAttribute('data-title').toLowerCase();
+        var matchCategory = (category === '全部') || (cardCategory === category);
+        var matchKeyword = !keyword || cardTitle.indexOf(keyword) !== -1;
+        if (matchCategory && matchKeyword) {
+            card.style.display = '';
+            visible++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    document.getElementById('results-count').textContent = '共 ' + visible + ' 条数据资产';
+    document.getElementById('no-results').style.display = visible === 0 ? '' : 'none';
+    document.getElementById('asset-grid').style.display = visible === 0 ? 'none' : '';
+
+    // Sort visible cards
+    var grid = document.getElementById('asset-grid');
+    var arr = Array.from(cards).filter(function(c) { return c.style.display !== 'none'; });
+    arr.sort(function(a, b) {
+        if (sortBy === '价格') return parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price'));
+        if (sortBy === '最热') return parseInt(b.getAttribute('data-views')) - parseInt(a.getAttribute('data-views'));
+        return 0; // 最新 keeps default order
+    });
+    arr.forEach(function(card) { grid.appendChild(card); });
+}
+
+document.getElementById('category-filter').addEventListener('change', filterCards);
+document.getElementById('sort-select').addEventListener('change', filterCards);
+document.getElementById('keyword-input').addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') filterCards();
+});
+
+// Card click
+document.querySelectorAll('.asset-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+        showToast('即将跳转至资产详情页: ' + this.getAttribute('data-title'));
+    });
+});
+</script>
+</body>
+</html>

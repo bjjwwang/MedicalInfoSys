@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 交易所资产登记与上架</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.step-detail {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    margin-top: 24px;
+}
+@media (max-width: 768px) { .step-detail { grid-template-columns: 1fr; } }
+
+.cert-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #ebf4ff 100%);
+    border: 2px solid #805ad5;
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+.cert-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    border: 3px solid rgba(128,90,213,0.15);
+    border-radius: 50%;
+}
+.cert-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; right: -20px;
+    width: 70px; height: 70px;
+    border: 3px solid rgba(128,90,213,0.1);
+    border-radius: 50%;
+}
+.cert-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #553c9a;
+    margin-bottom: 6px;
+    letter-spacing: 4px;
+}
+.cert-subtitle {
+    text-align: center;
+    font-size: 12px;
+    color: #805ad5;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed #d6bcfa;
+}
+.cert-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    font-size: 13px;
+}
+.cert-row .cert-label { color: #718096; }
+.cert-row .cert-value { color: #2d3748; font-weight: 500; max-width: 60%; text-align: right; word-break: break-all; }
+.cert-stamp {
+    text-align: center;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed #d6bcfa;
+}
+.cert-stamp .stamp {
+    display: inline-block;
+    border: 3px solid #e53e3e;
+    border-radius: 50%;
+    width: 72px; height: 72px;
+    line-height: 66px;
+    text-align: center;
+    color: #e53e3e;
+    font-size: 12px;
+    font-weight: 700;
+    transform: rotate(-15deg);
+    opacity: 0.7;
+}
+
+.exchange-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: #f7fafc;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.exchange-logo {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #2c5282, #2b6cb0);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 20px; font-weight: 700;
+}
+.exchange-name { font-size: 16px; font-weight: 600; color: #1a3a5c; }
+.exchange-id { font-size: 12px; color: #718096; margin-top: 2px; }
+
+.status-timeline { position: relative; padding-left: 0; }
+.st-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 20px; position: relative;
+}
+.st-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 15px; top: 32px;
+    width: 2px; height: calc(100% - 12px);
+    background: #e2e8f0;
+}
+.st-item.done:not(:last-child)::after { background: #38a169; }
+.st-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: #edf2f7; color: #a0aec0;
+}
+.st-item.done .st-dot { background: #38a169; color: #fff; }
+.st-item.current .st-dot { background: #3182ce; color: #fff; animation: pulse 1.5s infinite; }
+.st-info .st-title { font-size: 14px; font-weight: 600; color: #2d3748; }
+.st-item.done .st-info .st-title { color: #38a169; }
+.st-item.current .st-info .st-title { color: #3182ce; }
+.st-info .st-time { font-size: 12px; color: #a0aec0; margin-top: 2px; }
+
+.btn-exchange {
+    background: linear-gradient(135deg, #805ad5, #6b46c1);
+    color: #fff;
+    padding: 12px 28px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+.btn-exchange:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(128,90,213,0.35); }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">交易所对接</span>
+    <h1>交易所资产登记与上架</h1>
+    <p>对接贵阳大数据交易所，实现健康数据资产的合规登记、确权认证和挂牌上架全流程管理</p>
+</div>
+<div class="demo-container">
+    <!-- Pipeline Stepper -->
+    <div class="card">
+        <div class="card-title">📋 资产上架流程</div>
+        <div class="pipeline" id="pipeline">
+            <div class="pipeline-step done">
+                <div class="step-dot">✓</div>
+                <div class="step-label">资产提交</div>
+            </div>
+            <div class="pipeline-line done"></div>
+            <div class="pipeline-step done">
+                <div class="step-dot">✓</div>
+                <div class="step-label">交易所审核</div>
+            </div>
+            <div class="pipeline-line done"></div>
+            <div class="pipeline-step done">
+                <div class="step-dot">✓</div>
+                <div class="step-label">登记确权</div>
+            </div>
+            <div class="pipeline-line"></div>
+            <div class="pipeline-step active">
+                <div class="step-dot">4</div>
+                <div class="step-label">定价上架</div>
+            </div>
+            <div class="pipeline-line"></div>
+            <div class="pipeline-step">
+                <div class="step-dot">5</div>
+                <div class="step-label">交易中</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exchange Info -->
+    <div class="exchange-info">
+        <div class="exchange-logo">贵</div>
+        <div>
+            <div class="exchange-name">贵阳大数据交易所</div>
+            <div class="exchange-id">资产登记编号：GY-HDA-2026-000138</div>
+        </div>
+        <div class="spacer" style="flex:1"></div>
+        <span class="badge badge-info">已对接</span>
+    </div>
+
+    <!-- Step Detail -->
+    <div class="step-detail">
+        <!-- Left: Cert Card -->
+        <div>
+            <div class="card" style="margin-bottom:20px">
+                <div class="card-title">🔐 当前步骤：登记确权</div>
+                <div class="card-subtitle">数据资产已通过交易所审核，确权证书已生成</div>
+
+                <div class="cert-card">
+                    <div class="cert-title">确 权 证 书</div>
+                    <div class="cert-subtitle">贵阳大数据交易所 &middot; 数据资产确权登记</div>
+
+                    <div class="cert-row">
+                        <span class="cert-label">数据资产名称</span>
+                        <span class="cert-value">贵州省三甲医院脱敏电子病历数据集（2024-2025）</span>
+                    </div>
+                    <div class="cert-row">
+                        <span class="cert-label">数据提供方</span>
+                        <span class="cert-value">贵州**医疗科技有限公司</span>
+                    </div>
+                    <div class="cert-row">
+                        <span class="cert-label">登记日期</span>
+                        <span class="cert-value">2026-04-14</span>
+                    </div>
+                    <div class="cert-row">
+                        <span class="cert-label">有效期</span>
+                        <span class="cert-value">2026-04-14 至 2028-04-13</span>
+                    </div>
+                    <div class="cert-row">
+                        <span class="cert-label">交易所编号</span>
+                        <span class="cert-value" style="color:#805ad5;font-weight:700">GY-HDA-2026-000138</span>
+                    </div>
+                    <div class="cert-row">
+                        <span class="cert-label">数据指纹</span>
+                        <span class="cert-value hash-text" style="font-size:11px">a3f8c2d1e9b047562c8f1d3a7e6b5094f2d8a1c3e7b4906d5f2a8c1e3b7d0492</span>
+                    </div>
+
+                    <div class="cert-stamp">
+                        <div class="stamp">贵阳大数据<br>交易所</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-exchange" onclick="showPublicPage()">
+                🌐 查看交易所公示页
+            </button>
+        </div>
+
+        <!-- Right: Status Timeline -->
+        <div>
+            <div class="card">
+                <div class="card-title">⏱ 审批进度</div>
+
+                <div class="status-timeline">
+                    <div class="st-item done">
+                        <div class="st-dot">✓</div>
+                        <div class="st-info">
+                            <div class="st-title">提交申请</div>
+                            <div class="st-time">2026-04-10 09:30</div>
+                        </div>
+                    </div>
+                    <div class="st-item done">
+                        <div class="st-dot">✓</div>
+                        <div class="st-info">
+                            <div class="st-title">材料审核</div>
+                            <div class="st-time">2026-04-11 14:15</div>
+                        </div>
+                    </div>
+                    <div class="st-item done">
+                        <div class="st-dot">✓</div>
+                        <div class="st-info">
+                            <div class="st-title">确权登记</div>
+                            <div class="st-time">2026-04-14 10:00</div>
+                        </div>
+                    </div>
+                    <div class="st-item current">
+                        <div class="st-dot">●</div>
+                        <div class="st-info">
+                            <div class="st-title">上架公示</div>
+                            <div class="st-time">预计 2026-04-17</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight highlight-blue mt-4">
+                    <strong>当前状态：</strong>确权证书已签发，正在进行上架前公示（公示期 3 个工作日）
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+function showPublicPage() {
+    showToast('正在跳转至贵阳大数据交易所公示页面…');
+    setTimeout(() => showToast('提示：此为演示环境，暂不支持跳转'), 1500);
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    t.style.animation = 'slideIn 0.3s, fadeOut 0.3s 2.7s forwards';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// Animate pipeline steps on load
+document.addEventListener('DOMContentLoaded', () => {
+    const steps = document.querySelectorAll('.pipeline-step, .pipeline-line');
+    steps.forEach((s, i) => {
+        s.style.opacity = '0';
+        s.style.transform = 'translateY(10px)';
+        s.style.transition = 'all 0.4s ease';
+        setTimeout(() => {
+            s.style.opacity = '1';
+            s.style.transform = 'translateY(0)';
+        }, 150 * i);
+    });
+
+    // Animate cert card
+    const cert = document.querySelector('.cert-card');
+    cert.style.opacity = '0';
+    cert.style.transform = 'scale(0.95)';
+    cert.style.transition = 'all 0.6s ease';
+    setTimeout(() => {
+        cert.style.opacity = '1';
+        cert.style.transform = 'scale(1)';
+    }, 800);
+});
+</script>
+</body>
+</html>

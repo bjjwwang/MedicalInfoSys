@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 健康数据上传</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.type-card {
+    background: #fff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px 14px;
+    text-align: center; cursor: pointer; transition: all 0.25s;
+}
+.type-card:hover { border-color: #63b3ed; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(49,130,206,0.1); }
+.type-card.selected { border-color: #3182ce; background: #ebf4ff; }
+.type-card .type-icon { font-size: 32px; margin-bottom: 8px; }
+.type-card .type-name { font-size: 14px; font-weight: 600; color: #1a3a5c; }
+.type-card .type-desc { font-size: 11px; color: #a0aec0; margin-top: 4px; }
+
+.template-form { animation: fadeIn 0.4s ease-out; }
+
+.upload-zone {
+    border: 2px dashed #cbd5e0; border-radius: 12px; padding: 40px 20px;
+    text-align: center; cursor: pointer; transition: all 0.3s;
+    background: #fafcff;
+}
+.upload-zone:hover, .upload-zone.dragover { border-color: #3182ce; background: #ebf4ff; }
+.upload-zone .upload-icon { font-size: 48px; color: #a0aec0; margin-bottom: 12px; }
+.upload-zone .upload-text { font-size: 14px; color: #4a5568; margin-bottom: 4px; }
+.upload-zone .upload-hint { font-size: 12px; color: #a0aec0; }
+.upload-zone .upload-formats { margin-top: 12px; display: flex; gap: 8px; justify-content: center; }
+.upload-zone .upload-formats span {
+    background: #edf2f7; color: #718096; padding: 2px 10px; border-radius: 4px; font-size: 12px;
+}
+
+.file-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+    background: #f7fafc; border-radius: 8px; margin-top: 10px; animation: fadeIn 0.3s;
+}
+.file-item .file-icon { font-size: 20px; }
+.file-item .file-info { flex: 1; }
+.file-item .file-name { font-size: 13px; font-weight: 500; color: #1a3a5c; }
+.file-item .file-size { font-size: 11px; color: #a0aec0; }
+.file-item .file-remove { color: #e53e3e; cursor: pointer; font-size: 18px; }
+
+.bottom-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 24px; padding-top: 20px; border-top: 1px solid #e2e8f0;
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">数据资产模块</span>
+    <h1>健康数据上传</h1>
+    <p>支持结构化模板录入与批量文件上传，涵盖血糖、血压、肠道菌群等多种健康数据类型，自动校验数据格式与完整性。</p>
+</div>
+<div class="demo-container medium">
+
+    <!-- Step 1: Select data type -->
+    <div class="card">
+        <div class="card-title">&#x2460; 选择数据类型</div>
+        <div class="card-subtitle">请选择要上传的健康数据类别，系统将展示对应的结构化录入模板</div>
+        <div class="type-grid" id="typeGrid">
+            <div class="type-card selected" data-type="blood_sugar" onclick="selectType(this)">
+                <div class="type-icon">&#x1F4C9;</div>
+                <div class="type-name">血糖数据</div>
+                <div class="type-desc">空腹/餐后血糖</div>
+            </div>
+            <div class="type-card" data-type="blood_pressure" onclick="selectType(this)">
+                <div class="type-icon">&#x2764;&#xFE0F;</div>
+                <div class="type-name">血压数据</div>
+                <div class="type-desc">收缩压/舒张压</div>
+            </div>
+            <div class="type-card" data-type="gut_flora" onclick="selectType(this)">
+                <div class="type-icon">&#x1F9EC;</div>
+                <div class="type-name">肠道菌群</div>
+                <div class="type-desc">菌群分布检测</div>
+            </div>
+            <div class="type-card" data-type="medication" onclick="selectType(this)">
+                <div class="type-icon">&#x1F48A;</div>
+                <div class="type-name">用药记录</div>
+                <div class="type-desc">处方与用药日志</div>
+            </div>
+            <div class="type-card" data-type="diet" onclick="selectType(this)">
+                <div class="type-icon">&#x1F957;</div>
+                <div class="type-name">饮食数据</div>
+                <div class="type-desc">膳食营养记录</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2: Structured form -->
+    <div class="card" id="formCard">
+        <div class="card-title">&#x2461; 结构化模板录入</div>
+        <div class="card-subtitle" id="formSubtitle">血糖数据录入模板 - 请填写各项指标</div>
+        <div id="formArea"></div>
+    </div>
+
+    <!-- Step 3: File upload -->
+    <div class="card">
+        <div class="card-title">&#x2462; 批量文件上传</div>
+        <div class="card-subtitle">支持 CSV、Excel 格式文件，系统将自动解析并校验数据列</div>
+        <div class="upload-zone" id="uploadZone"
+             ondragover="event.preventDefault(); this.classList.add('dragover')"
+             ondragleave="this.classList.remove('dragover')"
+             ondrop="event.preventDefault(); this.classList.remove('dragover'); handleDrop()"
+             onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">&#x1F4C1;</div>
+            <div class="upload-text">拖拽文件到此处，或 <strong style="color:#3182ce">点击选择文件</strong></div>
+            <div class="upload-hint">单个文件不超过 50MB，支持批量上传</div>
+            <div class="upload-formats">
+                <span>.csv</span><span>.xlsx</span><span>.xls</span>
+            </div>
+        </div>
+        <input type="file" id="fileInput" style="display:none" accept=".csv,.xlsx,.xls" multiple onchange="handleFiles(this.files)">
+        <div id="fileList"></div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="bottom-bar">
+        <div style="font-size:13px; color:#718096;">已选择数据类型：<strong id="selectedTypeLabel" style="color:#2b6cb0;">血糖数据</strong></div>
+        <button class="btn btn-primary btn-lg" onclick="goNext()">下一步：数据脱敏 &rarr;</button>
+    </div>
+</div>
+
+<script>
+var templates = {
+    blood_sugar: {
+        label: '血糖数据',
+        subtitle: '血糖数据录入模板 - 请填写各项指标',
+        fields: [
+            { label: '检测日期', type: 'date', value: '2026-04-10', name: 'date' },
+            { label: '空腹血糖 (mmol/L)', type: 'number', value: '5.8', name: 'fasting', placeholder: '如: 5.6' },
+            { label: '餐后2小时血糖 (mmol/L)', type: 'number', value: '8.2', name: 'postprandial', placeholder: '如: 7.8' },
+            { label: '糖化血红蛋白 HbA1c (%)', type: 'number', value: '6.1', name: 'hba1c', placeholder: '如: 5.7' },
+            { label: '当前用药', type: 'text', value: '二甲双胍 500mg bid', name: 'medication', placeholder: '药物名称及剂量' },
+            { label: '备注', type: 'textarea', value: '饮食控制中，运动量正常', name: 'notes', placeholder: '其他补充信息' }
+        ]
+    },
+    blood_pressure: {
+        label: '血压数据',
+        subtitle: '血压数据录入模板 - 请填写各项指标',
+        fields: [
+            { label: '检测日期', type: 'date', value: '2026-04-10', name: 'date' },
+            { label: '收缩压 (mmHg)', type: 'number', value: '128', name: 'systolic', placeholder: '如: 120' },
+            { label: '舒张压 (mmHg)', type: 'number', value: '82', name: 'diastolic', placeholder: '如: 80' },
+            { label: '心率 (次/分)', type: 'number', value: '72', name: 'heart_rate', placeholder: '如: 72' },
+            { label: '测量时段', type: 'select', options: ['晨起', '午间', '睡前', '运动后'], name: 'period' },
+            { label: '备注', type: 'textarea', value: '', name: 'notes', placeholder: '其他补充信息' }
+        ]
+    },
+    gut_flora: {
+        label: '肠道菌群',
+        subtitle: '肠道菌群检测数据录入模板',
+        fields: [
+            { label: '检测日期', type: 'date', value: '2026-03-28', name: 'date' },
+            { label: '样本编号', type: 'text', value: 'GF-2026-04821', name: 'sample_id', placeholder: '实验室样本编号' },
+            { label: '多样性指数 (Shannon)', type: 'number', value: '3.42', name: 'shannon', placeholder: '如: 3.5' },
+            { label: '厚壁菌门占比 (%)', type: 'number', value: '52.3', name: 'firmicutes', placeholder: '如: 50' },
+            { label: '拟杆菌门占比 (%)', type: 'number', value: '38.1', name: 'bacteroidetes', placeholder: '如: 40' },
+            { label: '检测机构', type: 'text', value: '华大基因', name: 'lab', placeholder: '检测机构名称' }
+        ]
+    },
+    medication: {
+        label: '用药记录',
+        subtitle: '用药记录录入模板 - 请填写处方信息',
+        fields: [
+            { label: '记录日期', type: 'date', value: '2026-04-10', name: 'date' },
+            { label: '药品名称', type: 'text', value: '阿卡波糖', name: 'drug_name', placeholder: '通用名或商品名' },
+            { label: '规格', type: 'text', value: '50mg', name: 'specification', placeholder: '如: 50mg/片' },
+            { label: '用法用量', type: 'text', value: '50mg tid 餐前', name: 'dosage', placeholder: '如: 1片 bid' },
+            { label: '处方医生', type: 'text', value: '李主任', name: 'doctor', placeholder: '处方医生姓名' },
+            { label: '不良反应', type: 'textarea', value: '偶有腹胀', name: 'side_effects', placeholder: '用药期间不良反应记录' }
+        ]
+    },
+    diet: {
+        label: '饮食数据',
+        subtitle: '膳食营养记录模板 - 请填写饮食详情',
+        fields: [
+            { label: '记录日期', type: 'date', value: '2026-04-10', name: 'date' },
+            { label: '餐次', type: 'select', options: ['早餐', '午餐', '晚餐', '加餐'], name: 'meal' },
+            { label: '食物内容', type: 'textarea', value: '全麦面包2片, 水煮蛋1个, 脱脂牛奶200ml', name: 'food', placeholder: '食物名称及份量' },
+            { label: '总热量 (kcal)', type: 'number', value: '380', name: 'calories', placeholder: '如: 500' },
+            { label: '碳水化合物 (g)', type: 'number', value: '45', name: 'carbs', placeholder: '如: 60' },
+            { label: '蛋白质 (g)', type: 'number', value: '22', name: 'protein', placeholder: '如: 20' }
+        ]
+    }
+};
+
+function selectType(el) {
+    document.querySelectorAll('.type-card').forEach(function(c) { c.classList.remove('selected'); });
+    el.classList.add('selected');
+    var type = el.getAttribute('data-type');
+    renderForm(type);
+    document.getElementById('selectedTypeLabel').textContent = templates[type].label;
+}
+
+function renderForm(type) {
+    var t = templates[type];
+    document.getElementById('formSubtitle').textContent = t.subtitle;
+    var html = '';
+    for (var i = 0; i < t.fields.length; i++) {
+        var f = t.fields[i];
+        html += '<div class="form-group">';
+        html += '<label>' + f.label + '</label>';
+        if (f.type === 'textarea') {
+            html += '<textarea rows="2" placeholder="' + (f.placeholder || '') + '">' + (f.value || '') + '</textarea>';
+        } else if (f.type === 'select') {
+            html += '<select>';
+            for (var j = 0; j < f.options.length; j++) {
+                html += '<option>' + f.options[j] + '</option>';
+            }
+            html += '</select>';
+        } else {
+            html += '<input type="' + f.type + '" value="' + (f.value || '') + '" placeholder="' + (f.placeholder || '') + '">';
+        }
+        html += '</div>';
+    }
+    var area = document.getElementById('formArea');
+    area.innerHTML = html;
+    area.classList.add('template-form');
+}
+
+// Initialize with blood_sugar
+renderForm('blood_sugar');
+
+var mockFiles = [];
+function handleDrop() {
+    addMockFile('血糖监测数据_2026Q1.xlsx', '2.4 MB');
+}
+function handleFiles(files) {
+    for (var i = 0; i < files.length; i++) {
+        addMockFile(files[i].name, (files[i].size / 1024).toFixed(1) + ' KB');
+    }
+}
+function addMockFile(name, size) {
+    mockFiles.push({ name: name, size: size });
+    renderFileList();
+}
+function removeFile(idx) {
+    mockFiles.splice(idx, 1);
+    renderFileList();
+}
+function renderFileList() {
+    var html = '';
+    for (var i = 0; i < mockFiles.length; i++) {
+        html += '<div class="file-item">';
+        html += '<div class="file-icon">&#x1F4C4;</div>';
+        html += '<div class="file-info"><div class="file-name">' + mockFiles[i].name + '</div><div class="file-size">' + mockFiles[i].size + '</div></div>';
+        html += '<div class="file-remove" onclick="removeFile(' + i + ')">&times;</div>';
+        html += '</div>';
+    }
+    document.getElementById('fileList').innerHTML = html;
+}
+
+function goNext() {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = '数据已保存，正在跳转至脱敏环节...';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+</script>
+</body>
+</html>

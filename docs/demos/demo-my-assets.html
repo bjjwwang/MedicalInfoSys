@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 个人资产管理</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.action-group {
+    display: flex; gap: 6px;
+}
+table.data-table td .asset-name {
+    font-weight: 600; color: #1a3a5c; font-size: 13px;
+}
+table.data-table td .asset-type-sm {
+    font-size: 11px; color: #718096;
+}
+.revenue-up { color: #38a169; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">前端Web</span>
+    <h1>个人资产管理</h1>
+    <p>管理您上传的健康数据资产，查看上架状态、浏览量和收益情况，支持编辑、上架及下架操作。</p>
+</div>
+<div class="demo-container">
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue">📦</div>
+            <div>
+                <div class="stat-value">6</div>
+                <div class="stat-label">我的资产</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div>
+                <div class="stat-value">4</div>
+                <div class="stat-label">已上架</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">💰</div>
+            <div>
+                <div class="stat-value">¥4,340.50</div>
+                <div class="stat-label">总收益</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">📈</div>
+            <div>
+                <div class="stat-value">¥892.00</div>
+                <div class="stat-label">本月收益</div>
+                <div class="stat-trend">+18.3% vs 上月</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="card">
+        <div class="tabs">
+            <button class="tab active" data-filter="全部">全部 (6)</button>
+            <button class="tab" data-filter="已上架">已上架 (4)</button>
+            <button class="tab" data-filter="审核中">审核中 (1)</button>
+            <button class="tab" data-filter="草稿">草稿 (1)</button>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="asset-table">
+                <thead>
+                    <tr>
+                        <th>资产名称</th>
+                        <th>类型</th>
+                        <th>质量评级</th>
+                        <th>状态</th>
+                        <th>浏览量</th>
+                        <th>购买次数</th>
+                        <th>累计收益</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="asset-tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+var assets = [
+    { name: '2型糖尿病3年随访血糖及用药数据', type: '血糖', quality: 'S', status: '已上架', views: 3420, purchases: 286, revenue: 1580.00 },
+    { name: '高血压24小时动态血压监测数据', type: '血压', quality: 'A', status: '已上架', views: 2150, purchases: 173, revenue: 1240.50 },
+    { name: '肠道微生物组16S rRNA测序数据', type: '微生态', quality: 'S', status: '已上架', views: 1890, purchases: 94, revenue: 980.00 },
+    { name: '帕金森病多巴胺类药物治疗反应数据', type: '用药', quality: 'B', status: '已上架', views: 1340, purchases: 67, revenue: 540.00 },
+    { name: '慢性肾病透析期间电解质监测数据', type: '生化', quality: 'A', status: '审核中', views: 0, purchases: 0, revenue: 0 },
+    { name: '儿童哮喘季节性发作与环境数据', type: '呼吸', quality: '-', status: '草稿', views: 0, purchases: 0, revenue: 0 }
+];
+
+function showToast(msg) {
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+
+function renderTable(filter) {
+    var tbody = document.getElementById('asset-tbody');
+    var filtered = filter === '全部' ? assets : assets.filter(function(a) { return a.status === filter; });
+    tbody.innerHTML = filtered.map(function(a, i) {
+        var statusClass = '';
+        if (a.status === '已上架') statusClass = 'badge-listed';
+        else if (a.status === '审核中') statusClass = 'badge-pending';
+        else statusClass = 'badge-draft';
+
+        var qualityHtml = a.quality === '-' ? '<span style="color:#a0aec0;">-</span>' :
+            '<span class="quality-badge quality-' + a.quality + '">' + a.quality + '</span>';
+
+        var actions = '';
+        if (a.status === '已上架') {
+            actions = '<button class="btn btn-outline btn-sm" onclick="showToast(\'查看资产详情\')">查看</button>' +
+                '<button class="btn btn-outline btn-sm" onclick="showToast(\'编辑资产信息\')">编辑</button>' +
+                '<button class="btn btn-danger btn-sm" onclick="showToast(\'已下架: ' + a.name.substring(0, 8) + '...\')">下架</button>';
+        } else if (a.status === '审核中') {
+            actions = '<button class="btn btn-outline btn-sm" onclick="showToast(\'查看审核进度\')">查看</button>';
+        } else {
+            actions = '<button class="btn btn-outline btn-sm" onclick="showToast(\'编辑草稿\')">编辑</button>' +
+                '<button class="btn btn-primary btn-sm" onclick="showToast(\'提交审核\')">提交</button>';
+        }
+
+        return '<tr>' +
+            '<td><div class="asset-name">' + a.name + '</div></td>' +
+            '<td><span class="badge badge-info">' + a.type + '</span></td>' +
+            '<td>' + qualityHtml + '</td>' +
+            '<td><span class="badge ' + statusClass + '">' + a.status + '</span></td>' +
+            '<td>' + (a.views > 0 ? a.views.toLocaleString() : '-') + '</td>' +
+            '<td>' + (a.purchases > 0 ? a.purchases : '-') + '</td>' +
+            '<td class="revenue-up">' + (a.revenue > 0 ? '¥' + a.revenue.toFixed(2) : '-') + '</td>' +
+            '<td><div class="action-group">' + actions + '</div></td>' +
+            '</tr>';
+    }).join('');
+}
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+        renderTable(this.getAttribute('data-filter'));
+    });
+});
+
+// Initial render
+renderTable('全部');
+</script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 数据资产搜索</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.search-hero {
+    background: linear-gradient(135deg, #1a3a5c 0%, #2c5282 60%, #3182ce 100%);
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    margin-bottom: 24px;
+    color: #fff;
+}
+.search-hero h2 { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+.search-hero .hero-input-wrap {
+    display: flex;
+    max-width: 640px;
+    margin: 0 auto;
+    gap: 0;
+}
+.search-hero .hero-input {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 10px 0 0 10px;
+    font-size: 15px;
+    outline: none;
+}
+.search-hero .hero-btn {
+    padding: 14px 28px;
+    background: #38a169;
+    color: #fff;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.search-hero .hero-btn:hover { background: #2f855a; }
+.search-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+.filter-panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 80px;
+}
+.filter-section { margin-bottom: 20px; }
+.filter-section:last-child { margin-bottom: 0; }
+.filter-title {
+    font-size: 13px; font-weight: 600; color: #1a3a5c;
+    margin-bottom: 10px;
+}
+.filter-section label.cb-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: #4a5568; padding: 4px 0; cursor: pointer;
+}
+.filter-section label.cb-label input[type="checkbox"] {
+    width: auto; accent-color: #3182ce;
+}
+.price-range {
+    display: flex; align-items: center; gap: 8px;
+}
+.price-range input {
+    width: 80px; padding: 6px 8px; border: 1px solid #e2e8f0;
+    border-radius: 6px; font-size: 13px; text-align: center;
+}
+.price-range span { color: #a0aec0; font-size: 13px; }
+.results-panel { }
+.results-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+}
+.results-header .count { font-size: 14px; color: #718096; }
+.results-header .count strong { color: #1a3a5c; }
+.results-header .sort-options {
+    display: flex; gap: 8px;
+}
+.results-header .sort-opt {
+    padding: 4px 12px; border-radius: 6px; font-size: 12px;
+    cursor: pointer; background: #f0f4f8; color: #4a5568; border: none;
+    transition: all 0.2s;
+}
+.results-header .sort-opt.active { background: #3182ce; color: #fff; }
+.result-card {
+    background: #fff; border-radius: 12px; padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 16px;
+    display: flex; gap: 16px; align-items: flex-start;
+    transition: all 0.2s; cursor: pointer;
+    border: 1px solid transparent;
+}
+.result-card:hover {
+    border-color: #63b3ed;
+    box-shadow: 0 4px 12px rgba(44,111,173,0.12);
+}
+.result-card .rc-icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+}
+.result-card .rc-body { flex: 1; }
+.result-card .rc-title {
+    font-size: 15px; font-weight: 600; color: #1a3a5c;
+    margin-bottom: 6px; line-height: 1.4;
+}
+.result-card .rc-title mark {
+    background: #fefcbf; color: #744210; padding: 0 2px; border-radius: 2px;
+}
+.result-card .rc-desc {
+    font-size: 13px; color: #718096; margin-bottom: 8px; line-height: 1.6;
+}
+.result-card .rc-meta {
+    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+}
+.result-card .rc-meta .tag {
+    background: #f0f4f8; color: #4a6fa5; font-size: 11px;
+    padding: 2px 8px; border-radius: 4px;
+}
+.result-card .rc-right {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+    flex-shrink: 0;
+}
+.result-card .rc-price { font-size: 20px; font-weight: 700; color: #e53e3e; }
+.result-card .rc-stats { font-size: 11px; color: #a0aec0; }
+.no-results {
+    text-align: center; padding: 60px 20px; color: #a0aec0;
+}
+.no-results .nr-icon { font-size: 48px; margin-bottom: 12px; }
+@media (max-width: 768px) {
+    .search-layout { grid-template-columns: 1fr; }
+    .filter-panel { position: static; }
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">搜索服务</span>
+    <h1>数据资产搜索</h1>
+    <p>支持关键词搜索与多维度筛选，快速定位符合研究需求的健康数据资产。</p>
+</div>
+<div class="demo-container" style="max-width:1200px;">
+    <!-- Hero Search -->
+    <div class="search-hero">
+        <h2>搜索健康数据资产</h2>
+        <div class="hero-input-wrap">
+            <input class="hero-input" type="text" id="search-input" placeholder="搜索健康数据资产...">
+            <button class="hero-btn" onclick="doSearch()">搜索</button>
+        </div>
+    </div>
+
+    <div class="search-layout">
+        <!-- Filter Sidebar -->
+        <div class="filter-panel">
+            <div class="filter-section">
+                <div class="filter-title">数据类型</div>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="type" value="血糖" checked> 血糖监测</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="type" value="血压" checked> 血压监测</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="type" value="微生态" checked> 微生态</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="type" value="用药" checked> 用药记录</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="type" value="影像" checked> 医学影像</label>
+            </div>
+            <div class="filter-section">
+                <div class="filter-title">疾病分类</div>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="disease" value="糖尿病" checked> 糖尿病</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="disease" value="高血压" checked> 高血压</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="disease" value="消化系统" checked> 消化系统</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="disease" value="神经系统" checked> 神经系统</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="disease" value="眼科" checked> 眼科</label>
+            </div>
+            <div class="filter-section">
+                <div class="filter-title">价格范围</div>
+                <div class="price-range">
+                    <input type="number" id="price-min" placeholder="最低" value="0">
+                    <span>-</span>
+                    <input type="number" id="price-max" placeholder="最高" value="500">
+                </div>
+            </div>
+            <div class="filter-section">
+                <div class="filter-title">质量评级</div>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="quality" value="S" checked> S 级（优秀）</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="quality" value="A" checked> A 级（良好）</label>
+                <label class="cb-label"><input type="checkbox" class="filter-cb" data-group="quality" value="B" checked> B 级（合格）</label>
+            </div>
+            <div class="filter-section">
+                <div class="filter-title">数据时间范围</div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <select id="time-range" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;">
+                        <option value="all">不限</option>
+                        <option value="1y">近1年</option>
+                        <option value="3y" selected>近3年</option>
+                        <option value="5y">近5年</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-block mt-2" onclick="doSearch()">应用筛选</button>
+        </div>
+
+        <!-- Results -->
+        <div class="results-panel">
+            <div class="results-header">
+                <div class="count" id="results-count">共找到 <strong>47</strong> 条结果</div>
+                <div class="sort-options">
+                    <button class="sort-opt active" data-sort="relevance">相关性</button>
+                    <button class="sort-opt" data-sort="newest">最新</button>
+                    <button class="sort-opt" data-sort="price">价格</button>
+                    <button class="sort-opt" data-sort="quality">质量</button>
+                </div>
+            </div>
+            <div id="results-list">
+            </div>
+            <div id="no-results" class="no-results" style="display:none;">
+                <div class="nr-icon">🔍</div>
+                <div>未找到匹配的数据资产</div>
+                <div class="text-sm mt-2">请尝试更换关键词或调整筛选条件</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var allResults = [
+    {
+        title: '2型糖尿病3年随访血糖及用药数据',
+        desc: '1,200例2型糖尿病患者3年连续随访，涵盖空腹血糖、餐后血糖、HbA1c及用药方案，数据完整率98.5%。',
+        type: '血糖', disease: '糖尿病', quality: 'S', price: 128,
+        icon: '🩸', iconBg: '#fff5f5',
+        tags: ['血糖监测', '随访', 'HbA1c'],
+        views: 3420, purchases: 286
+    },
+    {
+        title: '高血压患者24小时动态血压监测数据',
+        desc: '800例原发性高血压患者24小时动态血压监测，包含收缩压、舒张压、心率，采样频率15分钟/次。',
+        type: '血压', disease: '高血压', quality: 'A', price: 96,
+        icon: '💓', iconBg: '#ebf4ff',
+        tags: ['动态血压', '高血压', 'ABPM'],
+        views: 2150, purchases: 173
+    },
+    {
+        title: '肠道微生物组16S rRNA测序及代谢组学数据',
+        desc: '500例健康对照与IBS患者肠道菌群16S rRNA测序，配套短链脂肪酸代谢组学分析。',
+        type: '微生态', disease: '消化系统', quality: 'S', price: 256,
+        icon: '🦠', iconBg: '#f0fff4',
+        tags: ['肠道菌群', '16S rRNA', '代谢组学'],
+        views: 1890, purchases: 94
+    },
+    {
+        title: '帕金森病多巴胺类药物治疗反应数据',
+        desc: '320例帕金森病患者左旋多巴及受体激动剂治疗数据，记录UPDRS评分、剂量调整及不良反应。',
+        type: '用药', disease: '神经系统', quality: 'B', price: 180,
+        icon: '💊', iconBg: '#faf5ff',
+        tags: ['帕金森', '用药记录', 'UPDRS'],
+        views: 1340, purchases: 67
+    },
+    {
+        title: '糖尿病视网膜病变眼底检查影像数据集',
+        desc: '2,500张经标注的眼底彩照，涵盖DR分级（0-4级），适用于AI辅助诊断模型训练。',
+        type: '影像', disease: '眼科', quality: 'S', price: 320,
+        icon: '👁', iconBg: '#fff5f5',
+        tags: ['眼底影像', 'DR分级', 'AI标注'],
+        views: 4210, purchases: 352
+    },
+    {
+        title: '妊娠期糖尿病OGTT筛查及围产期随访数据',
+        desc: '680例GDM孕妇的OGTT结果、血糖自我监测及围产结局数据，随访至产后6个月。',
+        type: '血糖', disease: '糖尿病', quality: 'A', price: 86,
+        icon: '🤰', iconBg: '#faf5ff',
+        tags: ['GDM', '围产期', 'OGTT'],
+        views: 980, purchases: 45
+    }
+];
+
+function showToast(msg) {
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+
+function highlightText(text, query) {
+    if (!query) return text;
+    var escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var regex = new RegExp('(' + escaped + ')', 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+}
+
+function doSearch() {
+    var query = document.getElementById('search-input').value.trim().toLowerCase();
+
+    // Get checked values for each filter group
+    var checkedTypes = [];
+    var checkedDiseases = [];
+    var checkedQualities = [];
+    document.querySelectorAll('.filter-cb:checked').forEach(function(cb) {
+        var group = cb.getAttribute('data-group');
+        if (group === 'type') checkedTypes.push(cb.value);
+        else if (group === 'disease') checkedDiseases.push(cb.value);
+        else if (group === 'quality') checkedQualities.push(cb.value);
+    });
+
+    var priceMin = parseInt(document.getElementById('price-min').value) || 0;
+    var priceMax = parseInt(document.getElementById('price-max').value) || 99999;
+
+    var filtered = allResults.filter(function(r) {
+        var matchQuery = !query || r.title.toLowerCase().indexOf(query) !== -1 || r.desc.toLowerCase().indexOf(query) !== -1;
+        var matchType = checkedTypes.length === 0 || checkedTypes.indexOf(r.type) !== -1;
+        var matchDisease = checkedDiseases.length === 0 || checkedDiseases.indexOf(r.disease) !== -1;
+        var matchQuality = checkedQualities.length === 0 || checkedQualities.indexOf(r.quality) !== -1;
+        var matchPrice = r.price >= priceMin && r.price <= priceMax;
+        return matchQuery && matchType && matchDisease && matchQuality && matchPrice;
+    });
+
+    renderResults(filtered, query);
+}
+
+function renderResults(results, query) {
+    var list = document.getElementById('results-list');
+    var noResults = document.getElementById('no-results');
+    var totalFake = results.length > 0 ? 47 : 0;
+
+    document.getElementById('results-count').innerHTML = '共找到 <strong>' + totalFake + '</strong> 条结果' + (query ? '，关键词: "' + query + '"' : '');
+
+    if (results.length === 0) {
+        list.innerHTML = '';
+        noResults.style.display = '';
+        return;
+    }
+    noResults.style.display = 'none';
+
+    list.innerHTML = results.map(function(r) {
+        var title = highlightText(r.title, query);
+        var desc = highlightText(r.desc, query);
+        var tagsHtml = r.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
+        return '<div class="result-card" onclick="showToast(\'查看: ' + r.title.replace(/'/g, "\\'") + '\')">' +
+            '<div class="rc-icon" style="background:' + r.iconBg + ';">' + r.icon + '</div>' +
+            '<div class="rc-body">' +
+                '<div class="rc-title">' + title + '</div>' +
+                '<div class="rc-desc">' + desc + '</div>' +
+                '<div class="rc-meta">' + tagsHtml +
+                    '<span class="quality-badge quality-' + r.quality + '" style="margin-left:4px;">' + r.quality + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="rc-right">' +
+                '<div class="rc-price">¥' + r.price + '</div>' +
+                '<div class="rc-stats">👁 ' + r.views.toLocaleString() + ' · 🛒 ' + r.purchases + '</div>' +
+            '</div>' +
+            '</div>';
+    }).join('');
+}
+
+// Sort buttons
+document.querySelectorAll('.sort-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.sort-opt').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        showToast('已按' + this.textContent + '排序');
+        doSearch();
+    });
+});
+
+// Search on Enter
+document.getElementById('search-input').addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') doSearch();
+});
+
+// Live search on typing
+document.getElementById('search-input').addEventListener('input', function() {
+    doSearch();
+});
+
+// Filter checkboxes
+document.querySelectorAll('.filter-cb').forEach(function(cb) {
+    cb.addEventListener('change', doSearch);
+});
+
+// Initial render
+renderResults(allResults, '');
+</script>
+</body>
+</html>

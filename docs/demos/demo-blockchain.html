@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 区块链确权与溯源</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.chain-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+@media (max-width: 768px) { .chain-info-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .chain-info-grid { grid-template-columns: 1fr; } }
+
+.chain-stat {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.chain-stat .cs-icon { font-size: 28px; margin-bottom: 8px; }
+.chain-stat .cs-value { font-size: 20px; font-weight: 700; color: #1a3a5c; }
+.chain-stat .cs-label { font-size: 12px; color: #718096; margin-top: 4px; }
+
+/* Blockchain visual */
+.blockchain-visual {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    padding: 20px 0;
+    gap: 0;
+}
+.block-card {
+    min-width: 220px;
+    background: linear-gradient(135deg, #1a202c, #2d3748);
+    border-radius: 12px;
+    padding: 16px;
+    color: #e2e8f0;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.3s;
+}
+.block-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.block-card .block-height { font-size: 11px; color: #63b3ed; font-weight: 600; margin-bottom: 8px; }
+.block-card .block-hash {
+    font-family: "Fira Code","SF Mono",monospace;
+    font-size: 10px;
+    color: #a0aec0;
+    word-break: break-all;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+.block-card .block-txs { font-size: 12px; color: #68d391; }
+.block-card .block-time { font-size: 11px; color: #718096; margin-top: 6px; }
+.block-card .block-label {
+    position: absolute;
+    top: -8px; right: 12px;
+    background: #3182ce;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.chain-link {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    color: #63b3ed;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.chain-link::before {
+    content: '';
+    width: 32px; height: 3px;
+    background: linear-gradient(90deg, #63b3ed, #3182ce);
+    border-radius: 2px;
+    display: block;
+}
+
+/* Smart contract */
+.func-list {
+    list-style: none;
+    padding: 0;
+}
+.func-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #f7fafc;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    transition: all 0.2s;
+    cursor: default;
+}
+.func-list li:hover { background: #ebf4ff; }
+.func-name {
+    font-family: "Fira Code","SF Mono",monospace;
+    font-weight: 600;
+    color: #2b6cb0;
+}
+.func-desc { color: #718096; font-size: 12px; }
+
+/* Trace result */
+.trace-result {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+.trace-result.show { display: block; }
+
+.trace-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+@media (max-width: 768px) { .trace-grid { grid-template-columns: 1fr; } }
+
+.trace-item {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 16px;
+}
+.trace-item .ti-label { font-size: 12px; color: #718096; margin-bottom: 4px; }
+.trace-item .ti-value { font-size: 14px; font-weight: 600; color: #1a3a5c; }
+.trace-item .ti-value.hash-text { font-size: 11px; font-weight: 400; }
+
+.search-input-group {
+    display: flex;
+    gap: 10px;
+}
+.search-input-group input {
+    flex: 1;
+    padding: 11px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: "Fira Code","SF Mono",monospace;
+    font-size: 13px;
+}
+.search-input-group input:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49,130,206,0.1);
+}
+
+.contract-info-row {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #edf2f7;
+}
+.contract-info-row:last-child { border-bottom: none; }
+.contract-info-row .ci-label { color: #718096; min-width: 90px; flex-shrink: 0; }
+.contract-info-row .ci-value { color: #1a1a1a; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">区块链集成</span>
+    <h1>区块链确权与溯源</h1>
+    <p>基于长安链实现数据资产全生命周期的链上存证、确权登记和交易溯源，确保每一步操作不可篡改</p>
+</div>
+<div class="demo-container">
+    <!-- Chain Info -->
+    <div class="chain-info-grid">
+        <div class="chain-stat">
+            <div class="cs-icon">⛓</div>
+            <div class="cs-value">长安链</div>
+            <div class="cs-label">ChainMaker v2.3.1</div>
+        </div>
+        <div class="chain-stat">
+            <div class="cs-icon">🖥</div>
+            <div class="cs-value">4</div>
+            <div class="cs-label">共识节点数</div>
+        </div>
+        <div class="chain-stat">
+            <div class="cs-icon">📦</div>
+            <div class="cs-value" id="blockHeight">15,234,567</div>
+            <div class="cs-label">区块高度</div>
+        </div>
+        <div class="chain-stat">
+            <div class="cs-icon">🔒</div>
+            <div class="cs-value">TBFT</div>
+            <div class="cs-label">共识算法</div>
+        </div>
+    </div>
+
+    <!-- Blockchain Visual -->
+    <div class="card">
+        <div class="card-title">🔗 链上确权记录</div>
+        <div class="card-subtitle">最近上链区块（实时更新）</div>
+        <div class="blockchain-visual" id="blockchainVisual">
+            <div class="block-card" style="opacity:0">
+                <div class="block-label">最新</div>
+                <div class="block-height">#15,234,567</div>
+                <div class="block-hash">0x7a3f8c2d...e9b04756</div>
+                <div class="block-txs">3 笔交易</div>
+                <div class="block-time">2026-04-16 14:32:18</div>
+            </div>
+            <div class="chain-link" style="opacity:0"></div>
+            <div class="block-card" style="opacity:0">
+                <div class="block-height">#15,234,566</div>
+                <div class="block-hash">0x2c8f1d3a...7e6b5094</div>
+                <div class="block-txs">5 笔交易</div>
+                <div class="block-time">2026-04-16 14:32:15</div>
+            </div>
+            <div class="chain-link" style="opacity:0"></div>
+            <div class="block-card" style="opacity:0">
+                <div class="block-height">#15,234,565</div>
+                <div class="block-hash">0xf2d8a1c3...e7b49060</div>
+                <div class="block-txs">2 笔交易</div>
+                <div class="block-time">2026-04-16 14:32:12</div>
+            </div>
+            <div class="chain-link" style="opacity:0"></div>
+            <div class="block-card" style="opacity:0">
+                <div class="block-height">#15,234,564</div>
+                <div class="block-hash">0xd5f2a8c1...e3b7d049</div>
+                <div class="block-txs">4 笔交易</div>
+                <div class="block-time">2026-04-16 14:32:09</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Contract & Trace in two columns -->
+    <div class="two-col">
+        <!-- Smart Contract -->
+        <div class="card">
+            <div class="card-title">📜 智能合约</div>
+
+            <div class="contract-info-row">
+                <span class="ci-label">合约名称</span>
+                <span class="ci-value">HealthDataRight</span>
+            </div>
+            <div class="contract-info-row">
+                <span class="ci-label">合约地址</span>
+                <span class="ci-value hash-text">0x9a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b</span>
+            </div>
+            <div class="contract-info-row">
+                <span class="ci-label">部署时间</span>
+                <span class="ci-value">2026-01-15</span>
+            </div>
+            <div class="contract-info-row">
+                <span class="ci-label">调用次数</span>
+                <span class="ci-value">48,239</span>
+            </div>
+
+            <div style="margin-top:16px">
+                <div style="font-size:13px;font-weight:600;color:#4a5568;margin-bottom:10px">合约方法</div>
+                <ul class="func-list">
+                    <li>
+                        <span class="func-name">registerAsset()</span>
+                        <span class="func-desc">注册新数据资产</span>
+                    </li>
+                    <li>
+                        <span class="func-name">transferRight()</span>
+                        <span class="func-desc">转移数据使用权</span>
+                    </li>
+                    <li>
+                        <span class="func-name">distributeRevenue()</span>
+                        <span class="func-desc">收益自动分配</span>
+                    </li>
+                    <li>
+                        <span class="func-name">queryAccessLog()</span>
+                        <span class="func-desc">查询访问日志</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="margin-top:16px">
+                <div style="font-size:13px;font-weight:600;color:#4a5568;margin-bottom:10px">合约代码片段</div>
+                <div class="code-block">
+<span class="comment">// 注册数据资产上链</span>
+<span class="keyword">func</span> <span class="func">registerAsset</span>(assetId <span class="keyword">string</span>, owner <span class="keyword">string</span>,
+    fingerprint <span class="keyword">string</span>) {
+    asset := DataAsset{
+        Id:          assetId,
+        Owner:       owner,
+        Fingerprint: fingerprint,
+        CreateTime:  <span class="func">GetBlockTime</span>(),
+        Status:      <span class="string">"REGISTERED"</span>,
+    }
+    <span class="func">PutState</span>(<span class="string">"asset_"</span>+assetId, asset)
+    <span class="func">EmitEvent</span>(<span class="string">"AssetRegistered"</span>, assetId)
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- Trace Query -->
+        <div>
+            <div class="card">
+                <div class="card-title">🔍 溯源查询</div>
+                <div class="card-subtitle">输入交易哈希查询完整数据流转记录</div>
+
+                <div class="search-input-group">
+                    <input type="text" id="traceInput" placeholder="输入交易哈希，如 0x7a3f8c2d..." value="0x7a3f8c2de9b04756a1c3d5f2b8e4907d6c1a3f5e">
+                    <button class="btn btn-primary" onclick="queryTrace()">查询</button>
+                </div>
+
+                <div class="trace-result" id="traceResult">
+                    <div style="margin-top:20px">
+                        <div class="highlight highlight-green mb-4">
+                            <strong>链上验证通过</strong> — 数据完整、签名有效、未被篡改
+                        </div>
+
+                        <div class="trace-grid">
+                            <div class="trace-item">
+                                <div class="ti-label">交易哈希</div>
+                                <div class="ti-value hash-text">0x7a3f8c2de9b04756a1c3d5f2b8e4907d6c1a3f5e</div>
+                            </div>
+                            <div class="trace-item">
+                                <div class="ti-label">区块高度</div>
+                                <div class="ti-value">#15,234,567</div>
+                            </div>
+                            <div class="trace-item">
+                                <div class="ti-label">数据上传方</div>
+                                <div class="ti-value">贵州**医疗科技有限公司</div>
+                            </div>
+                            <div class="trace-item">
+                                <div class="ti-label">上传时间</div>
+                                <div class="ti-value">2026-04-10 09:30:42</div>
+                            </div>
+                            <div class="trace-item">
+                                <div class="ti-label">数据购买方</div>
+                                <div class="ti-value">XX药业研究院</div>
+                            </div>
+                            <div class="trace-item">
+                                <div class="ti-label">购买时间</div>
+                                <div class="ti-value">2026-04-15 16:20:11</div>
+                            </div>
+                            <div class="trace-item">
+                                <div class="ti-label">区块链确认</div>
+                                <div class="ti-value" style="color:#38a169">6 个区块确认</div>
+                            </div>
+                            <div class="trace-item">
+                                <div class="ti-label">数据指纹 (SHA-256)</div>
+                                <div class="ti-value hash-text">a3f8c2d1e9b047562c8f1d3a7e6b5094</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trace Timeline -->
+                    <div style="margin-top:20px">
+                        <div style="font-size:14px;font-weight:600;color:#1a3a5c;margin-bottom:14px">数据流转轨迹</div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="tl-time">2026-04-10 09:30</div>
+                                <div class="tl-content"><strong>资产注册</strong> — 数据提供方上传数据指纹，调用 registerAsset()</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="tl-time">2026-04-11 14:15</div>
+                                <div class="tl-content"><strong>确权存证</strong> — 交易所审核通过，链上存证确权信息</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="tl-time">2026-04-14 10:00</div>
+                                <div class="tl-content"><strong>挂牌上架</strong> — 资产在贵阳大数据交易所公示上架</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="tl-time">2026-04-15 16:20</div>
+                                <div class="tl-content"><strong>交易完成</strong> — XX药业研究院购买数据使用权，调用 transferRight()</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="tl-time">2026-04-15 16:21</div>
+                                <div class="tl-content"><strong>收益分配</strong> — 智能合约自动执行 distributeRevenue()，完成收益分配</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trace-result" id="traceEmpty" style="display:none">
+                    <div class="highlight highlight-orange mt-4">
+                        <strong>未找到记录</strong> — 请检查交易哈希是否正确
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+function queryTrace() {
+    const input = document.getElementById('traceInput').value.trim();
+    const result = document.getElementById('traceResult');
+    const empty = document.getElementById('traceEmpty');
+
+    result.classList.remove('show');
+    empty.style.display = 'none';
+
+    if (!input) {
+        showToast('请输入交易哈希');
+        return;
+    }
+
+    showToast('正在链上查询…');
+
+    setTimeout(() => {
+        if (input.startsWith('0x7a3f') || input.startsWith('0x2c8f') || input.startsWith('0xf2d8')) {
+            result.classList.add('show');
+            empty.style.display = 'none';
+        } else {
+            result.classList.remove('show');
+            empty.style.display = 'block';
+        }
+    }, 800);
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    t.style.animation = 'slideIn 0.3s, fadeOut 0.3s 2.7s forwards';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// Animate blocks on load
+document.addEventListener('DOMContentLoaded', () => {
+    const items = document.querySelectorAll('#blockchainVisual > *');
+    items.forEach((el, i) => {
+        el.style.transition = 'all 0.5s ease';
+        el.style.transform = 'translateX(30px)';
+        setTimeout(() => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateX(0)';
+        }, 200 * i);
+    });
+
+    // Simulate block height incrementing
+    let height = 15234567;
+    setInterval(() => {
+        height++;
+        document.getElementById('blockHeight').textContent = height.toLocaleString();
+    }, 3000);
+});
+</script>
+</body>
+</html>

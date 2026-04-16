@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 订单管理</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.order-summary-bar {
+    background: linear-gradient(135deg, #ebf4ff 0%, #f0fff4 100%);
+    border-radius: 12px;
+    padding: 18px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: #4a5568;
+}
+.order-summary-bar .sum-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.order-summary-bar .sum-value {
+    font-weight: 700;
+    color: #1a3a5c;
+    font-size: 16px;
+}
+.order-summary-bar .sum-value.amount {
+    color: #e53e3e;
+}
+.status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.status-completed { background: #e6ffed; color: #22543d; }
+.status-pending { background: #fefcbf; color: #744210; }
+.status-cancelled { background: #edf2f7; color: #718096; }
+.status-refunded { background: #fed7d7; color: #9b2c2c; }
+.action-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+table.data-table td.order-id {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    color: #4a6fa5;
+}
+.tab-count {
+    background: #edf2f7;
+    color: #718096;
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    margin-left: 4px;
+}
+.tab.active .tab-count {
+    background: #ebf4ff;
+    color: #2b6cb0;
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">交易与结算</span>
+    <h1>订单管理</h1>
+    <p>全面的订单生命周期管理，支持多状态筛选、订单详情查看、支付与退款操作。</p>
+</div>
+<div class="demo-container">
+    <div class="order-summary-bar">
+        <div class="sum-item">📊 共 <span class="sum-value">23</span> 笔订单</div>
+        <div class="sum-item">✅ 已完成 <span class="sum-value">18</span> 笔</div>
+        <div class="sum-item">💰 总金额 <span class="sum-value amount">¥12,450</span></div>
+    </div>
+
+    <div class="card">
+        <div class="tabs" id="orderTabs">
+            <button class="tab active" onclick="filterOrders('all', this)">全部订单 <span class="tab-count">23</span></button>
+            <button class="tab" onclick="filterOrders('pending', this)">待支付 <span class="tab-count">3</span></button>
+            <button class="tab" onclick="filterOrders('completed', this)">已完成 <span class="tab-count">18</span></button>
+            <button class="tab" onclick="filterOrders('cancelled', this)">已取消 <span class="tab-count">2</span></button>
+        </div>
+
+        <div class="table-wrap">
+            <table class="data-table" id="orderTable">
+                <thead>
+                    <tr>
+                        <th>订单编号</th>
+                        <th>数据资产</th>
+                        <th>金额</th>
+                        <th>支付方式</th>
+                        <th>下单时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-status="completed">
+                        <td class="order-id">HD20260415172301</td>
+                        <td>2型糖尿病3年随访血糖及用药数据</td>
+                        <td style="font-weight:600; color:#e53e3e;">¥128.00</td>
+                        <td>微信支付</td>
+                        <td>2026-04-15 17:23</td>
+                        <td><span class="status-badge status-completed">已完成</span></td>
+                        <td class="action-btns">
+                            <button class="btn btn-outline btn-sm" onclick="showToast('订单详情已打开')">查看详情</button>
+                            <button class="btn btn-outline btn-sm" onclick="showToast('退款申请已提交')">申请退款</button>
+                        </td>
+                    </tr>
+                    <tr data-status="completed">
+                        <td class="order-id">HD20260414091502</td>
+                        <td>三甲医院门诊就诊人次统计（2020-2024）</td>
+                        <td style="font-weight:600; color:#e53e3e;">¥256.00</td>
+                        <td>支付宝</td>
+                        <td>2026-04-14 09:15</td>
+                        <td><span class="status-badge status-completed">已完成</span></td>
+                        <td class="action-btns">
+                            <button class="btn btn-outline btn-sm" onclick="showToast('订单详情已打开')">查看详情</button>
+                            <button class="btn btn-outline btn-sm" onclick="showToast('退款申请已提交')">申请退款</button>
+                        </td>
+                    </tr>
+                    <tr data-status="pending">
+                        <td class="order-id">HD20260416083201</td>
+                        <td>社区慢性病管理数据集</td>
+                        <td style="font-weight:600; color:#e53e3e;">¥89.00</td>
+                        <td>--</td>
+                        <td>2026-04-16 08:32</td>
+                        <td><span class="status-badge status-pending">待支付</span></td>
+                        <td class="action-btns">
+                            <button class="btn btn-outline btn-sm" onclick="showToast('订单详情已打开')">查看详情</button>
+                            <button class="btn btn-warning btn-sm" onclick="showToast('正在跳转支付页面...')">去支付</button>
+                        </td>
+                    </tr>
+                    <tr data-status="cancelled">
+                        <td class="order-id">HD20260412140803</td>
+                        <td>心脑血管疾病高危人群筛查数据</td>
+                        <td style="font-weight:600; color:#a0aec0;">¥320.00</td>
+                        <td>--</td>
+                        <td>2026-04-12 14:08</td>
+                        <td><span class="status-badge status-cancelled">已取消</span></td>
+                        <td class="action-btns">
+                            <button class="btn btn-outline btn-sm" onclick="showToast('订单详情已打开')">查看详情</button>
+                        </td>
+                    </tr>
+                    <tr data-status="refunded">
+                        <td class="order-id">HD20260410103604</td>
+                        <td>肿瘤标志物检测结果数据（脱敏）</td>
+                        <td style="font-weight:600; color:#a0aec0;"><s>¥450.00</s></td>
+                        <td>微信支付</td>
+                        <td>2026-04-10 10:36</td>
+                        <td><span class="status-badge status-refunded">已退款</span></td>
+                        <td class="action-btns">
+                            <button class="btn btn-outline btn-sm" onclick="showToast('订单详情已打开')">查看详情</button>
+                        </td>
+                    </tr>
+                    <tr data-status="pending">
+                        <td class="order-id">HD20260416101505</td>
+                        <td>儿童生长发育追踪数据集</td>
+                        <td style="font-weight:600; color:#e53e3e;">¥168.00</td>
+                        <td>--</td>
+                        <td>2026-04-16 10:15</td>
+                        <td><span class="status-badge status-pending">待支付</span></td>
+                        <td class="action-btns">
+                            <button class="btn btn-outline btn-sm" onclick="showToast('订单详情已打开')">查看详情</button>
+                            <button class="btn btn-warning btn-sm" onclick="showToast('正在跳转支付页面...')">去支付</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterOrders(status, tabEl) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+    const rows = document.querySelectorAll('#orderTable tbody tr');
+    rows.forEach(row => {
+        if (status === 'all') {
+            row.style.display = '';
+        } else {
+            row.style.display = row.dataset.status === status ? '' : 'none';
+        }
+    });
+}
+
+function showToast(msg) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+</script>
+</body>
+</html>

@@ -145,6 +145,17 @@ a.back-link:hover { color: #3182ce; }
     font-size: 13px; border: none; cursor: pointer; text-decoration: none;
 }
 .btn-print:hover { background: #1a3a5c; }
+
+/* Demo Links */
+.demo-link {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #ebf4ff; color: #2b6cb0; padding: 1px 8px; border-radius: 4px;
+    font-size: 12px; text-decoration: none; transition: all 0.2s;
+    border: 1px solid transparent; white-space: nowrap;
+}
+.demo-link:hover { background: #3182ce; color: #fff; border-color: #3182ce; text-decoration: none; }
+.demo-link::before { content: '\25B6'; font-size: 9px; }
+.demo-links { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -229,61 +240,71 @@ a.back-link:hover { color: #3182ce; }
         <tbody>
             <tr>
                 <td style="font-weight:600;">后端基础架构</td>
-                <td>FastAPI项目搭建、用户注册登录、JWT认证、数据库设计与迁移（PostgreSQL）、基础API框架</td>
+                <td>FastAPI项目搭建、用户注册登录、JWT认证、数据库设计与迁移（PostgreSQL）、基础API框架
+                    <div class="demo-links"><a href="demos/demo-user-auth.html" class="demo-link">用户注册登录</a><a href="demos/demo-user-auth.html" class="demo-link">JWT认证</a></div></td>
                 <td class="text-center">3天</td>
                 <td class="text-right price">&yen;2,500</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">数据资产模块</td>
-                <td>健康数据上传（结构化模板）、规则引擎脱敏、数据资产封装流水线、质量评分</td>
+                <td>健康数据上传（结构化模板）、规则引擎脱敏、数据资产封装流水线、质量评分
+                    <div class="demo-links"><a href="demos/demo-data-upload.html" class="demo-link">数据上传</a><a href="demos/demo-desensitize.html" class="demo-link">规则脱敏</a><a href="demos/demo-asset-pipeline.html" class="demo-link">封装流水线</a><a href="demos/demo-quality-score.html" class="demo-link">质量评分</a></div></td>
                 <td class="text-center">5天</td>
                 <td class="text-right price">&yen;4,000</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">交易所对接</td>
-                <td>贵阳大数据交易所API全流程对接——资产登记、确权、上架、周结算、对账</td>
+                <td>贵阳大数据交易所API全流程对接——资产登记、确权、上架、周结算、对账
+                    <div class="demo-links"><a href="demos/demo-exchange.html" class="demo-link">登记确权上架</a><a href="demos/demo-settlement.html" class="demo-link">周结算对账</a></div></td>
                 <td class="text-center">6天</td>
                 <td class="text-right price">&yen;5,000</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">区块链集成</td>
-                <td>长安链/FISCO节点部署、智能合约（确权+访问记录+收益分配）、SDK集成</td>
+                <td>长安链/FISCO节点部署、智能合约（确权+访问记录+收益分配）、SDK集成
+                    <div class="demo-links"><a href="demos/demo-blockchain.html" class="demo-link">区块链确权溯源</a></div></td>
                 <td class="text-center">5天</td>
                 <td class="text-right price">&yen;5,000</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">前端Web（完整）</td>
-                <td>Next.js项目、数据市场、资产详情、上传向导、个人资产页、收益看板、区块链溯源可视化</td>
+                <td>Next.js项目、数据市场、资产详情、上传向导、个人资产页、收益看板、区块链溯源可视化
+                    <div class="demo-links"><a href="demos/demo-market.html" class="demo-link">数据市场</a><a href="demos/demo-asset-detail.html" class="demo-link">资产详情</a><a href="demos/demo-upload-wizard.html" class="demo-link">上传向导</a><a href="demos/demo-my-assets.html" class="demo-link">个人资产</a><a href="demos/demo-revenue.html" class="demo-link">收益看板</a></div></td>
                 <td class="text-center">7天</td>
                 <td class="text-right price">&yen;5,500</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">搜索服务</td>
-                <td>Elasticsearch集成、关键词搜索、分类筛选、排序</td>
+                <td>Elasticsearch集成、关键词搜索、分类筛选、排序
+                    <div class="demo-links"><a href="demos/demo-search.html" class="demo-link">搜索筛选排序</a></div></td>
                 <td class="text-center">2天</td>
                 <td class="text-right price">&yen;1,500</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">交易与结算</td>
-                <td>微信支付/支付宝对接、订单管理、收益分配引擎、余额与提现</td>
+                <td>微信支付/支付宝对接、订单管理、收益分配引擎、余额与提现
+                    <div class="demo-links"><a href="demos/demo-payment.html" class="demo-link">支付对接</a><a href="demos/demo-orders.html" class="demo-link">订单管理</a><a href="demos/demo-revenue-engine.html" class="demo-link">收益分配</a><a href="demos/demo-wallet.html" class="demo-link">余额提现</a></div></td>
                 <td class="text-center">5天</td>
                 <td class="text-right price">&yen;4,000</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">AI脱敏引擎</td>
-                <td>NER模型部署（医疗领域fine-tuned BERT）、多层脱敏流水线</td>
+                <td>NER模型部署（医疗领域fine-tuned BERT）、多层脱敏流水线
+                    <div class="demo-links"><a href="demos/demo-ai-ner.html" class="demo-link">NER智能脱敏</a></div></td>
                 <td class="text-center">3天</td>
                 <td class="text-right price">&yen;2,500</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">管理后台</td>
-                <td>数据资产审核、用户管理、交易所对接仪表盘、结算管理</td>
+                <td>数据资产审核、用户管理、交易所对接仪表盘、结算管理
+                    <div class="demo-links"><a href="demos/demo-admin-review.html" class="demo-link">资产审核</a><a href="demos/demo-admin-users.html" class="demo-link">用户管理</a><a href="demos/demo-admin-exchange.html" class="demo-link">交易所仪表盘</a><a href="demos/demo-admin-settlement.html" class="demo-link">结算管理</a></div></td>
                 <td class="text-center">4天</td>
                 <td class="text-right price">&yen;3,000</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">UI/UX设计</td>
-                <td>全站UI设计稿、组件规范、交互原型</td>
+                <td>全站UI设计稿、组件规范、交互原型
+                    <div class="demo-links"><a href="demo.html" class="demo-link">完整交互原型</a></div></td>
                 <td class="text-center">5天</td>
                 <td class="text-right price">&yen;3,500</td>
             </tr>
@@ -319,7 +340,8 @@ a.back-link:hover { color: #3182ce; }
         <tbody>
             <tr>
                 <td style="font-weight:600;">语义搜索 & 推荐</td>
-                <td>向量检索（Milvus/Qdrant）、自然语言查询理解、相似资产推荐、个性化推荐</td>
+                <td>向量检索（Milvus/Qdrant）、自然语言查询理解、相似资产推荐、个性化推荐
+                    <div class="demo-links"><a href="demos/demo-search.html" class="demo-link">搜索演示(V1.0基础)</a></div></td>
                 <td class="text-center">4天</td>
                 <td class="text-right price">&yen;3,500</td>
             </tr>
@@ -331,7 +353,8 @@ a.back-link:hover { color: #3182ce; }
             </tr>
             <tr>
                 <td style="font-weight:600;">管理后台完善</td>
-                <td>区块链监控面板、数据分析报表、运营工具（推荐位/专题/通知）</td>
+                <td>区块链监控面板、数据分析报表、运营工具（推荐位/专题/通知）
+                    <div class="demo-links"><a href="demos/demo-admin-exchange.html" class="demo-link">交易所仪表盘(V1.0基础)</a></div></td>
                 <td class="text-center">3天</td>
                 <td class="text-right price">&yen;2,500</td>
             </tr>

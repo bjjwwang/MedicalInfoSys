@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 规则引擎脱敏</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.compare-card { min-height: 280px; }
+.compare-card .card-title .indicator {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px;
+}
+.compare-card .card-title .indicator.red { background: #e53e3e; }
+.compare-card .card-title .indicator.green { background: #38a169; }
+
+.field-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; border-bottom: 1px solid #f0f4f8; font-size: 13px;
+    transition: background 0.3s;
+}
+.field-row:last-child { border-bottom: none; }
+.field-row:hover { background: #fafcff; }
+.field-label { color: #718096; min-width: 70px; font-weight: 500; }
+.field-value { color: #1a1a1a; word-break: break-all; }
+.field-value.sensitive { color: #e53e3e; }
+.field-value.masked { color: #38a169; font-weight: 600; }
+.field-value .kept-tag {
+    display: inline-block; background: #e6ffed; color: #22543d;
+    font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-left: 6px;
+}
+
+.process-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 300; align-items: center; justify-content: center;
+}
+.process-overlay.show { display: flex; }
+.process-box {
+    background: #fff; border-radius: 16px; padding: 40px 50px; text-align: center;
+    animation: scaleIn 0.3s;
+}
+.process-box h3 { font-size: 18px; color: #1a3a5c; margin-bottom: 16px; }
+.spinner {
+    width: 48px; height: 48px; border: 4px solid #e2e8f0;
+    border-top-color: #3182ce; border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.process-steps { text-align: left; margin-top: 16px; }
+.process-steps .p-step {
+    font-size: 13px; color: #a0aec0; padding: 4px 0;
+    display: flex; align-items: center; gap: 8px;
+}
+.process-steps .p-step.done { color: #38a169; }
+.process-steps .p-step.active { color: #3182ce; font-weight: 600; }
+
+.rule-type-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 500;
+}
+.rule-regex { background: #faf5ff; color: #805ad5; }
+.rule-mask { background: #fff5eb; color: #c05621; }
+.rule-keep { background: #e6ffed; color: #22543d; }
+
+.result-hidden { opacity: 0; transform: translateY(10px); transition: all 0.5s ease-out; }
+.result-visible { opacity: 1; transform: translateY(0); }
+
+.btn-process {
+    background: linear-gradient(135deg, #3182ce, #2b6cb0);
+    color: #fff; padding: 14px 36px; font-size: 16px; font-weight: 600;
+    border: none; border-radius: 10px; cursor: pointer;
+    transition: all 0.3s; box-shadow: 0 4px 14px rgba(49,130,206,0.3);
+}
+.btn-process:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(49,130,206,0.4); }
+.btn-process:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">数据资产模块</span>
+    <h1>规则引擎脱敏</h1>
+    <p>基于可配置的规则引擎，对医疗健康数据中的敏感字段进行自动识别与脱敏处理，保留数据分析价值的同时确保隐私安全。</p>
+</div>
+<div class="demo-container">
+
+    <!-- Before/After comparison -->
+    <div class="two-col" id="compareArea">
+        <div class="card compare-card">
+            <div class="card-title"><span class="indicator red"></span> 原始数据</div>
+            <div class="field-row"><span class="field-label">姓名</span><span class="field-value sensitive">张三</span></div>
+            <div class="field-row"><span class="field-label">身份证号</span><span class="field-value sensitive">320106199001011234</span></div>
+            <div class="field-row"><span class="field-label">手机号</span><span class="field-value sensitive">13812345678</span></div>
+            <div class="field-row"><span class="field-label">住址</span><span class="field-value sensitive">贵州省贵阳市观山湖区金融城23栋</span></div>
+            <div class="field-row"><span class="field-label">诊断</span><span class="field-value">2型糖尿病</span></div>
+            <div class="field-row"><span class="field-label">空腹血糖</span><span class="field-value">7.8 mmol/L</span></div>
+        </div>
+        <div class="card compare-card" id="maskedCard">
+            <div class="card-title"><span class="indicator green"></span> 脱敏后数据</div>
+            <div id="maskedContent" class="result-hidden">
+                <div class="field-row"><span class="field-label">姓名</span><span class="field-value masked">张**</span></div>
+                <div class="field-row"><span class="field-label">身份证号</span><span class="field-value masked">320***********1234</span></div>
+                <div class="field-row"><span class="field-label">手机号</span><span class="field-value masked">138****5678</span></div>
+                <div class="field-row"><span class="field-label">住址</span><span class="field-value masked">贵州省贵阳市***</span></div>
+                <div class="field-row"><span class="field-label">诊断</span><span class="field-value masked">2型糖尿病 <span class="kept-tag">保留</span></span></div>
+                <div class="field-row"><span class="field-label">空腹血糖</span><span class="field-value masked">7.8 mmol/L <span class="kept-tag">保留</span></span></div>
+            </div>
+            <div id="maskedPlaceholder" style="display:flex; align-items:center; justify-content:center; height:200px; color:#a0aec0; font-size:14px;">
+                点击下方按钮开始脱敏处理
+            </div>
+        </div>
+    </div>
+
+    <!-- Action button -->
+    <div class="text-center mb-4" style="margin: 24px 0;">
+        <button class="btn-process" id="processBtn" onclick="startProcess()">&#x1F512; 开始脱敏</button>
+    </div>
+
+    <!-- Rule configuration table -->
+    <div class="card">
+        <div class="card-title">&#x2699;&#xFE0F; 脱敏规则配置</div>
+        <div class="card-subtitle">可根据数据类型自定义脱敏策略，支持正则匹配、掩码替换、字段保留等多种规则</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>字段名</th>
+                        <th>规则类型</th>
+                        <th>规则说明</th>
+                        <th>脱敏示例</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>姓名</td>
+                        <td><span class="rule-type-badge rule-mask">掩码替换</span></td>
+                        <td>保留姓氏，名字以 * 替换</td>
+                        <td><code>张三 &rarr; 张**</code></td>
+                        <td><span class="badge badge-success">启用</span></td>
+                    </tr>
+                    <tr>
+                        <td>身份证号</td>
+                        <td><span class="rule-type-badge rule-regex">正则匹配</span></td>
+                        <td>保留前3位和后4位，中间以 * 替换</td>
+                        <td><code>320106...1234 &rarr; 320***...1234</code></td>
+                        <td><span class="badge badge-success">启用</span></td>
+                    </tr>
+                    <tr>
+                        <td>手机号</td>
+                        <td><span class="rule-type-badge rule-regex">正则匹配</span></td>
+                        <td>保留前3位和后4位，中间4位以 * 替换</td>
+                        <td><code>138...5678 &rarr; 138****5678</code></td>
+                        <td><span class="badge badge-success">启用</span></td>
+                    </tr>
+                    <tr>
+                        <td>住址</td>
+                        <td><span class="rule-type-badge rule-mask">掩码替换</span></td>
+                        <td>保留省市级，区级及以下以 *** 替换</td>
+                        <td><code>贵州省贵阳市... &rarr; 贵州省贵阳市***</code></td>
+                        <td><span class="badge badge-success">启用</span></td>
+                    </tr>
+                    <tr>
+                        <td>诊断信息</td>
+                        <td><span class="rule-type-badge rule-keep">保留</span></td>
+                        <td>医学诊断信息原样保留，具有研究价值</td>
+                        <td><code>2型糖尿病 &rarr; 2型糖尿病</code></td>
+                        <td><span class="badge badge-success">启用</span></td>
+                    </tr>
+                    <tr>
+                        <td>检验数值</td>
+                        <td><span class="rule-type-badge rule-keep">保留</span></td>
+                        <td>检验检查数值原样保留，为核心分析数据</td>
+                        <td><code>7.8mmol/L &rarr; 7.8mmol/L</code></td>
+                        <td><span class="badge badge-success">启用</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid" id="statsArea" style="display:none;">
+        <div class="stat-card">
+            <div class="stat-icon blue">&#x1F4CA;</div>
+            <div><div class="stat-value">6</div><div class="stat-label">总字段数</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">&#x1F6E1;&#xFE0F;</div>
+            <div><div class="stat-value">4</div><div class="stat-label">脱敏字段</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">&#x2705;</div>
+            <div><div class="stat-value">2</div><div class="stat-label">保留字段</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">&#x23F1;&#xFE0F;</div>
+            <div><div class="stat-value">0.12s</div><div class="stat-label">处理耗时</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Processing overlay -->
+<div class="process-overlay" id="processOverlay">
+    <div class="process-box">
+        <div class="spinner"></div>
+        <h3>正在执行脱敏处理...</h3>
+        <div class="process-steps" id="processSteps">
+            <div class="p-step" id="ps1">&#x25CB; 加载脱敏规则配置</div>
+            <div class="p-step" id="ps2">&#x25CB; 扫描敏感字段</div>
+            <div class="p-step" id="ps3">&#x25CB; 执行正则匹配脱敏</div>
+            <div class="p-step" id="ps4">&#x25CB; 执行掩码替换脱敏</div>
+            <div class="p-step" id="ps5">&#x25CB; 生成脱敏报告</div>
+        </div>
+    </div>
+</div>
+
+<script>
+var processed = false;
+
+function startProcess() {
+    if (processed) return;
+    var btn = document.getElementById('processBtn');
+    btn.disabled = true;
+    var overlay = document.getElementById('processOverlay');
+    overlay.classList.add('show');
+
+    var steps = ['ps1','ps2','ps3','ps4','ps5'];
+    var delay = 0;
+    for (var i = 0; i < steps.length; i++) {
+        (function(idx) {
+            setTimeout(function() {
+                if (idx > 0) {
+                    var prev = document.getElementById(steps[idx-1]);
+                    prev.classList.remove('active');
+                    prev.classList.add('done');
+                    prev.innerHTML = '&#x2705; ' + prev.textContent.substring(2);
+                }
+                var cur = document.getElementById(steps[idx]);
+                cur.classList.add('active');
+                cur.innerHTML = '&#x25CF; ' + cur.textContent.substring(2);
+            }, delay);
+            delay += 500;
+        })(i);
+    }
+
+    setTimeout(function() {
+        var last = document.getElementById(steps[steps.length-1]);
+        last.classList.remove('active');
+        last.classList.add('done');
+        last.innerHTML = '&#x2705; ' + last.textContent.substring(2);
+    }, delay);
+
+    setTimeout(function() {
+        overlay.classList.remove('show');
+        document.getElementById('maskedPlaceholder').style.display = 'none';
+        var content = document.getElementById('maskedContent');
+        content.style.display = 'block';
+        content.classList.remove('result-hidden');
+        content.classList.add('result-visible');
+        document.getElementById('statsArea').style.display = 'grid';
+        document.getElementById('statsArea').style.animation = 'fadeIn 0.5s ease-out';
+        btn.textContent = '&#x2705; 脱敏完成';
+        btn.style.background = '#38a169';
+        btn.style.boxShadow = '0 4px 14px rgba(56,161,105,0.3)';
+        processed = true;
+    }, delay + 600);
+}
+</script>
+</body>
+</html>

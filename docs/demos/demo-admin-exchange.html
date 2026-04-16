@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 交易所对接仪表盘</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.top-bar { background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 100%); }
+
+.connection-card {
+    background: linear-gradient(135deg, #1a3a5c 0%, #2c5282 100%);
+    color: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.connection-card .conn-title { font-size: 18px; font-weight: 700; }
+.connection-card .conn-subtitle { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+.conn-meta { display: flex; gap: 24px; flex-wrap: wrap; }
+.conn-meta-item { text-align: center; }
+.conn-meta-item .meta-label { font-size: 11px; color: rgba(255,255,255,0.6); }
+.conn-meta-item .meta-value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+.status-dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    margin-right: 6px; animation: pulse 2s infinite;
+}
+.status-dot.green { background: #48bb78; box-shadow: 0 0 6px rgba(72,187,120,0.6); }
+.status-dot.red { background: #fc8181; box-shadow: 0 0 6px rgba(252,129,129,0.6); }
+
+.health-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.health-item {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    padding: 14px; display: flex; align-items: center; gap: 10px;
+}
+.health-item .health-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.health-item .health-dot.ok { background: #48bb78; }
+.health-item .health-dot.warn { background: #ecc94b; }
+.health-item .health-name { font-size: 13px; font-weight: 500; color: #1a3a5c; }
+.health-item .health-latency { font-size: 11px; color: #718096; }
+
+.status-200 { color: #38a169; font-weight: 600; }
+.status-201 { color: #38a169; font-weight: 600; }
+.status-500 { color: #e53e3e; font-weight: 600; }
+.resp-fast { color: #38a169; }
+.resp-normal { color: #d69e2e; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">管理后台</span>
+    <h1>交易所对接仪表盘</h1>
+    <p>实时监控与贵阳大数据交易所的API对接状态，跟踪资产登记、上架及交易结算等关键接口调用情况。</p>
+</div>
+<div class="demo-container">
+
+    <!-- Connection Status -->
+    <div class="connection-card">
+        <div>
+            <div class="conn-title"><span class="status-dot green"></span>贵阳大数据交易所</div>
+            <div class="conn-subtitle">GYDE Open API Gateway</div>
+        </div>
+        <div class="conn-meta">
+            <div class="conn-meta-item">
+                <div class="meta-label">连接状态</div>
+                <div class="meta-value" style="color:#48bb78;">正常</div>
+            </div>
+            <div class="conn-meta-item">
+                <div class="meta-label">API版本</div>
+                <div class="meta-value">v2.1</div>
+            </div>
+            <div class="conn-meta-item">
+                <div class="meta-label">最后心跳</div>
+                <div class="meta-value" id="heartbeat">3秒前</div>
+            </div>
+            <div class="conn-meta-item">
+                <div class="meta-label">今日调用</div>
+                <div class="meta-value">1,247次</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue" style="font-size:22px;">&#x1F4E6;</div>
+            <div><div class="stat-value">234</div><div class="stat-label">已登记资产</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green" style="font-size:22px;">&#x1F6D2;</div>
+            <div><div class="stat-value">189</div><div class="stat-label">已上架</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange" style="font-size:22px;">&#x1F4C8;</div>
+            <div><div class="stat-value">23</div><div class="stat-label">本周新增</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple" style="font-size:22px;">&#x23F3;</div>
+            <div><div class="stat-value">5</div><div class="stat-label">交易所审核队列</div></div>
+        </div>
+    </div>
+
+    <!-- API Call Log -->
+    <div class="card">
+        <div class="card-title">&#x1F4C3; 近期API调用日志</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr><th>时间</th><th>接口名称</th><th>请求方法</th><th>状态码</th><th>响应时间</th><th>结果</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2026-04-16 10:32:15</td>
+                        <td style="font-family:monospace;">asset.register</td>
+                        <td><span class="badge badge-info">POST</span></td>
+                        <td><span class="status-201">201</span></td>
+                        <td class="resp-fast">68ms</td>
+                        <td><span class="badge badge-success">成功</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-04-16 10:31:42</td>
+                        <td style="font-family:monospace;">asset.verify</td>
+                        <td><span class="badge badge-info">POST</span></td>
+                        <td><span class="status-200">200</span></td>
+                        <td class="resp-fast">124ms</td>
+                        <td><span class="badge badge-success">成功</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-04-16 10:28:07</td>
+                        <td style="font-family:monospace;">trade.settle</td>
+                        <td><span class="badge badge-info">POST</span></td>
+                        <td><span class="status-200">200</span></td>
+                        <td class="resp-normal">187ms</td>
+                        <td><span class="badge badge-success">成功</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-04-16 10:25:33</td>
+                        <td style="font-family:monospace;">asset.list</td>
+                        <td><span class="badge" style="background:#e6ffed;color:#22543d;">GET</span></td>
+                        <td><span class="status-200">200</span></td>
+                        <td class="resp-fast">52ms</td>
+                        <td><span class="badge badge-success">成功</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-04-16 10:22:18</td>
+                        <td style="font-family:monospace;">asset.register</td>
+                        <td><span class="badge badge-info">POST</span></td>
+                        <td><span class="status-201">201</span></td>
+                        <td class="resp-fast">73ms</td>
+                        <td><span class="badge badge-success">成功</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-04-16 10:18:55</td>
+                        <td style="font-family:monospace;">trade.query</td>
+                        <td><span class="badge" style="background:#e6ffed;color:#22543d;">GET</span></td>
+                        <td><span class="status-200">200</span></td>
+                        <td class="resp-fast">95ms</td>
+                        <td><span class="badge badge-success">成功</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- API Health -->
+    <div class="card">
+        <div class="card-title">&#x1F49A; API健康度</div>
+        <div class="card-subtitle">各端点实时可用性监测</div>
+        <div class="health-grid">
+            <div class="health-item">
+                <div class="health-dot ok"></div>
+                <div>
+                    <div class="health-name">asset.register</div>
+                    <div class="health-latency">avg 72ms | 99.9% uptime</div>
+                </div>
+            </div>
+            <div class="health-item">
+                <div class="health-dot ok"></div>
+                <div>
+                    <div class="health-name">asset.verify</div>
+                    <div class="health-latency">avg 118ms | 99.8% uptime</div>
+                </div>
+            </div>
+            <div class="health-item">
+                <div class="health-dot ok"></div>
+                <div>
+                    <div class="health-name">asset.list</div>
+                    <div class="health-latency">avg 48ms | 100% uptime</div>
+                </div>
+            </div>
+            <div class="health-item">
+                <div class="health-dot ok"></div>
+                <div>
+                    <div class="health-name">trade.settle</div>
+                    <div class="health-latency">avg 165ms | 99.7% uptime</div>
+                </div>
+            </div>
+            <div class="health-item">
+                <div class="health-dot ok"></div>
+                <div>
+                    <div class="health-name">trade.query</div>
+                    <div class="health-latency">avg 85ms | 100% uptime</div>
+                </div>
+            </div>
+            <div class="health-item">
+                <div class="health-dot ok"></div>
+                <div>
+                    <div class="health-name">auth.token</div>
+                    <div class="health-latency">avg 32ms | 100% uptime</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Simulate heartbeat update
+var heartbeatSec = 3;
+setInterval(function() {
+    heartbeatSec++;
+    if (heartbeatSec > 15) heartbeatSec = 1;
+    document.getElementById('heartbeat').textContent = heartbeatSec + '秒前';
+}, 1000);
+</script>
+</body>
+</html>

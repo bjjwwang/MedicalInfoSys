@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 数据质量评分</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.overall-score {
+    text-align: center; padding: 32px 20px; background: linear-gradient(135deg, #ebf4ff 0%, #f0fff4 100%);
+    border-radius: 16px; margin-bottom: 24px;
+}
+.score-circle {
+    width: 160px; height: 160px; border-radius: 50%; margin: 0 auto 16px;
+    position: relative; display: flex; align-items: center; justify-content: center;
+    background: conic-gradient(#38a169 0deg, #38a169 calc(var(--score) * 3.6deg), #e2e8f0 calc(var(--score) * 3.6deg));
+}
+.score-circle::before {
+    content: ''; position: absolute; width: 130px; height: 130px;
+    border-radius: 50%; background: #fff;
+}
+.score-inner {
+    position: relative; z-index: 1; text-align: center;
+}
+.score-inner .score-num { font-size: 42px; font-weight: 800; color: #1a3a5c; line-height: 1; }
+.score-inner .score-total { font-size: 14px; color: #a0aec0; }
+.overall-grade {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 12px; font-size: 16px; color: #4a5568;
+}
+.overall-grade .grade-badge {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800;
+    background: linear-gradient(135deg, #fbd38d, #f6ad55); color: #7b341e;
+    box-shadow: 0 2px 8px rgba(246,173,85,0.4);
+}
+.overall-label { font-size: 14px; color: #718096; margin-top: 8px; }
+
+.dimension-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+@media (max-width: 768px) { .dimension-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .dimension-grid { grid-template-columns: 1fr; } }
+
+.dim-card {
+    background: #fff; border-radius: 12px; padding: 20px; text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: transform 0.2s;
+}
+.dim-card:hover { transform: translateY(-2px); }
+.dim-ring {
+    width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 10px;
+    position: relative; display: flex; align-items: center; justify-content: center;
+}
+.dim-ring svg { position: absolute; top: 0; left: 0; width: 80px; height: 80px; transform: rotate(-90deg); }
+.dim-ring circle {
+    fill: none; stroke-width: 6; stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-out;
+}
+.dim-ring .track { stroke: #edf2f7; }
+.dim-ring .fill-blue { stroke: #3182ce; }
+.dim-ring .fill-green { stroke: #38a169; }
+.dim-ring .fill-orange { stroke: #dd6b20; }
+.dim-ring .fill-purple { stroke: #805ad5; }
+.dim-value { font-size: 20px; font-weight: 700; color: #1a3a5c; position: relative; z-index: 1; }
+.dim-label { font-size: 13px; color: #718096; font-weight: 500; }
+.dim-desc { font-size: 11px; color: #a0aec0; margin-top: 4px; }
+
+.check-pass { color: #38a169; font-weight: 600; }
+.check-fail { color: #e53e3e; font-weight: 600; }
+.check-warn { color: #dd6b20; font-weight: 600; }
+
+.weight-bar {
+    display: inline-block; width: 40px; height: 6px; border-radius: 3px;
+    background: #edf2f7; position: relative; vertical-align: middle;
+}
+.weight-bar .weight-fill {
+    position: absolute; top: 0; left: 0; height: 100%; border-radius: 3px;
+    background: #3182ce;
+}
+
+.report-section { margin-top: 8px; }
+.report-item {
+    display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f4f8; font-size: 13px;
+}
+.report-item:last-child { border-bottom: none; }
+.report-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;
+}
+.report-icon.good { background: #e6ffed; }
+.report-icon.warn { background: #fefcbf; }
+.report-icon.info { background: #ebf4ff; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">数据资产模块</span>
+    <h1>数据质量评分</h1>
+    <p>基于完整性、准确性、时效性、规范性四维评估模型，对上传的健康数据进行全面质量评分，生成可量化的质量评估报告。</p>
+</div>
+<div class="demo-container">
+
+    <!-- Overall score -->
+    <div class="overall-score">
+        <div class="score-circle" style="--score: 92;" id="scoreCircle">
+            <div class="score-inner">
+                <div class="score-num" id="scoreNum">0</div>
+                <div class="score-total">/ 100</div>
+            </div>
+        </div>
+        <div class="overall-grade">
+            <span class="grade-badge">S</span>
+            <span>优秀 - 可直接上架交易</span>
+        </div>
+        <div class="overall-label">2型糖尿病患者血糖监测数据集 (2025Q3-2026Q1)</div>
+    </div>
+
+    <!-- Dimension scores -->
+    <div class="dimension-grid">
+        <div class="dim-card">
+            <div class="dim-ring">
+                <svg><circle class="track" cx="40" cy="40" r="34" stroke-dasharray="213.6" /><circle class="fill-blue" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6" data-target="25.6" /></svg>
+                <div class="dim-value">88</div>
+            </div>
+            <div class="dim-label">完整性</div>
+            <div class="dim-desc">字段缺失率 &lt; 5%</div>
+        </div>
+        <div class="dim-card">
+            <div class="dim-ring">
+                <svg><circle class="track" cx="40" cy="40" r="34" stroke-dasharray="213.6" /><circle class="fill-green" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6" data-target="10.7" /></svg>
+                <div class="dim-value">95</div>
+            </div>
+            <div class="dim-label">准确性</div>
+            <div class="dim-desc">数值异常率 &lt; 1%</div>
+        </div>
+        <div class="dim-card">
+            <div class="dim-ring">
+                <svg><circle class="track" cx="40" cy="40" r="34" stroke-dasharray="213.6" /><circle class="fill-orange" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6" data-target="21.4" /></svg>
+                <div class="dim-value">90</div>
+            </div>
+            <div class="dim-label">时效性</div>
+            <div class="dim-desc">数据时间跨度 9 个月</div>
+        </div>
+        <div class="dim-card">
+            <div class="dim-ring">
+                <svg><circle class="track" cx="40" cy="40" r="34" stroke-dasharray="213.6" /><circle class="fill-purple" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6" data-target="12.8" /></svg>
+                <div class="dim-value">94</div>
+            </div>
+            <div class="dim-label">规范性</div>
+            <div class="dim-desc">格式符合率 98.7%</div>
+        </div>
+    </div>
+
+    <!-- Detailed scoring table -->
+    <div class="card">
+        <div class="card-title">&#x1F50D; 字段级检查明细</div>
+        <div class="card-subtitle">对每个数据字段的质量指标逐项检查</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>字段名</th>
+                        <th>检查项</th>
+                        <th>检查结果</th>
+                        <th>得分</th>
+                        <th>权重</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>检测日期 (date)</td>
+                        <td>格式校验、时间范围</td>
+                        <td><span class="check-pass">&#x2713; 通过</span></td>
+                        <td>98</td>
+                        <td><div class="weight-bar"><div class="weight-fill" style="width:80%"></div></div> 20%</td>
+                    </tr>
+                    <tr>
+                        <td>空腹血糖 (fasting_glucose)</td>
+                        <td>数值范围、非空校验</td>
+                        <td><span class="check-pass">&#x2713; 通过</span></td>
+                        <td>95</td>
+                        <td><div class="weight-bar"><div class="weight-fill" style="width:100%"></div></div> 25%</td>
+                    </tr>
+                    <tr>
+                        <td>餐后血糖 (postprandial)</td>
+                        <td>数值范围、关联校验</td>
+                        <td><span class="check-pass">&#x2713; 通过</span></td>
+                        <td>93</td>
+                        <td><div class="weight-bar"><div class="weight-fill" style="width:100%"></div></div> 25%</td>
+                    </tr>
+                    <tr>
+                        <td>糖化血红蛋白 (hba1c)</td>
+                        <td>数值范围、缺失率</td>
+                        <td><span class="check-warn">&#x26A0; 部分缺失</span></td>
+                        <td>82</td>
+                        <td><div class="weight-bar"><div class="weight-fill" style="width:60%"></div></div> 15%</td>
+                    </tr>
+                    <tr>
+                        <td>用药记录 (medication)</td>
+                        <td>非空校验、规范编码</td>
+                        <td><span class="check-warn">&#x26A0; 格式不统一</span></td>
+                        <td>78</td>
+                        <td><div class="weight-bar"><div class="weight-fill" style="width:40%"></div></div> 10%</td>
+                    </tr>
+                    <tr>
+                        <td>备注 (notes)</td>
+                        <td>非空校验</td>
+                        <td><span class="check-pass">&#x2713; 通过</span></td>
+                        <td>96</td>
+                        <td><div class="weight-bar"><div class="weight-fill" style="width:20%"></div></div> 5%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Quality report -->
+    <div class="card">
+        <div class="card-title">&#x1F4CB; 质量评估报告</div>
+        <div class="card-subtitle">数据资产: 2型糖尿病患者血糖监测数据集 | 评估时间: 2026-04-16 10:32:00</div>
+
+        <div class="highlight highlight-green mb-4">
+            <strong>综合评定：S 级（优秀）</strong><br>
+            该数据集整体质量优秀，核心指标完整率高，数据准确性好，适合直接上架交易。建议优化用药记录字段的编码规范以进一步提升质量评分。
+        </div>
+
+        <div class="report-section">
+            <div class="report-item">
+                <div class="report-icon good">&#x2705;</div>
+                <div>
+                    <strong style="color:#22543d;">完整性表现良好 (88分)</strong>
+                    <div style="color:#718096; margin-top:2px;">38,412 条记录中，核心字段（日期、空腹血糖、餐后血糖）缺失率仅为 2.3%。糖化血红蛋白字段因检测频次较低，缺失率为 12.8%，属正常范围。</div>
+                </div>
+            </div>
+            <div class="report-item">
+                <div class="report-icon good">&#x2705;</div>
+                <div>
+                    <strong style="color:#22543d;">准确性表现优秀 (95分)</strong>
+                    <div style="color:#718096; margin-top:2px;">血糖数值均在合理生理范围内（2.0-33.3 mmol/L），未发现异常离群值。空腹血糖与餐后血糖的关联性检验通过率 99.1%。</div>
+                </div>
+            </div>
+            <div class="report-item">
+                <div class="report-icon good">&#x2705;</div>
+                <div>
+                    <strong style="color:#22543d;">时效性表现良好 (90分)</strong>
+                    <div style="color:#718096; margin-top:2px;">数据时间跨度为 9 个月（2025-07 至 2026-03），采集频次稳定，平均每位患者每月 3.4 次记录。最新数据距今不超过 30 天。</div>
+                </div>
+            </div>
+            <div class="report-item">
+                <div class="report-icon warn">&#x26A0;&#xFE0F;</div>
+                <div>
+                    <strong style="color:#744210;">规范性建议优化 (94分)</strong>
+                    <div style="color:#718096; margin-top:2px;">日期格式统一为 ISO 8601，数值单位规范。用药记录字段存在自由文本输入，建议后续采用标准药品编码（ATC 编码）以提升规范性至 97 分以上。</div>
+                </div>
+            </div>
+            <div class="report-item">
+                <div class="report-icon info">&#x1F4A1;</div>
+                <div>
+                    <strong style="color:#2b6cb0;">定价建议</strong>
+                    <div style="color:#718096; margin-top:2px;">基于 S 级质量评分、1,247 名患者样本量及 9 个月时间跨度，建议定价区间为 25,000 - 32,000 元。同类数据集市场均价约 22 元/患者。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade reference -->
+    <div class="card">
+        <div class="card-title">&#x1F3C6; 质量等级参照</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr><th>等级</th><th>分数区间</th><th>说明</th><th>交易资格</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="quality-badge quality-S">S</span></td>
+                        <td>90 - 100</td>
+                        <td>优秀，数据质量全面达标</td>
+                        <td><span class="badge badge-success">可直接上架</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="quality-badge quality-A">A</span></td>
+                        <td>80 - 89</td>
+                        <td>良好，少量指标需改进</td>
+                        <td><span class="badge badge-success">可上架交易</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="quality-badge quality-B">B</span></td>
+                        <td>70 - 79</td>
+                        <td>合格，部分字段需要优化</td>
+                        <td><span class="badge badge-warning">需补充完善</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="quality-badge" style="background:#fed7d7; color:#9b2c2c;">C</span></td>
+                        <td>60 - 69</td>
+                        <td>待改进，多项指标未达标</td>
+                        <td><span class="badge badge-danger">暂不可交易</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="quality-badge" style="background:#edf2f7; color:#a0aec0;">D</span></td>
+                        <td>&lt; 60</td>
+                        <td>不合格，需重新整理数据</td>
+                        <td><span class="badge badge-danger">不可交易</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Animate score number
+(function() {
+    var target = 92;
+    var el = document.getElementById('scoreNum');
+    var current = 0;
+    var step = target / 40;
+    var interval = setInterval(function() {
+        current += step;
+        if (current >= target) {
+            current = target;
+            clearInterval(interval);
+        }
+        el.textContent = Math.round(current);
+    }, 30);
+})();
+
+// Animate dimension rings
+setTimeout(function() {
+    var fills = document.querySelectorAll('[data-target]');
+    fills.forEach(function(circle) {
+        var targetOffset = parseFloat(circle.getAttribute('data-target'));
+        circle.style.strokeDashoffset = targetOffset;
+    });
+}, 300);
+</script>
+</body>
+</html>

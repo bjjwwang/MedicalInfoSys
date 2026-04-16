@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 周结算与对账</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.badge-settled { background: #e6ffed; color: #22543d; }
+.badge-settling { background: #fefcbf; color: #744210; }
+.badge-reconciling { background: #ebf4ff; color: #2b6cb0; }
+
+.reconcile-card {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: center;
+}
+@media (max-width: 768px) { .reconcile-card { grid-template-columns: 1fr; } }
+
+.reconcile-side {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 20px;
+}
+.reconcile-side h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a3a5c;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.reconcile-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #edf2f7;
+}
+.reconcile-row:last-child { border-bottom: none; }
+.reconcile-row .r-label { color: #718096; }
+.reconcile-row .r-value { color: #1a1a1a; font-weight: 600; }
+
+.match-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.match-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: #38a169;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(56,161,105,0.3);
+}
+.match-text { font-size: 13px; font-weight: 600; color: #38a169; }
+
+table.data-table td.amount { text-align: right; font-variant-numeric: tabular-nums; }
+table.data-table td.amount-bold { text-align: right; font-weight: 700; color: #1a3a5c; font-variant-numeric: tabular-nums; }
+
+.settlement-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+}
+@media (max-width: 768px) { .settlement-summary { grid-template-columns: 1fr; } }
+.summary-item {
+    text-align: center;
+    padding: 12px;
+    background: #f7fafc;
+    border-radius: 8px;
+}
+.summary-item .s-label { font-size: 12px; color: #718096; }
+.summary-item .s-value { font-size: 18px; font-weight: 700; color: #1a3a5c; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">交易所对接</span>
+    <h1>周结算与对账</h1>
+    <p>与贵阳大数据交易所实时对账，确保每一笔交易金额精确匹配，保障资金安全</p>
+</div>
+<div class="demo-container">
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue">💰</div>
+            <div>
+                <div class="stat-value">¥89,230</div>
+                <div class="stat-label">本周交易额</div>
+                <div class="stat-trend">↑ 12.3% 较上周</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">⏳</div>
+            <div>
+                <div class="stat-value">¥23,450</div>
+                <div class="stat-label">待结算</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div>
+                <div class="stat-value">¥65,780</div>
+                <div class="stat-label">已结算</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">📊</div>
+            <div>
+                <div class="stat-value" style="color:#38a169">¥0</div>
+                <div class="stat-label">对账差异</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settlement Records Table -->
+    <div class="card">
+        <div class="card-title">📑 结算记录</div>
+        <div class="table-wrap">
+            <table class="data-table" id="settlementTable">
+                <thead>
+                    <tr>
+                        <th>结算批次</th>
+                        <th>结算周期</th>
+                        <th>交易笔数</th>
+                        <th>交易总额</th>
+                        <th>平台佣金</th>
+                        <th>交易所费用</th>
+                        <th>实际结算</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="hash-text">STL-2026-W15</td>
+                        <td>04/07 - 04/13</td>
+                        <td>23</td>
+                        <td class="amount">¥32,150.00</td>
+                        <td class="amount">¥1,607.50</td>
+                        <td class="amount">¥321.50</td>
+                        <td class="amount-bold">¥30,221.00</td>
+                        <td><span class="badge badge-settled">已结算</span></td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">STL-2026-W14</td>
+                        <td>03/31 - 04/06</td>
+                        <td>18</td>
+                        <td class="amount">¥25,800.00</td>
+                        <td class="amount">¥1,290.00</td>
+                        <td class="amount">¥258.00</td>
+                        <td class="amount-bold">¥24,252.00</td>
+                        <td><span class="badge badge-settled">已结算</span></td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">STL-2026-W13</td>
+                        <td>03/24 - 03/30</td>
+                        <td>15</td>
+                        <td class="amount">¥18,430.00</td>
+                        <td class="amount">¥921.50</td>
+                        <td class="amount">¥184.30</td>
+                        <td class="amount-bold">¥17,324.20</td>
+                        <td><span class="badge badge-settled">已结算</span></td>
+                    </tr>
+                    <tr style="background:#fffdf0">
+                        <td class="hash-text">STL-2026-W16</td>
+                        <td>04/14 - 04/16</td>
+                        <td>12</td>
+                        <td class="amount">¥23,450.00</td>
+                        <td class="amount">¥1,172.50</td>
+                        <td class="amount">¥234.50</td>
+                        <td class="amount-bold">¥22,043.00</td>
+                        <td><span class="badge badge-settling">结算中</span></td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">STL-2026-W12</td>
+                        <td>03/17 - 03/23</td>
+                        <td>20</td>
+                        <td class="amount">¥28,600.00</td>
+                        <td class="amount">¥1,430.00</td>
+                        <td class="amount">¥286.00</td>
+                        <td class="amount-bold">¥26,884.00</td>
+                        <td><span class="badge badge-settled">已结算</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reconciliation Detail -->
+    <div class="card">
+        <div class="card-title">🔍 对账明细 <span class="badge badge-settled" style="margin-left:auto">对账通过</span></div>
+        <div class="card-subtitle">批次 STL-2026-W15 对账结果（04/07 - 04/13）</div>
+
+        <div class="reconcile-card">
+            <div class="reconcile-side">
+                <h4>📦 平台记录</h4>
+                <div class="reconcile-row">
+                    <span class="r-label">交易笔数</span>
+                    <span class="r-value">23 笔</span>
+                </div>
+                <div class="reconcile-row">
+                    <span class="r-label">交易总额</span>
+                    <span class="r-value">¥32,150.00</span>
+                </div>
+                <div class="reconcile-row">
+                    <span class="r-label">平台佣金（5%）</span>
+                    <span class="r-value">¥1,607.50</span>
+                </div>
+                <div class="reconcile-row">
+                    <span class="r-label">交易所费用（1%）</span>
+                    <span class="r-value">¥321.50</span>
+                </div>
+                <div class="reconcile-row">
+                    <span class="r-label">应结算金额</span>
+                    <span class="r-value" style="color:#3182ce;font-size:16px">¥30,221.00</span>
+                </div>
+            </div>
+
+            <div class="match-icon">
+                <div class="match-circle">✓</div>
+                <div class="match-text">完全匹配</div>
+            </div>
+
+            <div class="reconcile-side">
+                <h4>🏛 交易所记录</h4>
+                <div class="reconcile-row">
+                    <span class="r-label">交易笔数</span>
+                    <span class="r-value">23 笔</span>
+                </div>
+                <div class="reconcile-row">
+                    <span class="r-label">交易总额</span>
+                    <span class="r-value">¥32,150.00</span>
+                </div>
+                <div class="reconcile-row">
+                    <span class="r-label">平台佣金（5%）</span>
+                    <span class="r-value">¥1,607.50</span>
+                </div>
+                <div class="reconcile-row">
+                    <span class="r-label">交易所费用（1%）</span>
+                    <span class="r-value">¥321.50</span>
+                </div>
+                <div class="reconcile-row">
+                    <span class="r-label">实际结算金额</span>
+                    <span class="r-value" style="color:#3182ce;font-size:16px">¥30,221.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settlement-summary">
+            <div class="summary-item">
+                <div class="s-label">差异金额</div>
+                <div class="s-value" style="color:#38a169">¥0.00</div>
+            </div>
+            <div class="summary-item">
+                <div class="s-label">对账完成时间</div>
+                <div class="s-value" style="font-size:14px">2026-04-14 08:00</div>
+            </div>
+            <div class="summary-item">
+                <div class="s-label">结算到账时间</div>
+                <div class="s-value" style="font-size:14px">2026-04-14 15:30</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight highlight-green">
+        <strong>对账说明：</strong>系统每周一自动发起对账，将平台交易记录与贵阳大数据交易所的结算记录进行逐笔比对。所有金额精确匹配后自动触发结算流程，差异超过 ¥0.01 将自动告警并暂停结算。
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:20px">
+        <button class="btn btn-primary" onclick="exportReport()">📄 导出对账报告</button>
+        <button class="btn btn-outline" onclick="refreshReconcile()">🔄 刷新对账状态</button>
+    </div>
+</div>
+
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+function exportReport() {
+    showToast('对账报告 STL-2026-W15.pdf 已生成，正在下载…');
+}
+
+function refreshReconcile() {
+    const btn = event.target;
+    btn.textContent = '对账中…';
+    btn.disabled = true;
+    setTimeout(() => {
+        btn.textContent = '🔄 刷新对账状态';
+        btn.disabled = false;
+        showToast('对账状态已刷新，所有记录匹配正常');
+    }, 1500);
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    t.style.animation = 'slideIn 0.3s, fadeOut 0.3s 2.7s forwards';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// Animate table rows on load
+document.addEventListener('DOMContentLoaded', () => {
+    const rows = document.querySelectorAll('#settlementTable tbody tr');
+    rows.forEach((row, i) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
+        row.style.transition = 'all 0.4s ease';
+        setTimeout(() => {
+            row.style.opacity = '1';
+            row.style.transform = 'translateX(0)';
+        }, 200 * i);
+    });
+
+    // Animate match icon
+    const mc = document.querySelector('.match-circle');
+    mc.style.transform = 'scale(0)';
+    mc.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    setTimeout(() => { mc.style.transform = 'scale(1)'; }, 1200);
+});
+</script>
+</body>
+</html>

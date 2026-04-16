@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - NER模型脱敏</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.ner-textarea {
+    width: 100%; min-height: 120px; padding: 14px; border: 1px solid #e2e8f0;
+    border-radius: 8px; font-size: 14px; line-height: 1.8; resize: vertical;
+    font-family: inherit; color: #1a1a1a;
+}
+.ner-textarea:focus { outline: none; border-color: #3182ce; box-shadow: 0 0 0 3px rgba(49,130,206,0.1); }
+.ner-result {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: 18px; line-height: 2.2; font-size: 14px; margin-top: 16px;
+    display: none;
+}
+.ner-result.show { display: block; animation: fadeIn 0.5s; }
+.ner-entity {
+    padding: 2px 4px; border-radius: 4px; font-weight: 500;
+    position: relative; cursor: help;
+}
+.ner-entity.person { background: #fed7d7; border-bottom: 2px solid #e53e3e; }
+.ner-entity.id-number { background: #feebc8; border-bottom: 2px solid #dd6b20; }
+.ner-entity.phone { background: #fefcbf; border-bottom: 2px solid #d69e2e; }
+.ner-entity.address { background: #bee3f8; border-bottom: 2px solid #3182ce; }
+.ner-entity.hospital { background: #e9d8fd; border-bottom: 2px solid #805ad5; }
+.ner-entity.date { background: #c6f6d5; border-bottom: 2px solid #38a169; }
+.ner-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+.ner-legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #4a5568; }
+.ner-legend-item .dot { width: 12px; height: 12px; border-radius: 3px; }
+.dot-person { background: #fed7d7; border: 1px solid #e53e3e; }
+.dot-id { background: #feebc8; border: 1px solid #dd6b20; }
+.dot-phone { background: #fefcbf; border: 1px solid #d69e2e; }
+.dot-address { background: #bee3f8; border: 1px solid #3182ce; }
+.dot-hospital { background: #e9d8fd; border: 1px solid #805ad5; }
+.dot-date { background: #c6f6d5; border: 1px solid #38a169; }
+
+.pipeline-box {
+    background: #f7fafc; border-radius: 12px; padding: 20px; margin-top: 16px;
+}
+.pipeline-layers { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; }
+.layer-card {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 18px;
+    text-align: center; min-width: 160px; transition: all 0.3s;
+}
+.layer-card.active { border-color: #3182ce; box-shadow: 0 0 0 3px rgba(49,130,206,0.1); }
+.layer-card.done { border-color: #38a169; background: #f0fff4; }
+.layer-card .layer-num { font-size: 11px; color: #a0aec0; margin-bottom: 4px; }
+.layer-card .layer-name { font-size: 14px; font-weight: 600; color: #1a3a5c; }
+.layer-card .layer-tag { font-size: 11px; color: #718096; margin-top: 4px; }
+.layer-card .layer-status { font-size: 12px; margin-top: 6px; font-weight: 500; }
+.layer-arrow { font-size: 20px; color: #a0aec0; margin: 0 8px; }
+
+.progress-bar { width: 100%; height: 6px; background: #edf2f7; border-radius: 3px; margin: 12px 0; overflow: hidden; }
+.progress-bar .fill { height: 100%; background: linear-gradient(90deg, #3182ce, #38a169); border-radius: 3px; transition: width 0.5s; }
+
+table.data-table .confidence { font-weight: 600; }
+.conf-high { color: #38a169; }
+.conf-med { color: #d69e2e; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">AI脱敏引擎</span>
+    <h1>NER智能脱敏引擎</h1>
+    <p>基于命名实体识别(NER)深度学习模型，自动检测医疗文本中的隐私信息并执行多策略脱敏，保障数据合规流通。</p>
+</div>
+<div class="demo-container">
+
+    <!-- Input -->
+    <div class="card">
+        <div class="card-title">&#x1F4DD; 输入医疗文本</div>
+        <textarea class="ner-textarea" id="nerInput">患者张三，男，52岁，身份证号320106197201051234，联系电话13812345678，家住贵州省贵阳市南明区花果园路12号。2026年3月15日于贵阳市第一人民医院就诊，主诉：口干多饮2年，加重1周。既往史：高血压病史5年，规律服用氨氯地平5mg/日。</textarea>
+        <div style="margin-top:12px; display:flex; align-items:center; gap:12px;">
+            <button class="btn btn-primary btn-lg" id="startBtn" onclick="startNER()">&#x1F50D; 开始AI识别</button>
+            <span id="statusText" style="font-size:13px; color:#718096;"></span>
+        </div>
+        <div class="progress-bar" id="progressBar" style="display:none;">
+            <div class="fill" id="progressFill" style="width:0%"></div>
+        </div>
+    </div>
+
+    <!-- NER Result -->
+    <div class="card" id="resultCard" style="display:none;">
+        <div class="card-title">&#x1F3AF; 实体识别结果</div>
+        <div class="ner-legend">
+            <div class="ner-legend-item"><div class="dot dot-person"></div>人名</div>
+            <div class="ner-legend-item"><div class="dot dot-id"></div>证件号</div>
+            <div class="ner-legend-item"><div class="dot dot-phone"></div>电话</div>
+            <div class="ner-legend-item"><div class="dot dot-address"></div>地址</div>
+            <div class="ner-legend-item"><div class="dot dot-hospital"></div>医院名</div>
+            <div class="ner-legend-item"><div class="dot dot-date"></div>日期</div>
+        </div>
+        <div class="ner-result show" id="nerResult"></div>
+    </div>
+
+    <!-- Detection Table -->
+    <div class="card" id="tableCard" style="display:none;">
+        <div class="card-title">&#x1F4CB; 检测结果明细</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr><th>实体类型</th><th>原始值</th><th>脱敏方式</th><th>脱敏结果</th><th>置信度</th></tr>
+                </thead>
+                <tbody id="nerTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="card">
+        <div class="card-title">&#x2699;&#xFE0F; 多层脱敏流水线</div>
+        <div class="card-subtitle">三级递进式脱敏架构，兼顾效率与精度</div>
+        <div class="pipeline-box">
+            <div class="pipeline-layers">
+                <div class="layer-card" id="layer1">
+                    <div class="layer-num">Layer 1</div>
+                    <div class="layer-name">正则规则</div>
+                    <div class="layer-tag" style="color:#dd6b20;">fast</div>
+                    <div class="layer-status" id="layer1Status" style="color:#a0aec0;">待执行</div>
+                </div>
+                <div class="layer-arrow" id="arrow1">&#x2192;</div>
+                <div class="layer-card" id="layer2">
+                    <div class="layer-num">Layer 2</div>
+                    <div class="layer-name">NER模型</div>
+                    <div class="layer-tag" style="color:#3182ce;">precise</div>
+                    <div class="layer-status" id="layer2Status" style="color:#a0aec0;">待执行</div>
+                </div>
+                <div class="layer-arrow" id="arrow2">&#x2192;</div>
+                <div class="layer-card" id="layer3">
+                    <div class="layer-num">Layer 3</div>
+                    <div class="layer-name">人工复核</div>
+                    <div class="layer-tag" style="color:#805ad5;">optional</div>
+                    <div class="layer-status" id="layer3Status" style="color:#a0aec0;">待执行</div>
+                </div>
+            </div>
+        </div>
+        <div class="highlight highlight-blue mt-4" style="font-size:12px;">
+            <strong>架构说明：</strong>Layer1 正则规则引擎以极低延迟捕获标准格式敏感信息（身份证、手机号等）；Layer2 NER 深度学习模型识别上下文相关实体（人名、地址、机构名）；Layer3 支持人工复核高风险或低置信度实体，确保零遗漏。
+        </div>
+    </div>
+
+</div>
+
+<script>
+var entities = [
+    { type: '人名', cls: 'person', original: '张三', method: '姓名替换', masked: '张*', confidence: 0.98 },
+    { type: '证件号', cls: 'id-number', original: '320106197201051234', method: '部分遮蔽', masked: '320106********1234', confidence: 0.99 },
+    { type: '电话', cls: 'phone', original: '13812345678', method: '中间遮蔽', masked: '138****5678', confidence: 0.99 },
+    { type: '地址', cls: 'address', original: '贵州省贵阳市南明区花果园路12号', method: '地址泛化', masked: '贵州省贵阳市***', confidence: 0.96 },
+    { type: '日期', cls: 'date', original: '2026年3月15日', method: '日期偏移', masked: '2026年*月*日', confidence: 0.95 },
+    { type: '医院名', cls: 'hospital', original: '贵阳市第一人民医院', method: '机构代码化', masked: '医疗机构#GY0012', confidence: 0.97 }
+];
+
+function startNER() {
+    var btn = document.getElementById('startBtn');
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    var statusText = document.getElementById('statusText');
+    var progressBar = document.getElementById('progressBar');
+    progressBar.style.display = 'block';
+    var progressFill = document.getElementById('progressFill');
+
+    // Layer 1
+    statusText.textContent = 'Layer1: 正则规则扫描中...';
+    document.getElementById('layer1').classList.add('active');
+    document.getElementById('layer1Status').textContent = '执行中...';
+    document.getElementById('layer1Status').style.color = '#3182ce';
+    progressFill.style.width = '15%';
+
+    setTimeout(function() {
+        progressFill.style.width = '33%';
+        document.getElementById('layer1').classList.remove('active');
+        document.getElementById('layer1').classList.add('done');
+        document.getElementById('layer1Status').textContent = '已完成 (12ms)';
+        document.getElementById('layer1Status').style.color = '#38a169';
+
+        // Layer 2
+        statusText.textContent = 'Layer2: NER深度学习模型推理中...';
+        document.getElementById('layer2').classList.add('active');
+        document.getElementById('layer2Status').textContent = '推理中...';
+        document.getElementById('layer2Status').style.color = '#3182ce';
+
+        setTimeout(function() {
+            progressFill.style.width = '66%';
+        }, 200);
+
+        setTimeout(function() {
+            progressFill.style.width = '80%';
+            document.getElementById('layer2').classList.remove('active');
+            document.getElementById('layer2').classList.add('done');
+            document.getElementById('layer2Status').textContent = '已完成 (245ms)';
+            document.getElementById('layer2Status').style.color = '#38a169';
+
+            // Layer 3
+            document.getElementById('layer3').classList.add('done');
+            document.getElementById('layer3Status').textContent = '已跳过 (自动模式)';
+            document.getElementById('layer3Status').style.color = '#805ad5';
+
+            progressFill.style.width = '100%';
+            statusText.textContent = '识别完成！共检测到 ' + entities.length + ' 个敏感实体';
+            statusText.style.color = '#38a169';
+
+            showResults();
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }, 1200);
+    }, 800);
+}
+
+function showResults() {
+    // Show highlighted text
+    var text = document.getElementById('nerInput').value;
+    var parts = [];
+    var sortedEntities = entities.slice().sort(function(a, b) {
+        return text.indexOf(a.original) - text.indexOf(b.original);
+    });
+
+    var lastIdx = 0;
+    for (var i = 0; i < sortedEntities.length; i++) {
+        var e = sortedEntities[i];
+        var idx = text.indexOf(e.original, lastIdx);
+        if (idx >= 0) {
+            parts.push(escapeHtml(text.substring(lastIdx, idx)));
+            parts.push('<span class="ner-entity ' + e.cls + '" title="' + e.type + ' (置信度: ' + e.confidence + ')">' + escapeHtml(e.original) + '</span>');
+            lastIdx = idx + e.original.length;
+        }
+    }
+    parts.push(escapeHtml(text.substring(lastIdx)));
+
+    document.getElementById('nerResult').innerHTML = parts.join('');
+    document.getElementById('resultCard').style.display = 'block';
+    document.getElementById('resultCard').style.animation = 'fadeIn 0.5s';
+
+    // Show table
+    var tbody = document.getElementById('nerTableBody');
+    var html = '';
+    for (var j = 0; j < entities.length; j++) {
+        var ent = entities[j];
+        var confClass = ent.confidence >= 0.97 ? 'conf-high' : 'conf-med';
+        html += '<tr>';
+        html += '<td><span class="ner-entity ' + ent.cls + '" style="font-size:12px;">' + ent.type + '</span></td>';
+        html += '<td style="font-family:monospace;">' + escapeHtml(ent.original) + '</td>';
+        html += '<td>' + ent.method + '</td>';
+        html += '<td style="font-family:monospace; font-weight:500; color:#38a169;">' + ent.masked + '</td>';
+        html += '<td class="confidence ' + confClass + '">' + (ent.confidence * 100).toFixed(1) + '%</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+    document.getElementById('tableCard').style.display = 'block';
+    document.getElementById('tableCard').style.animation = 'fadeIn 0.5s';
+}
+
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+}
+</script>
+</body>
+</html>

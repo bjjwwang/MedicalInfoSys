@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 结算管理</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.top-bar { background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 100%); }
+.amount { font-family: "SF Mono", "Fira Code", monospace; }
+.amount-primary { color: #1a3a5c; font-weight: 700; }
+.amount-success { color: #38a169; font-weight: 600; }
+.amount-muted { color: #718096; }
+
+.reconcile-box {
+    background: #f0fff4; border: 1px solid #c6f6d5; border-radius: 12px;
+    padding: 20px; display: flex; align-items: center; justify-content: center;
+    gap: 16px; flex-wrap: wrap; font-size: 14px;
+}
+.reconcile-box .recon-value {
+    font-family: "SF Mono", monospace; font-size: 18px; font-weight: 700; color: #1a3a5c;
+}
+.reconcile-box .recon-eq { font-size: 20px; color: #38a169; font-weight: 700; }
+.reconcile-box .recon-label { font-size: 12px; color: #718096; }
+.reconcile-box .recon-result {
+    background: #38a169; color: #fff; padding: 4px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+}
+
+.badge-settled { background: #e6ffed; color: #22543d; }
+.badge-settling { background: #ebf4ff; color: #2b6cb0; }
+.badge-pending-settle { background: #fefcbf; color: #744210; }
+.badge-failed { background: #fed7d7; color: #9b2c2c; }
+
+.modal-overlay { align-items: center; justify-content: center; }
+.settle-preview { background: #f7fafc; border-radius: 8px; padding: 16px; margin: 12px 0; }
+.settle-preview .preview-row {
+    display: flex; justify-content: space-between; padding: 6px 0;
+    font-size: 13px; border-bottom: 1px solid #edf2f7;
+}
+.settle-preview .preview-row:last-child { border-bottom: none; }
+.settle-preview .preview-row .label { color: #718096; }
+.settle-preview .preview-row .value { font-weight: 600; color: #1a1a1a; }
+.settle-preview .preview-total {
+    display: flex; justify-content: space-between; padding: 10px 0 0;
+    font-size: 15px; font-weight: 700; color: #1a3a5c; border-top: 2px solid #e2e8f0; margin-top: 6px;
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">管理后台</span>
+    <h1>结算管理</h1>
+    <p>管理数据交易的批次结算、收益分成和对账，确保提供者、平台及交易所的资金流转透明准确。</p>
+</div>
+<div class="demo-container">
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue" style="font-size:22px;">&#x1F4B0;</div>
+            <div><div class="stat-value">&yen;156,780</div><div class="stat-label">本月总结算</div><div class="stat-trend">&#x2191; 较上月 +12.3%</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange" style="font-size:22px;">&#x23F3;</div>
+            <div><div class="stat-value">&yen;23,450</div><div class="stat-label">待结算</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green" style="font-size:22px;">&#x2705;</div>
+            <div><div class="stat-value">99.8%</div><div class="stat-label">结算成功率</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple" style="font-size:22px;">&#x23F1;</div>
+            <div><div class="stat-value">4.2h</div><div class="stat-label">平均结算时长</div></div>
+        </div>
+    </div>
+
+    <!-- Settlement Table -->
+    <div class="card">
+        <div class="flex-between mb-4">
+            <div class="card-title" style="margin-bottom:0;">&#x1F4CB; 批次结算记录</div>
+            <button class="btn btn-primary" onclick="showSettleModal()">&#x2795; 发起结算</button>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>批次号</th><th>结算周期</th><th>涉及交易</th><th>结算总额</th>
+                        <th>提供者分成</th><th>平台收入</th><th>交易所费用</th><th>状态</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-family:monospace;">STL-20260416-001</td>
+                        <td>2026-04-08 ~ 04-15</td>
+                        <td>156笔</td>
+                        <td class="amount amount-primary">&yen;89,230</td>
+                        <td class="amount amount-success">&yen;62,461</td>
+                        <td class="amount">&yen;22,308</td>
+                        <td class="amount amount-muted">&yen;4,461</td>
+                        <td><span class="badge badge-settled">已结算</span></td>
+                        <td><button class="btn btn-outline btn-sm" onclick="showToast('查看结算详情...')">详情</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace;">STL-20260409-001</td>
+                        <td>2026-04-01 ~ 04-07</td>
+                        <td>132笔</td>
+                        <td class="amount amount-primary">&yen;67,550</td>
+                        <td class="amount amount-success">&yen;47,285</td>
+                        <td class="amount">&yen;16,888</td>
+                        <td class="amount amount-muted">&yen;3,377</td>
+                        <td><span class="badge badge-settled">已结算</span></td>
+                        <td><button class="btn btn-outline btn-sm" onclick="showToast('查看结算详情...')">详情</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace;">STL-20260416-002</td>
+                        <td>2026-04-15 ~ 04-16</td>
+                        <td>23笔</td>
+                        <td class="amount amount-primary">&yen;23,450</td>
+                        <td class="amount amount-success">&yen;16,415</td>
+                        <td class="amount">&yen;5,863</td>
+                        <td class="amount amount-muted">&yen;1,172</td>
+                        <td><span class="badge badge-pending-settle">待结算</span></td>
+                        <td><button class="btn btn-primary btn-sm" onclick="showSettleModal()">结算</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace;">STL-20260402-001</td>
+                        <td>2026-03-25 ~ 03-31</td>
+                        <td>145笔</td>
+                        <td class="amount amount-primary">&yen;78,340</td>
+                        <td class="amount amount-success">&yen;54,838</td>
+                        <td class="amount">&yen;19,585</td>
+                        <td class="amount amount-muted">&yen;3,917</td>
+                        <td><span class="badge badge-settled">已结算</span></td>
+                        <td><button class="btn btn-outline btn-sm" onclick="showToast('查看结算详情...')">详情</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:monospace;">STL-20260326-001</td>
+                        <td>2026-03-18 ~ 03-24</td>
+                        <td>98笔</td>
+                        <td class="amount amount-primary">&yen;45,210</td>
+                        <td class="amount amount-success">&yen;31,647</td>
+                        <td class="amount">&yen;11,303</td>
+                        <td class="amount amount-muted">&yen;2,260</td>
+                        <td><span class="badge badge-settled">已结算</span></td>
+                        <td><button class="btn btn-outline btn-sm" onclick="showToast('查看结算详情...')">详情</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reconciliation -->
+    <div class="card">
+        <div class="card-title">&#x1F4CA; 本期对账核验</div>
+        <div class="card-subtitle">平台与交易所账目自动比对</div>
+        <div class="reconcile-box">
+            <div style="text-align:center;">
+                <div class="recon-label">平台记录</div>
+                <div class="recon-value">&yen;89,230</div>
+            </div>
+            <div class="recon-eq">=</div>
+            <div style="text-align:center;">
+                <div class="recon-label">交易所记录</div>
+                <div class="recon-value">&yen;89,230</div>
+            </div>
+            <div style="text-align:center; margin-left: 16px;">
+                <div class="recon-label">差异金额</div>
+                <div style="font-size:18px; font-weight:700; color:#38a169;">&yen;0</div>
+            </div>
+            <div class="recon-result">&#x2713; 对账一致</div>
+        </div>
+        <div class="highlight highlight-green mt-4" style="font-size:12px;">
+            <strong>对账说明：</strong>系统每日自动拉取交易所结算明细与平台交易记录逐笔比对，差异超过 &yen;0.01 将触发告警并暂停自动结算，等待人工核查。本期 156 笔交易全部比对通过。
+        </div>
+    </div>
+
+</div>
+
+<!-- Settlement Modal -->
+<div class="modal-overlay" id="settleModal">
+    <div class="modal-box">
+        <h3>&#x1F4B3; 发起批次结算</h3>
+        <div class="form-group">
+            <label>结算周期</label>
+            <div class="form-row">
+                <input type="date" value="2026-04-15">
+                <input type="date" value="2026-04-16">
+            </div>
+        </div>
+        <div class="settle-preview">
+            <div style="font-size:13px; font-weight:600; color:#1a3a5c; margin-bottom:8px;">结算预览</div>
+            <div class="preview-row"><span class="label">涉及交易</span><span class="value">23 笔</span></div>
+            <div class="preview-row"><span class="label">结算总额</span><span class="value">&yen;23,450.00</span></div>
+            <div class="preview-row"><span class="label">提供者分成 (70%)</span><span class="value">&yen;16,415.00</span></div>
+            <div class="preview-row"><span class="label">平台收入 (25%)</span><span class="value">&yen;5,862.50</span></div>
+            <div class="preview-row"><span class="label">交易所费用 (5%)</span><span class="value">&yen;1,172.50</span></div>
+            <div class="preview-total"><span>实际结算</span><span>&yen;23,450.00</span></div>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:16px;">
+            <button class="btn btn-outline" onclick="hideSettleModal()">取消</button>
+            <button class="btn btn-success" onclick="confirmSettle()">&#x2705; 确认结算</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showSettleModal() {
+    document.getElementById('settleModal').classList.add('show');
+}
+function hideSettleModal() {
+    document.getElementById('settleModal').classList.remove('show');
+}
+function confirmSettle() {
+    hideSettleModal();
+    showToast('结算请求已提交，预计 4 小时内完成');
+}
+function showToast(msg) {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+// Close modal on overlay click
+document.getElementById('settleModal').addEventListener('click', function(e) {
+    if (e.target === this) hideSettleModal();
+});
+</script>
+</body>
+</html>

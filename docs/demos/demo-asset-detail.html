@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 资产详情页</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+}
+.detail-header {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+.detail-header .type-icon {
+    width: 56px; height: 56px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; background: #fff5f5; flex-shrink: 0;
+}
+.detail-header .title-area h2 {
+    font-size: 20px; font-weight: 700; color: #1a3a5c; margin-bottom: 8px; line-height: 1.4;
+}
+.detail-header .title-badges {
+    display: flex; gap: 8px; align-items: center;
+}
+.status-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+}
+.status-listed { background: #e6ffed; color: #22543d; }
+.section-title {
+    font-size: 16px; font-weight: 600; color: #1a3a5c;
+    margin-bottom: 14px; padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.desc-text { font-size: 14px; color: #4a5568; line-height: 1.8; }
+.overview-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    background: #f7fafc; border-radius: 10px; padding: 16px;
+    margin: 16px 0;
+}
+.overview-item .ov-label { font-size: 12px; color: #a0aec0; margin-bottom: 2px; }
+.overview-item .ov-value { font-size: 14px; font-weight: 600; color: #1a3a5c; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 20px; }
+.tag-list span {
+    background: #ebf4ff; color: #2b6cb0; padding: 4px 12px;
+    border-radius: 20px; font-size: 12px;
+}
+.sample-preview {
+    margin: 16px 0;
+}
+.blockchain-link {
+    display: flex; align-items: center; gap: 8px;
+    background: #f7fafc; border-radius: 8px; padding: 12px 16px;
+    font-size: 12px; color: #718096; margin-top: 16px;
+}
+.blockchain-link .chain-icon { font-size: 18px; }
+.blockchain-link code {
+    font-family: "Fira Code", monospace; font-size: 11px;
+    color: #3182ce; word-break: break-all;
+}
+/* Right sidebar */
+.price-box {
+    background: #fff; border-radius: 12px; padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    position: sticky; top: 80px;
+}
+.price-box .price-label { font-size: 13px; color: #718096; margin-bottom: 4px; }
+.price-box .price-value { font-size: 32px; font-weight: 700; color: #e53e3e; margin-bottom: 20px; }
+.price-box .price-value small { font-size: 14px; color: #a0aec0; font-weight: 400; }
+.seller-info {
+    border-top: 1px solid #edf2f7; padding-top: 16px; margin-top: 16px;
+}
+.seller-info .seller-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; padding: 4px 0;
+}
+.seller-info .seller-row .label { color: #a0aec0; }
+.seller-info .seller-row .value { color: #4a5568; font-weight: 500; }
+/* Similar assets */
+.similar-section { margin-top: 32px; }
+.similar-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.similar-card {
+    background: #fff; border-radius: 10px; padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    cursor: pointer; transition: all 0.2s;
+}
+.similar-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.similar-card .sc-title { font-size: 13px; font-weight: 600; color: #1a3a5c; margin-bottom: 6px; line-height: 1.4; }
+.similar-card .sc-meta { display: flex; justify-content: space-between; font-size: 12px; }
+.similar-card .sc-price { color: #e53e3e; font-weight: 600; }
+.similar-card .sc-quality { }
+@media (max-width: 768px) {
+    .detail-layout { grid-template-columns: 1fr; }
+    .similar-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">前端Web</span>
+    <h1>资产详情页</h1>
+    <p>展示数据资产的完整信息，包括数据概览、样本预览、区块链溯源以及购买入口。</p>
+</div>
+<div class="demo-container">
+    <div class="detail-layout">
+        <!-- Left Column -->
+        <div>
+            <div class="card">
+                <div class="detail-header">
+                    <div class="type-icon">🩸</div>
+                    <div class="title-area">
+                        <h2>2型糖尿病3年随访血糖及用药数据</h2>
+                        <div class="title-badges">
+                            <span class="quality-badge quality-S">S</span>
+                            <span class="status-badge status-listed">已上架</span>
+                            <span style="font-size:12px;color:#a0aec0;">ID: DA-2026-00483</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">数据描述</div>
+                <div class="desc-text">
+                    本数据集包含1,200例经临床确诊的2型糖尿病患者的3年连续随访记录。数据涵盖空腹血糖(FPG)、餐后2小时血糖(2hPG)、糖化血红蛋白(HbA1c)等核心指标，同时记录了口服降糖药及胰岛素使用方案的完整变化历程。所有数据已通过四级脱敏处理，完全符合《健康医疗数据安全指南》要求。
+                </div>
+
+                <div class="section-title mt-4">数据概览</div>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="ov-label">时间范围</div>
+                        <div class="ov-value">2022.01 - 2025.12</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="ov-label">数据量</div>
+                        <div class="ov-value">1,200例 / 86,400条记录</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="ov-label">覆盖地区</div>
+                        <div class="ov-value">华东地区（沪/苏/浙）</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="ov-label">脱敏等级</div>
+                        <div class="ov-value">四级（不可逆脱敏）</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="ov-label">数据完整率</div>
+                        <div class="ov-value">98.5%</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="ov-label">更新频率</div>
+                        <div class="ov-value">季度更新</div>
+                    </div>
+                </div>
+
+                <div class="section-title">标签</div>
+                <div class="tag-list">
+                    <span>2型糖尿病</span>
+                    <span>血糖监测</span>
+                    <span>HbA1c</span>
+                    <span>随访数据</span>
+                    <span>用药方案</span>
+                    <span>华东地区</span>
+                    <span>脱敏数据</span>
+                </div>
+
+                <div class="section-title">样本数据预览</div>
+                <div class="sample-preview">
+                    <div class="code-block">
+<span class="comment">// 样本记录（已脱敏）</span>
+{
+  <span class="keyword">"patient_id"</span>: <span class="string">"P-****-0027"</span>,
+  <span class="keyword">"age_range"</span>: <span class="string">"55-60"</span>,
+  <span class="keyword">"gender"</span>: <span class="string">"M"</span>,
+  <span class="keyword">"diagnosis_year"</span>: <span class="number">2020</span>,
+  <span class="keyword">"records"</span>: [
+    {
+      <span class="keyword">"date"</span>: <span class="string">"2023-03-15"</span>,
+      <span class="keyword">"fpg_mmol"</span>: <span class="number">7.8</span>,
+      <span class="keyword">"2hpg_mmol"</span>: <span class="number">12.3</span>,
+      <span class="keyword">"hba1c_pct"</span>: <span class="number">7.2</span>,
+      <span class="keyword">"medication"</span>: [
+        <span class="string">"二甲双胍 500mg bid"</span>,
+        <span class="string">"格列美脲 2mg qd"</span>
+      ]
+    }
+  ],
+  <span class="keyword">"total_records"</span>: <span class="number">72</span>
+}
+                    </div>
+                </div>
+
+                <div class="blockchain-link">
+                    <span class="chain-icon">🔗</span>
+                    <div>
+                        <div style="font-weight:600;color:#1a3a5c;margin-bottom:2px;">区块链溯源</div>
+                        <code>0x7a3b9c4e...f82d1a06 (BSN开放联盟链)</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Similar Assets -->
+            <div class="similar-section">
+                <div class="section-title">相似数据资产推荐</div>
+                <div class="similar-grid">
+                    <div class="similar-card" onclick="showToast('查看: 1型糖尿病胰岛素泵使用数据')">
+                        <div class="sc-title">1型糖尿病胰岛素泵持续血糖监测数据</div>
+                        <div class="tag-list" style="margin:6px 0;">
+                            <span>血糖</span><span>CGM</span>
+                        </div>
+                        <div class="sc-meta">
+                            <span class="sc-price">¥198</span>
+                            <span class="quality-badge quality-A" style="width:22px;height:22px;font-size:11px;">A</span>
+                        </div>
+                    </div>
+                    <div class="similar-card" onclick="showToast('查看: 妊娠期糖尿病筛查数据')">
+                        <div class="sc-title">妊娠期糖尿病筛查及管理随访数据</div>
+                        <div class="tag-list" style="margin:6px 0;">
+                            <span>GDM</span><span>围产期</span>
+                        </div>
+                        <div class="sc-meta">
+                            <span class="sc-price">¥86</span>
+                            <span class="quality-badge quality-A" style="width:22px;height:22px;font-size:11px;">A</span>
+                        </div>
+                    </div>
+                    <div class="similar-card" onclick="showToast('查看: 糖尿病并发症筛查数据')">
+                        <div class="sc-title">糖尿病视网膜病变眼底检查数据集</div>
+                        <div class="tag-list" style="margin:6px 0;">
+                            <span>并发症</span><span>眼底</span>
+                        </div>
+                        <div class="sc-meta">
+                            <span class="sc-price">¥320</span>
+                            <span class="quality-badge quality-S" style="width:22px;height:22px;font-size:11px;">S</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="price-box">
+            <div class="price-label">数据资产价格</div>
+            <div class="price-value">¥128 <small>/ 份</small></div>
+            <button class="btn btn-primary btn-block btn-lg" id="btn-buy">立即购买</button>
+            <button class="btn btn-outline btn-block mt-2" onclick="showToast('已加入收藏')">收藏此资产</button>
+
+            <div class="seller-info">
+                <div class="seller-row">
+                    <span class="label">数据提供方</span>
+                    <span class="value">张**（个人认证）</span>
+                </div>
+                <div class="seller-row">
+                    <span class="label">交易所编号</span>
+                    <span class="value">EX-SH-2026-0483</span>
+                </div>
+                <div class="seller-row">
+                    <span class="label">数据格式</span>
+                    <span class="value">JSON / CSV</span>
+                </div>
+                <div class="seller-row">
+                    <span class="label">授权方式</span>
+                    <span class="value">单次下载</span>
+                </div>
+                <div class="seller-row">
+                    <span class="label">上架日期</span>
+                    <span class="value">2026-04-01</span>
+                </div>
+                <div class="seller-row">
+                    <span class="label">累计成交</span>
+                    <span class="value">286 次</span>
+                </div>
+            </div>
+
+            <div class="highlight highlight-blue mt-4" style="font-size:12px;">
+                购买后数据将通过加密通道传输，使用前请遵守《数据使用许可协议》中关于数据用途的相关条款。
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showToast(msg) {
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+
+document.getElementById('btn-buy').addEventListener('click', function() {
+    this.textContent = '处理中...';
+    this.disabled = true;
+    var self = this;
+    setTimeout(function() {
+        self.textContent = '立即购买';
+        self.disabled = false;
+        showToast('购买成功！数据已发送至您的数据资产管理页面');
+    }, 1200);
+});
+</script>
+</body>
+</html>

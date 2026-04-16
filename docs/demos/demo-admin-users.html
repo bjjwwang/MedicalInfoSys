@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 用户管理</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.top-bar { background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 100%); }
+.badge-active { background: #e6ffed; color: #22543d; }
+.badge-frozen { background: #fed7d7; color: #9b2c2c; }
+.badge-provider { background: #ebf4ff; color: #2b6cb0; }
+.badge-consumer { background: #faf5ff; color: #6b46c1; }
+.badge-admin { background: #feebc8; color: #c05621; }
+.action-link { font-size: 12px; color: #3182ce; cursor: pointer; margin-right: 8px; }
+.action-link:hover { text-decoration: underline; }
+.action-link.danger { color: #e53e3e; }
+.action-link.success { color: #38a169; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">管理后台</span>
+    <h1>用户管理</h1>
+    <p>管理平台用户账户，包括数据提供者、数据消费者和管理员角色，支持搜索、冻结/解冻等操作。</p>
+</div>
+<div class="demo-container">
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue" style="font-size:22px;">&#x1F465;</div>
+            <div><div class="stat-value">1,206</div><div class="stat-label">总用户</div><div class="stat-trend">&#x2191; 较上月 +5.2%</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green" style="font-size:22px;">&#x1F4E4;</div>
+            <div><div class="stat-value">847</div><div class="stat-label">数据提供者</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple" style="font-size:22px;">&#x1F4E5;</div>
+            <div><div class="stat-value">359</div><div class="stat-label">数据消费者</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange" style="font-size:22px;">&#x1F195;</div>
+            <div><div class="stat-value">12</div><div class="stat-label">今日新增</div></div>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="card">
+        <div class="card-title">&#x1F50D; 用户查询</div>
+        <div class="search-bar">
+            <input type="text" id="searchKeyword" placeholder="搜索用户名、手机号、用户ID..." oninput="filterUsers()">
+            <select id="roleFilter" onchange="filterUsers()">
+                <option value="">全部角色</option>
+                <option value="provider">提供者</option>
+                <option value="consumer">消费者</option>
+                <option value="admin">管理员</option>
+            </select>
+            <select id="statusFilter" onchange="filterUsers()">
+                <option value="">全部状态</option>
+                <option value="active">正常</option>
+                <option value="frozen">已冻结</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- User Table -->
+    <div class="card">
+        <div class="card-title">&#x1F4CB; 用户列表 <span style="font-size:12px; color:#a0aec0; font-weight:400; margin-left:8px;">共 1,206 条记录</span></div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>用户ID</th><th>用户名</th><th>手机号</th><th>角色</th>
+                        <th>注册时间</th><th>资产数量</th><th>交易次数</th><th>状态</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+var users = [
+    { id: 'U-100023', name: '张**华', phone: '138****6721', role: 'provider', roleName: '提供者', roleClass: 'badge-provider', regTime: '2025-06-12', assets: 15, trades: 42, status: 'active', statusName: '正常' },
+    { id: 'U-100045', name: '李**', phone: '139****3348', role: 'consumer', roleName: '消费者', roleClass: 'badge-consumer', regTime: '2025-08-23', assets: 0, trades: 28, status: 'active', statusName: '正常' },
+    { id: 'U-100067', name: '王**明', phone: '186****9012', role: 'provider', roleName: '提供者', roleClass: 'badge-provider', regTime: '2025-03-05', assets: 23, trades: 67, status: 'active', statusName: '正常' },
+    { id: 'U-100089', name: '陈**', phone: '177****4455', role: 'consumer', roleName: '消费者', roleClass: 'badge-consumer', regTime: '2025-11-18', assets: 0, trades: 5, status: 'frozen', statusName: '已冻结' },
+    { id: 'U-100102', name: '赵**强', phone: '150****7823', role: 'provider', roleName: '提供者', roleClass: 'badge-provider', regTime: '2026-01-09', assets: 8, trades: 19, status: 'active', statusName: '正常' },
+    { id: 'U-100001', name: '管理员A', phone: '188****0001', role: 'admin', roleName: '管理员', roleClass: 'badge-admin', regTime: '2025-01-01', assets: 0, trades: 0, status: 'active', statusName: '正常' }
+];
+
+function renderUsers(list) {
+    var tbody = document.getElementById('userTableBody');
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var u = list[i];
+        var statusBadge = u.status === 'active' ? 'badge-active' : 'badge-frozen';
+        var toggleLabel = u.status === 'active' ? '冻结' : '解冻';
+        var toggleClass = u.status === 'active' ? 'danger' : 'success';
+        html += '<tr data-idx="' + i + '">';
+        html += '<td style="font-family:monospace;">' + u.id + '</td>';
+        html += '<td>' + u.name + '</td>';
+        html += '<td style="font-family:monospace;">' + u.phone + '</td>';
+        html += '<td><span class="badge ' + u.roleClass + '">' + u.roleName + '</span></td>';
+        html += '<td>' + u.regTime + '</td>';
+        html += '<td>' + u.assets + '</td>';
+        html += '<td>' + u.trades + '</td>';
+        html += '<td><span class="badge ' + statusBadge + '">' + u.statusName + '</span></td>';
+        html += '<td>';
+        html += '<span class="action-link" onclick="viewDetail(\'' + u.id + '\')">查看详情</span>';
+        html += '<span class="action-link ' + toggleClass + '" onclick="toggleFreeze(' + i + ')">' + toggleLabel + '</span>';
+        html += '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+function filterUsers() {
+    var keyword = document.getElementById('searchKeyword').value.toLowerCase();
+    var role = document.getElementById('roleFilter').value;
+    var status = document.getElementById('statusFilter').value;
+    var filtered = users.filter(function(u) {
+        var matchKeyword = !keyword || u.id.toLowerCase().indexOf(keyword) >= 0 || u.name.indexOf(keyword) >= 0 || u.phone.indexOf(keyword) >= 0;
+        var matchRole = !role || u.role === role;
+        var matchStatus = !status || u.status === status;
+        return matchKeyword && matchRole && matchStatus;
+    });
+    renderUsers(filtered);
+}
+
+function viewDetail(uid) {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = '正在加载用户 ' + uid + ' 的详细信息...';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+
+function toggleFreeze(idx) {
+    var u = users[idx];
+    if (u.status === 'active') {
+        u.status = 'frozen';
+        u.statusName = '已冻结';
+        showToast('用户 ' + u.id + ' 已冻结', '#e53e3e');
+    } else {
+        u.status = 'active';
+        u.statusName = '正常';
+        showToast('用户 ' + u.id + ' 已解冻', '#38a169');
+    }
+    filterUsers();
+}
+
+function showToast(msg, bg) {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    if (bg) toast.style.background = bg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+
+renderUsers(users);
+</script>
+</body>
+</html>
