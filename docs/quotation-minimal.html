@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最小MVP报价方案 - 微生态健康数据资产交易平台</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    font-size: 14px; line-height: 1.7; color: #2d3748; background: #f0f4f8;
+    padding: 20px;
+}
+.container { max-width: 900px; margin: 0 auto; }
+
+/* Header */
+.quote-header {
+    background: linear-gradient(135deg, #22543d 0%, #2f855a 100%);
+    color: #fff; border-radius: 16px; padding: 40px 44px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+}
+.quote-header::after {
+    content: ''; position: absolute; right: -40px; top: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+}
+.quote-header .tag {
+    display: inline-block; background: rgba(255,255,255,0.2);
+    padding: 4px 14px; border-radius: 20px; font-size: 12px;
+    font-weight: 600; margin-bottom: 12px;
+}
+.quote-header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+.quote-header .subtitle { font-size: 15px; color: rgba(255,255,255,0.8); margin-bottom: 20px; }
+.quote-header .meta { display: flex; flex-wrap: wrap; gap: 24px; font-size: 13px; color: rgba(255,255,255,0.7); }
+.quote-header .meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Section */
+.section {
+    background: #fff; border-radius: 14px; padding: 28px 32px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05); margin-bottom: 20px;
+}
+.section-title {
+    font-size: 18px; font-weight: 700; color: #22543d;
+    padding-bottom: 10px; border-bottom: 2px solid #e6ffed; margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+}
+
+/* Table */
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+thead { background: #f7fafc; }
+th { padding: 10px 14px; text-align: left; font-weight: 600; color: #4a5568; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+td { padding: 10px 14px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
+tbody tr:hover { background: #fafcff; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.price { font-weight: 700; color: #2f855a; }
+.subtotal-row td { font-weight: 600; background: #f7fafc; border-top: 2px solid #e2e8f0; }
+.total-row td { font-weight: 700; font-size: 16px; background: #e6ffed; color: #22543d; border-top: 3px solid #38a169; }
+
+/* Highlight */
+.highlight {
+    border-radius: 10px; padding: 18px 22px; margin: 16px 0; font-size: 13px;
+}
+.highlight-green { background: #f0fff4; border-left: 4px solid #38a169; }
+.highlight-blue { background: #ebf4ff; border-left: 4px solid #3182ce; }
+.highlight-orange { background: #fffaf0; border-left: 4px solid #dd6b20; }
+.highlight-gray { background: #f7fafc; border-left: 4px solid #718096; }
+.highlight strong { color: #22543d; }
+
+/* Comparison */
+.compare-table th { background: #f0fff4; color: #22543d; }
+.compare-table .col-mvp { background: #f0fff4; }
+.compare-table .col-full { background: #fff; }
+.check-yes { color: #38a169; font-weight: 700; }
+.check-no { color: #cbd5e0; }
+.check-partial { color: #dd6b20; font-weight: 600; }
+
+/* Pricing comparison grid */
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+.pricing-card {
+    border-radius: 12px; padding: 20px; text-align: center;
+    border: 2px solid transparent;
+}
+.pricing-card.mvp {
+    background: #f0fff4; border-color: #38a169;
+    position: relative;
+}
+.pricing-card.mvp::before {
+    content: '本方案'; position: absolute; top: -10px; left: 50%;
+    transform: translateX(-50%); background: #38a169; color: #fff;
+    padding: 2px 12px; border-radius: 12px; font-size: 11px; font-weight: 600;
+}
+.pricing-card.v1 { background: #ebf4ff; border-color: #bee3f8; }
+.pricing-card.v15 { background: #faf5ff; border-color: #d6bcfa; }
+.pricing-card .p-label { font-size: 12px; color: #718096; margin-bottom: 6px; }
+.pricing-card .p-name { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.pricing-card .p-price { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+.pricing-card.mvp .p-price { color: #2f855a; }
+.pricing-card.v1 .p-price { color: #2b6cb0; }
+.pricing-card.v15 .p-price { color: #6b46c1; }
+.pricing-card .p-duration { font-size: 12px; color: #718096; margin-bottom: 10px; }
+.pricing-card .p-desc { font-size: 11px; color: #4a5568; line-height: 1.5; }
+
+/* Feature list */
+.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.feat-box { border-radius: 10px; padding: 18px; }
+.feat-box.kept { background: #f0fff4; border-left: 4px solid #38a169; }
+.feat-box.cut { background: #f7fafc; border-left: 4px solid #cbd5e0; }
+.feat-box h4 { font-size: 14px; margin-bottom: 10px; }
+.feat-box.kept h4 { color: #22543d; }
+.feat-box.cut h4 { color: #4a5568; }
+.feat-list { list-style: none; padding: 0; }
+.feat-list li { padding: 4px 0; font-size: 13px; display: flex; align-items: flex-start; gap: 8px; }
+.feat-list.kept li::before { content: '\2705'; flex-shrink: 0; }
+.feat-list.cut li::before { content: '\274C'; flex-shrink: 0; opacity: 0.5; }
+.feat-list.cut li { color: #718096; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 28px; margin: 16px 0; }
+.timeline::before { content:''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
+.tl-item { position: relative; margin-bottom: 18px; }
+.tl-item::before {
+    content: ''; position: absolute; left: -22px; top: 4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #38a169; border: 2px solid #fff; box-shadow: 0 0 0 2px #38a169;
+}
+.tl-item .tl-title { font-weight: 600; color: #22543d; font-size: 14px; }
+.tl-item .tl-desc { font-size: 13px; color: #718096; margin-top: 2px; }
+.tl-item .tl-time {
+    display: inline-block; background: #edf2f7; color: #4a5568;
+    padding: 1px 10px; border-radius: 4px; font-size: 12px; margin-top: 4px;
+}
+
+/* Validation metrics */
+.metrics-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 16px 0; }
+.metric-card {
+    background: #f7fafc; border-radius: 10px; padding: 18px; text-align: center;
+}
+.metric-card .m-icon { font-size: 28px; margin-bottom: 8px; }
+.metric-card .m-label { font-size: 12px; color: #718096; margin-bottom: 4px; }
+.metric-card .m-target { font-size: 16px; font-weight: 700; color: #22543d; }
+
+/* Upgrade path */
+.upgrade-step {
+    background: #f7fafc; border-radius: 10px; padding: 14px 18px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 16px;
+}
+.upgrade-step .step-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #38a169; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; flex-shrink: 0;
+}
+.upgrade-step .step-body { flex: 1; }
+.upgrade-step .step-title { font-weight: 600; color: #22543d; font-size: 14px; }
+.upgrade-step .step-desc { font-size: 12px; color: #718096; margin-top: 2px; }
+.upgrade-step .step-price { font-size: 14px; font-weight: 700; color: #2f855a; flex-shrink: 0; }
+
+/* Demo links */
+.demo-link {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #e6ffed; color: #22543d; padding: 1px 8px; border-radius: 4px;
+    font-size: 12px; text-decoration: none; transition: all 0.2s;
+    white-space: nowrap;
+}
+.demo-link:hover { background: #38a169; color: #fff; text-decoration: none; }
+.demo-link::before { content: '\25B6'; font-size: 9px; }
+.demo-links { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+
+/* Print */
+@media print {
+    body { background: #fff; padding: 0; font-size: 12px; }
+    .section { box-shadow: none; border: 1px solid #eee; page-break-inside: avoid; }
+    .quote-header { border-radius: 0; }
+    .no-print { display: none; }
+}
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .quote-header { padding: 24px; }
+    .section { padding: 20px; }
+    .pricing-grid, .feat-grid, .metrics-grid { grid-template-columns: 1fr; }
+    th, td { padding: 8px 10px; }
+}
+
+a.nav-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #718096; font-size: 13px; text-decoration: none; margin-right: 16px;
+}
+a.nav-link:hover { color: #38a169; }
+
+.btn-print {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #2f855a; color: #fff; padding: 8px 20px; border-radius: 8px;
+    font-size: 13px; border: none; cursor: pointer; text-decoration: none;
+}
+.btn-print:hover { background: #22543d; }
+.btn-print.secondary { background: #718096; }
+.btn-print.secondary:hover { background: #4a5568; }
+
+.nav-bar {
+    background: #fff; border-radius: 10px; padding: 12px 20px;
+    margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="nav-bar no-print">
+    <a href="index.html" class="nav-link">&larr; 文档首页</a>
+    <a href="quotation.html" class="nav-link">完整方案报价 (¥58,000)</a>
+    <a href="demo.html" class="nav-link">交互原型</a>
+</div>
+
+<!-- ==================== Header ==================== -->
+<div class="quote-header">
+    <span class="tag">&#9889; 最小可用版本</span>
+    <h1>最小MVP报价方案</h1>
+    <div class="subtitle">微生态健康数据资产交易平台 · 验证型版本</div>
+    <div class="meta">
+        <span>&#128197; 报价日期: 2026年4月20日</span>
+        <span>&#9202; 有效期: 30天</span>
+        <span>&#128196; 版本: MVP V0.5</span>
+    </div>
+</div>
+
+<!-- ==================== 核心定位 ==================== -->
+<div class="section">
+    <div class="section-title">&#127919; 这个版本是做什么的</div>
+
+    <div class="highlight highlight-green">
+        <strong>一句话：</strong>用最低成本跑通"有人上传健康数据 &rarr; 别人愿意花钱买 &rarr; 钱真的打到卖家账户"这一个闭环，验证核心商业假设。
+    </div>
+
+    <h4 style="margin:16px 0 10px;color:#22543d;font-size:14px;">核心要验证的问题</h4>
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="m-icon">&#128101;</div>
+            <div class="m-label">需求侧</div>
+            <div class="m-target">真有人愿意买吗？</div>
+        </div>
+        <div class="metric-card">
+            <div class="m-icon">&#128200;</div>
+            <div class="m-label">定价</div>
+            <div class="m-target">什么数据值多少钱？</div>
+        </div>
+        <div class="metric-card">
+            <div class="m-icon">&#128276;</div>
+            <div class="m-label">供给侧</div>
+            <div class="m-target">用户愿意上传吗？</div>
+        </div>
+    </div>
+
+    <div class="highlight highlight-orange">
+        <strong>&#9888; 这个版本明确<u>不</u>解决的问题</strong><br>
+        合规背书（暂不接交易所）、纠纷存证（无区块链）、规模化搜索（小数据量够用）、收益自动分配、高级数据脱敏（用规则引擎，非AI）。
+        <br><br>
+        如果当前主要诉求是"融资/招投标需要完整合规演示"，这个方案<strong>不适合</strong>，请看完整版 <a href="quotation.html" style="color:#2f855a;">¥40,000 / ¥58,000 方案</a>。
+    </div>
+</div>
+
+<!-- ==================== 方案对比 ==================== -->
+<div class="section">
+    <div class="section-title">&#128200; 三个方案对比</div>
+    <div class="pricing-grid">
+        <div class="pricing-card mvp">
+            <div class="p-label">验证型</div>
+            <div class="p-name">最小MVP</div>
+            <div class="p-price">&yen;18,000</div>
+            <div class="p-duration">约 4-5 周</div>
+            <div class="p-desc">跑通核心闭环<br>验证商业模式</div>
+        </div>
+        <div class="pricing-card v1">
+            <div class="p-label">运营型</div>
+            <div class="p-name">完整 V1.0</div>
+            <div class="p-price">&yen;40,000</div>
+            <div class="p-duration">约 8 周</div>
+            <div class="p-desc">含交易所对接<br>+区块链确权</div>
+        </div>
+        <div class="pricing-card v15">
+            <div class="p-label">增长型</div>
+            <div class="p-name">V1.0 + V1.5</div>
+            <div class="p-price">&yen;58,000</div>
+            <div class="p-duration">约 11 周</div>
+            <div class="p-desc">含智能搜索<br>+小程序+安全</div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 功能清单 ==================== -->
+<div class="section">
+    <div class="section-title">&#128203; 功能范围（保留 vs 砍掉）</div>
+    <div class="feat-grid">
+        <div class="feat-box kept">
+            <h4>&#9989; 保留（核心闭环必须）</h4>
+            <ul class="feat-list kept">
+                <li>用户注册登录（手机号+短信）</li>
+                <li>数据上传（结构化模板，5种常见类型）</li>
+                <li>规则引擎脱敏（身份证/手机/姓名/地址）</li>
+                <li>基础质量评分（完整性+时效性）</li>
+                <li>数据市场浏览（列表+详情）</li>
+                <li>关键词搜索（PostgreSQL全文检索）</li>
+                <li>下单 + 微信支付</li>
+                <li>卖家收款（直接到银行卡/微信）</li>
+                <li>管理后台：数据审核、用户管理、订单查看</li>
+                <li>基础运营统计报表</li>
+            </ul>
+        </div>
+        <div class="feat-box cut">
+            <h4>&#10060; 砍掉（非必须/后续再补）</h4>
+            <ul class="feat-list cut">
+                <li>贵阳大数据交易所API对接</li>
+                <li>区块链节点部署 + 智能合约</li>
+                <li>区块链溯源可视化</li>
+                <li>AI脱敏引擎（医疗BERT NER）</li>
+                <li>Elasticsearch向量/语义搜索</li>
+                <li>支付宝支付（先只做微信）</li>
+                <li>收益分红/自动分账引擎</li>
+                <li>小程序端（UniApp）</li>
+                <li>等保适配 / 渗透测试</li>
+                <li>交易所对接仪表盘、结算管理</li>
+            </ul>
+        </div>
+    </div>
+    <div class="highlight highlight-gray" style="margin-top:16px;">
+        <strong>砍掉的逻辑：</strong>在商业假设未验证之前，这些功能都属于<strong>"假设验证后才值得投入"</strong>的范畴。
+        比如区块链存证——如果根本没几个用户、没几笔交易，上链没意义；再比如交易所对接——如果数据没人买，再合规也是空的。
+        所以先把钱花在"证明有人要"上。
+    </div>
+</div>
+
+<!-- ==================== 报价明细 ==================== -->
+<div class="section">
+    <div class="section-title">&#128176; 报价明细</div>
+    <table>
+        <thead>
+            <tr><th>模块</th><th>内容</th><th>工作量</th><th class="text-right">报价</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">后端基础架构</td>
+                <td>FastAPI + JWT认证 + PostgreSQL数据库 + 基础API框架
+                    <div class="demo-links"><a href="demos/demo-user-auth.html" class="demo-link">用户认证</a></div>
+                </td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">数据资产模块</td>
+                <td>结构化模板上传、规则引擎脱敏、简化质量评分
+                    <div class="demo-links"><a href="demos/demo-data-upload.html" class="demo-link">数据上传</a><a href="demos/demo-desensitize.html" class="demo-link">规则脱敏</a><a href="demos/demo-quality-score.html" class="demo-link">质量评分</a></div>
+                </td>
+                <td class="text-center">4天</td>
+                <td class="text-right price">&yen;3,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">前端Web</td>
+                <td>登录/注册、数据市场、资产详情、上传向导、个人中心（PC+移动适配）
+                    <div class="demo-links"><a href="demos/demo-market.html" class="demo-link">数据市场</a><a href="demos/demo-asset-detail.html" class="demo-link">资产详情</a><a href="demos/demo-upload-wizard.html" class="demo-link">上传向导</a><a href="demos/demo-my-assets.html" class="demo-link">个人中心</a></div>
+                </td>
+                <td class="text-center">5天</td>
+                <td class="text-right price">&yen;4,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">搜索功能</td>
+                <td>PostgreSQL全文检索 + 分类筛选 + 排序（不上ES）
+                    <div class="demo-links"><a href="demos/demo-search.html" class="demo-link">搜索筛选</a></div>
+                </td>
+                <td class="text-center">1天</td>
+                <td class="text-right price">&yen;800</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">交易与支付</td>
+                <td>订单管理、微信支付对接、交易成功通知、卖家收款
+                    <div class="demo-links"><a href="demos/demo-payment.html" class="demo-link">支付</a><a href="demos/demo-orders.html" class="demo-link">订单</a></div>
+                </td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">管理后台</td>
+                <td>数据资产审核、用户管理、订单查看（简化版）
+                    <div class="demo-links"><a href="demos/demo-admin-review.html" class="demo-link">资产审核</a><a href="demos/demo-admin-users.html" class="demo-link">用户管理</a></div>
+                </td>
+                <td class="text-center">2天</td>
+                <td class="text-right price">&yen;1,500</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">UI/UX设计</td>
+                <td>简化版UI设计稿（复用组件库）、移动端适配</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,000</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">部署 & 测试</td>
+                <td>Docker容器化、云服务器部署、域名SSL、功能测试</td>
+                <td class="text-center">2天</td>
+                <td class="text-right price">&yen;1,200</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">项目管理</td>
+                <td>需求对齐、周进度同步、交付验收、文档交付</td>
+                <td class="text-center">持续</td>
+                <td class="text-right price">&yen;500</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3">最小MVP合计</td>
+                <td class="text-right" style="font-size:20px;">&yen;18,000</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlight highlight-green" style="margin-top:16px;">
+        <strong>&#128073; 相比完整V1.0方案（&yen;40,000）节省 &yen;22,000（55%）</strong><br>
+        主要省在：没接交易所、没上区块链、没做AI脱敏、没集成ES、只做一种支付、UI设计简化。
+    </div>
+</div>
+
+<!-- ==================== 时间表 ==================== -->
+<div class="section">
+    <div class="section-title">&#128197; 时间表（约 4-5 周）</div>
+
+    <div class="timeline">
+        <div class="tl-item">
+            <div class="tl-title">第 1 周 · 启动与架构</div>
+            <div class="tl-desc">需求对齐、数据库设计、UI稿确认、后端脚手架搭建</div>
+            <span class="tl-time">Day 1-7</span>
+        </div>
+        <div class="tl-item">
+            <div class="tl-title">第 2 周 · 后端核心 + 前端启动</div>
+            <div class="tl-desc">用户认证、数据上传API、脱敏引擎、前端页面框架</div>
+            <span class="tl-time">Day 8-14</span>
+        </div>
+        <div class="tl-item">
+            <div class="tl-title">第 3 周 · 交易闭环打通</div>
+            <div class="tl-desc">市场页、详情页、下单、微信支付接入、卖家收款</div>
+            <span class="tl-time">Day 15-21</span>
+        </div>
+        <div class="tl-item">
+            <div class="tl-title">第 4 周 · 管理后台 + 测试</div>
+            <div class="tl-desc">审核后台、用户管理、搜索、功能测试、Bug修复</div>
+            <span class="tl-time">Day 22-28</span>
+        </div>
+        <div class="tl-item">
+            <div class="tl-title">第 5 周 · 部署上线 + 验收</div>
+            <div class="tl-desc">云服务器部署、域名SSL、最终验收、文档交付、运营培训</div>
+            <span class="tl-time">Day 29-35</span>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 验证指标 ==================== -->
+<div class="section">
+    <div class="section-title">&#127919; 怎么算"验证成功"</div>
+    <p style="color:#718096;margin-bottom:14px;">上线后 1-2 个月内，建议看以下几个核心指标决定下一步是升级到完整版还是调整方向。</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>维度</th>
+                <th>关键指标</th>
+                <th>&#127942; 强信号（升级V1.0）</th>
+                <th>&#9888; 弱信号（需要调整）</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">供给</td>
+                <td>上传用户数 / 活跃上传率</td>
+                <td>&ge; 100 用户上传，周活 20%+</td>
+                <td>&lt; 20 用户，活跃几乎为零</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">需求</td>
+                <td>询单数 / 付费转化</td>
+                <td>&ge; 20 笔真实付费交易</td>
+                <td>只有询价无成单</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">定价</td>
+                <td>成交单价分布</td>
+                <td>有数据支撑做定价模型</td>
+                <td>价格全压在最低档</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">客诉</td>
+                <td>纠纷率 / 数据质量投诉</td>
+                <td>&lt; 5%，用户愿意复购</td>
+                <td>&gt; 20%，质疑数据真实性</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">合规</td>
+                <td>监管/采购方要求</td>
+                <td>开始有机构询问交易所资质</td>
+                <td>完全是C端零散交易</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlight highlight-blue" style="margin-top:14px;">
+        <strong>关键判断：</strong> 如果 3 个月内同时出现"付费交易 &ge; 20 笔"+"机构采购询问资质"两个信号，就说明商业模式成立且到了必须上合规/区块链的时候 &rarr; 升级V1.0。
+    </div>
+</div>
+
+<!-- ==================== 升级路径 ==================== -->
+<div class="section">
+    <div class="section-title">&#128640; 后续升级路径</div>
+    <p style="color:#718096;margin-bottom:14px;">MVP验证通过后，按需分模块加功能，不必一次补齐。<strong>已付 &yen;18,000 全额计入总价</strong>，升级到完整方案只需补差价。</p>
+
+    <div class="upgrade-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+            <div class="step-title">升级包 A · 合规对接（+ &yen;10,000）</div>
+            <div class="step-desc">贵阳大数据交易所API对接（资产登记、确权、上架、周结算、对账）+ 额外支付宝通道。适合"开始有机构来询资质"时追加。</div>
+        </div>
+        <div class="step-price">+ &yen;10,000</div>
+    </div>
+    <div class="upgrade-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+            <div class="step-title">升级包 B · 区块链存证（+ &yen;6,000）</div>
+            <div class="step-desc">长安链/FISCO BCOS节点部署、智能合约（确权+访问记录+收益分配）、溯源可视化。适合"开始有纠纷需要存证"时追加。</div>
+        </div>
+        <div class="step-price">+ &yen;6,000</div>
+    </div>
+    <div class="upgrade-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+            <div class="step-title">升级包 C · 智能化增强（+ &yen;6,000）</div>
+            <div class="step-desc">AI脱敏引擎（医疗NER模型）、Elasticsearch语义搜索、收益分红引擎。适合"数据量起来了，需要更好体验"时追加。</div>
+        </div>
+        <div class="step-price">+ &yen;6,000</div>
+    </div>
+    <div class="upgrade-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+            <div class="step-title">升级包 D · 小程序 + 安全（+ &yen;18,000）</div>
+            <div class="step-desc">UniApp小程序端、等保适配、渗透测试、安全审计。适合"规模化上量"阶段。</div>
+        </div>
+        <div class="step-price">+ &yen;18,000</div>
+    </div>
+
+    <div class="highlight highlight-green" style="margin-top:14px;">
+        <strong>全部升级后 = &yen;58,000</strong>（与直接签完整V1.0+V1.5方案同价），但可以根据验证结果和现金流节奏<strong>分步追加</strong>，风险最低。
+    </div>
+</div>
+
+<!-- ==================== 付款方式 ==================== -->
+<div class="section">
+    <div class="section-title">&#128179; 付款方式</div>
+    <table>
+        <thead><tr><th>节点</th><th>金额</th><th>触发条件</th></tr></thead>
+        <tbody>
+            <tr><td>项目启动</td><td class="price">&yen;6,000 (33%)</td><td>合同签署，开始开发</td></tr>
+            <tr><td>核心闭环可演示</td><td class="price">&yen;6,000 (33%)</td><td>第 3 周末，数据上传+浏览+支付走通</td></tr>
+            <tr><td>上线验收</td><td class="price">&yen;6,000 (33%)</td><td>第 5 周末，部署上线+验收通过</td></tr>
+            <tr class="total-row"><td>合计</td><td colspan="2">&yen;18,000</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ==================== 包含/不包含 ==================== -->
+<div class="section">
+    <div class="section-title">&#9989; 交付内容</div>
+    <div class="feat-grid">
+        <div>
+            <h4 style="color:#22543d;margin-bottom:10px;">报价包含</h4>
+            <ul class="feat-list kept">
+                <li>全部源代码（前端+后端）及Git仓库</li>
+                <li>数据库设计文档及DDL脚本</li>
+                <li>API接口文档（OpenAPI自动生成）</li>
+                <li>Docker部署文档</li>
+                <li>交付后30天免费Bug修复期</li>
+                <li>一次免费的需求范围内小调整</li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color:#c53030;margin-bottom:10px;">报价不包含</h4>
+            <ul class="feat-list cut">
+                <li>云服务器费用（阿里云约 &yen;500-1,500/月起）</li>
+                <li>域名及SSL证书费用</li>
+                <li>微信支付商户号申请费</li>
+                <li>法律文件起草（用户协议、隐私政策）</li>
+                <li>需求范围外的功能开发</li>
+                <li>后续运维（可选 &yen;2,000/月）</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 该选哪个 ==================== -->
+<div class="section">
+    <div class="section-title">&#129504; 该选哪个方案</div>
+    <table>
+        <thead>
+            <tr><th>你的情况</th><th>建议</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">"还不确定有没有人买，想先试试水"</td>
+                <td><strong style="color:#2f855a;">&rarr; 本方案 MVP &yen;18,000</strong></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">"需要给投资人/合作方演示完整能力"</td>
+                <td>&rarr; <a href="quotation.html">完整V1.0 &yen;40,000</a></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">"已经有明确的机构采购方，需要合规背书"</td>
+                <td>&rarr; <a href="quotation.html">完整V1.0 &yen;40,000</a> 必须</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">"要参与招投标 / 政府项目"</td>
+                <td>&rarr; <a href="quotation.html">V1.0+V1.5 &yen;58,000</a>（含安全合规）</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">"预算很紧，但要能验证商业模式"</td>
+                <td><strong style="color:#2f855a;">&rarr; 本方案 MVP &yen;18,000</strong></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ==================== Print ==================== -->
+<div class="no-print" style="text-align:center;margin:20px 0;">
+    <button class="btn-print" onclick="window.print()">&#128424; 打印/导出PDF</button>
+    <a href="quotation.html" class="btn-print secondary" style="margin-left:8px;">查看完整方案</a>
+    <a href="index.html" class="btn-print secondary" style="margin-left:8px;">返回文档首页</a>
+</div>
+
+<div style="text-align:center;padding:24px;font-size:12px;color:#a0aec0;">
+    本报价方案由 健数通 项目团队提供 | 报价有效期30天 | 最终价格以签署合同为准
+</div>
+
+</div>
+</body>
+</html>
