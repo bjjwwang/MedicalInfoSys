@@ -421,7 +421,14 @@ a.nav-link:hover { color: #38a169; }
         相比之前 ¥18,800 版本再砍 ¥4,400，主要来自：代币替代真实支付、UI 不做定制、管理后台用现成方案、搜索从 PG全文检索降到 SQL LIKE。
     </div>
     <div class="highlight highlight-blue" style="margin-top:10px;">
-        <strong>交付物：响应式 Web 应用</strong>（PC 浏览器 + 手机浏览器通用）。<strong>不含</strong> Android / iOS 原生 App 和微信小程序 —— MVP 阶段这些都属于"过早优化"，种子用户用 Web 版完全够。
+        <strong>交付物：响应式 Web 应用</strong>（PC 浏览器 + 手机浏览器通用）。本报价<strong>默认不含</strong>原生 App 和小程序。<br>
+        <strong>Android / iOS 原生 App 可讨论追加</strong>，跨平台方案（React Native / Flutter / UniApp）一套代码打两个端比较经济，开发工期约 +6-8 天 / +¥5,000-6,000。但要注意：
+        <ul style="margin:6px 0 0 20px;">
+            <li><strong>上架审核时间不可控</strong>——iOS App Store 审核 1-3 天（拒了改完再提），Android 国内各应用商店 1-7 天</li>
+            <li>医疗/健康类 App 审核更严格，可能要提供《医疗器械经营许可证》或《互联网医疗信息服务许可证》等资质</li>
+            <li>实际工期 = 开发工期 + 2-4 周审核缓冲，不适合紧凑的 MVP 节奏</li>
+        </ul>
+        所以建议：MVP 先 Web，验证通过后再讨论要不要做原生 App。如果当下就确定要，请单独沟通，我们另行给详细方案和排期。
     </div>
     <div class="highlight highlight-orange" style="margin-top:10px;">
         <strong>&#9888; 重要说明：以上 &yen;14,400 是<u>开发人力费用</u>，不含运行成本。</strong><br>
@@ -646,7 +653,7 @@ a.nav-link:hover { color: #38a169; }
         <div>
             <h4 style="color:#c53030;margin-bottom:10px;">报价不包含</h4>
             <ul class="feat-list cut">
-                <li>Android / iOS 原生 App（不做，用 Web 替代）</li>
+                <li>Android / iOS 原生 App（默认不含，<strong>可讨论</strong>，但审核周期需 2-4 周缓冲）</li>
                 <li>微信小程序（在升级包 D 里）</li>
                 <li>真实支付（在支付升级包 P1/P2/P3 里）</li>
                 <li>云服务器费用（阿里云约 &yen;500-1,500/月起）</li>
