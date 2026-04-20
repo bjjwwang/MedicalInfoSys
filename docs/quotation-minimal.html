@@ -221,7 +221,7 @@ a.nav-link:hover { color: #38a169; }
     <div class="meta">
         <span>&#128197; 报价日期: 2026年4月20日</span>
         <span>&#9202; 有效期: 30天</span>
-        <span>&#128196; 版本: MVP V0.5</span>
+        <span>&#128196; 版本: MVP V0.3 · Lean</span>
     </div>
 </div>
 
@@ -230,33 +230,36 @@ a.nav-link:hover { color: #38a169; }
     <div class="section-title">&#127919; 这个版本是做什么的</div>
 
     <div class="highlight highlight-green">
-        <strong>一句话：</strong>用最低成本跑通"有人上传健康数据 &rarr; 别人愿意花钱买 &rarr; 钱真的打到卖家账户"这一个闭环，验证核心商业假设。
+        <strong>一句话：</strong>用 3 周、约 1.4 万，跑通"用户上传数据 &rarr; 别人用代币解锁下载 &rarr; 卖家获得代币收益"的完整闭环，验证产品流程与用户价值。
+        <strong>支付先用代币模拟</strong>，等真的验证出付费意愿再按阶梯升级到真实支付。
     </div>
 
     <h4 style="margin:16px 0 10px;color:#22543d;font-size:14px;">核心要验证的问题</h4>
     <div class="metrics-grid">
         <div class="metric-card">
-            <div class="m-icon">&#128101;</div>
-            <div class="m-label">需求侧</div>
-            <div class="m-target">真有人愿意买吗？</div>
-        </div>
-        <div class="metric-card">
-            <div class="m-icon">&#128200;</div>
-            <div class="m-label">定价</div>
-            <div class="m-target">什么数据值多少钱？</div>
-        </div>
-        <div class="metric-card">
             <div class="m-icon">&#128276;</div>
             <div class="m-label">供给侧</div>
             <div class="m-target">用户愿意上传吗？</div>
+        </div>
+        <div class="metric-card">
+            <div class="m-icon">&#128101;</div>
+            <div class="m-label">需求侧</div>
+            <div class="m-target">有人愿意"花"吗？</div>
+        </div>
+        <div class="metric-card">
+            <div class="m-icon">&#128200;</div>
+            <div class="m-label">流程</div>
+            <div class="m-target">UX 走得通吗？</div>
         </div>
     </div>
 
     <div class="highlight highlight-orange">
         <strong>&#9888; 这个版本明确<u>不</u>解决的问题</strong><br>
-        合规背书（暂不接交易所）、纠纷存证（无区块链）、规模化搜索（小数据量够用）、收益自动分配、高级数据脱敏（用规则引擎，非AI）。
+        真实付费意愿验证（用代币，非真钱）、合规背书（暂不接交易所）、纠纷存证（无区块链）、规模化搜索、收益自动分配、AI脱敏。
         <br><br>
-        如果当前主要诉求是"融资/招投标需要完整合规演示"，这个方案<strong>不适合</strong>，请看完整版 <a href="quotation.html" style="color:#2f855a;">¥40,000 / ¥58,000 方案</a>。
+        <strong>代币的含义：</strong>用户和平台方在 MVP 期约定代币兑换规则（比如 admin 手动充值代币 / 新用户赠送），验证的是"愿意花"而非"愿意付真金白银"。真实付费验证要加<strong>支付升级包 P1</strong>（+¥800，下方有详细说明）。
+        <br><br>
+        如果当前诉求是"融资/招投标需要完整合规演示"，请看完整版 <a href="quotation.html" style="color:#2f855a;">¥40,000 / ¥58,000 方案</a>。
     </div>
 </div>
 
@@ -265,11 +268,11 @@ a.nav-link:hover { color: #38a169; }
     <div class="section-title">&#128200; 三个方案对比</div>
     <div class="pricing-grid">
         <div class="pricing-card mvp">
-            <div class="p-label">验证型</div>
+            <div class="p-label">Lean MVP</div>
             <div class="p-name">最小MVP</div>
-            <div class="p-price">&yen;18,800</div>
-            <div class="p-duration">约 4-5 周</div>
-            <div class="p-desc">跑通核心闭环<br>验证商业模式</div>
+            <div class="p-price">&yen;14,400</div>
+            <div class="p-duration">约 3 周</div>
+            <div class="p-desc">代币模拟支付<br>跑通核心流程</div>
         </div>
         <div class="pricing-card v1">
             <div class="p-label">运营型</div>
@@ -300,25 +303,26 @@ a.nav-link:hover { color: #38a169; }
                 <li>规则引擎脱敏（身份证/手机/姓名/地址）</li>
                 <li>基础质量评分（完整性+时效性）</li>
                 <li>数据市场浏览（列表+详情）</li>
-                <li>关键词搜索（PostgreSQL全文检索）</li>
-                <li>下单 + 微信支付</li>
+                <li>关键词搜索（SQL LIKE，够用）</li>
+                <li><strong>代币余额 + 下单消费代币</strong></li>
                 <li><strong>购买前样本预览 / 购买后解锁下载</strong></li>
-                <li>卖家收款（直接到银行卡/微信）</li>
-                <li>管理后台：数据审核、用户管理、订单查看</li>
-                <li>基础运营统计报表</li>
+                <li>卖家代币收益 + 后台可查</li>
+                <li>管理后台：数据审核、用户管理、代币充值</li>
+                <li>响应式 Web（PC + 手机浏览器）</li>
             </ul>
         </div>
         <div class="feat-box cut">
             <h4>&#10060; 砍掉（非必须/后续再补）</h4>
             <ul class="feat-list cut">
+                <li>微信支付 / 支付宝真实支付</li>
                 <li>贵阳大数据交易所API对接</li>
                 <li>区块链节点部署 + 智能合约</li>
                 <li>区块链溯源可视化</li>
                 <li>AI脱敏引擎（医疗BERT NER）</li>
-                <li>Elasticsearch向量/语义搜索</li>
-                <li>支付宝支付（先只做微信）</li>
-                <li>收益分红/自动分账引擎</li>
-                <li>小程序端（UniApp）</li>
+                <li>Elasticsearch 语义搜索</li>
+                <li>收益分红 / 自动分账引擎</li>
+                <li>代币 &rarr; 真钱提现</li>
+                <li>小程序端 / Android 原生 App</li>
                 <li>等保适配 / 渗透测试</li>
                 <li>交易所对接仪表盘、结算管理</li>
             </ul>
@@ -341,113 +345,119 @@ a.nav-link:hover { color: #38a169; }
         <tbody>
             <tr>
                 <td style="font-weight:600;">后端基础架构</td>
-                <td>FastAPI + JWT认证 + PostgreSQL数据库 + 基础API框架
+                <td>FastAPI + JWT认证 + PostgreSQL + 基础API框架
                     <div class="demo-links"><a href="demos/demo-user-auth.html" class="demo-link">用户认证</a></div>
                 </td>
-                <td class="text-center">3天</td>
-                <td class="text-right price">&yen;2,500</td>
+                <td class="text-center">2.5天</td>
+                <td class="text-right price">&yen;2,000</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">数据资产模块</td>
                 <td>结构化模板上传、规则引擎脱敏、简化质量评分
                     <div class="demo-links"><a href="demos/demo-data-upload.html" class="demo-link">数据上传</a><a href="demos/demo-desensitize.html" class="demo-link">规则脱敏</a><a href="demos/demo-quality-score.html" class="demo-link">质量评分</a></div>
                 </td>
-                <td class="text-center">4天</td>
-                <td class="text-right price">&yen;3,000</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
             </tr>
             <tr>
-                <td style="font-weight:600;">前端Web</td>
-                <td>登录/注册、数据市场、资产详情、上传向导、个人中心（PC+移动适配）
+                <td style="font-weight:600;">前端 Web</td>
+                <td>登录注册、市场、资产详情、上传向导、个人中心 · 响应式（PC+手机浏览器）
                     <div class="demo-links"><a href="demos/demo-market.html" class="demo-link">数据市场</a><a href="demos/demo-asset-detail.html" class="demo-link">资产详情</a><a href="demos/demo-upload-wizard.html" class="demo-link">上传向导</a><a href="demos/demo-my-assets.html" class="demo-link">个人中心</a></div>
                 </td>
-                <td class="text-center">5天</td>
-                <td class="text-right price">&yen;4,000</td>
+                <td class="text-center">4天</td>
+                <td class="text-right price">&yen;3,500</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">搜索功能</td>
-                <td>PostgreSQL全文检索 + 分类筛选 + 排序（不上ES）
+                <td>SQL LIKE 查询 + 分类筛选 + 排序（不上 ES、不做全文检索）
                     <div class="demo-links"><a href="demos/demo-search.html" class="demo-link">搜索筛选</a></div>
                 </td>
-                <td class="text-center">1天</td>
-                <td class="text-right price">&yen;800</td>
+                <td class="text-center">0.5天</td>
+                <td class="text-right price">&yen;400</td>
             </tr>
             <tr>
-                <td style="font-weight:600;">交易与支付</td>
-                <td>订单管理、微信支付对接、交易成功通知、卖家收款、<strong>付费解锁与数据下载（样本预览 + 购买后解锁）</strong>
-                    <div class="demo-links"><a href="demos/demo-payment.html" class="demo-link">支付</a><a href="demos/demo-orders.html" class="demo-link">订单</a></div>
+                <td style="font-weight:600;">代币与交易</td>
+                <td>代币账户（balance）+ admin充值/发放、订单、消费扣币、卖家代币收益、<strong>样本预览 + 购买后解锁下载</strong>
+                    <div class="demo-links"><a href="demos/demo-orders.html" class="demo-link">订单</a><a href="demos/demo-wallet.html" class="demo-link">代币账户</a></div>
                 </td>
-                <td class="text-center">4天</td>
-                <td class="text-right price">&yen;3,300</td>
+                <td class="text-center">3天</td>
+                <td class="text-right price">&yen;2,500</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">管理后台</td>
-                <td>数据资产审核、用户管理、订单查看（简化版）
+                <td>数据审核、用户管理、代币发放、订单查看 · 用 FastAPI Admin 现成方案
                     <div class="demo-links"><a href="demos/demo-admin-review.html" class="demo-link">资产审核</a><a href="demos/demo-admin-users.html" class="demo-link">用户管理</a></div>
                 </td>
-                <td class="text-center">2天</td>
-                <td class="text-right price">&yen;1,500</td>
+                <td class="text-center">1.5天</td>
+                <td class="text-right price">&yen;1,000</td>
             </tr>
             <tr>
-                <td style="font-weight:600;">UI/UX设计</td>
-                <td>简化版UI设计稿（复用组件库）、移动端适配</td>
-                <td class="text-center">3天</td>
-                <td class="text-right price">&yen;2,000</td>
+                <td style="font-weight:600;">UI/UX</td>
+                <td>Ant Design / Tailwind 组件库直接用，不做定制设计稿</td>
+                <td class="text-center">1.5天</td>
+                <td class="text-right price">&yen;1,000</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">部署 & 测试</td>
-                <td>Docker容器化、云服务器部署、域名SSL、功能测试</td>
-                <td class="text-center">2天</td>
-                <td class="text-right price">&yen;1,200</td>
+                <td>Docker Compose 单机部署、域名 SSL、功能测试</td>
+                <td class="text-center">1.5天</td>
+                <td class="text-right price">&yen;1,000</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">项目管理</td>
-                <td>需求对齐、周进度同步、交付验收、文档交付</td>
+                <td>需求对齐、周同步、验收、文档交付</td>
                 <td class="text-center">持续</td>
                 <td class="text-right price">&yen;500</td>
             </tr>
             <tr class="total-row">
-                <td colspan="3">最小MVP合计</td>
-                <td class="text-right" style="font-size:20px;">&yen;18,800</td>
+                <td colspan="3">Lean MVP 合计（约 17.5 人天，3 周交付）</td>
+                <td class="text-right" style="font-size:20px;">&yen;14,400</td>
             </tr>
         </tbody>
     </table>
 
     <div class="highlight highlight-green" style="margin-top:16px;">
-        <strong>&#128073; 相比完整V1.0方案（&yen;40,000）节省 &yen;21,200（53%）</strong><br>
-        主要省在：没接交易所、没上区块链、没做AI脱敏、没集成ES、只做一种支付、UI设计简化。
+        <strong>&#128073; 相比完整V1.0方案（&yen;40,000）节省 &yen;25,600（64%）</strong><br>
+        相比之前 ¥18,800 版本再砍 ¥4,400，主要来自：代币替代真实支付、UI 不做定制、管理后台用现成方案、搜索从 PG全文检索降到 SQL LIKE。
+    </div>
+    <div class="highlight highlight-blue" style="margin-top:10px;">
+        <strong>交付物：响应式 Web 应用</strong>（PC 浏览器 + 手机浏览器通用）。<strong>不含</strong> Android / iOS 原生 App 和微信小程序 —— MVP 阶段这些都属于"过早优化"，种子用户用 Web 版完全够。
     </div>
 </div>
 
 <!-- ==================== 时间表 ==================== -->
 <div class="section">
-    <div class="section-title">&#128197; 时间表（约 4-5 周）</div>
+    <div class="section-title">&#128197; 时间表（3 周 · 21 天）</div>
+    <p style="color:#718096;font-size:13px;margin-bottom:14px;">前后端部分并行开发，17.5 人天工作量压进 15 个工作日。</p>
 
     <div class="timeline">
         <div class="tl-item">
-            <div class="tl-title">第 1 周 · 启动与架构</div>
-            <div class="tl-desc">需求对齐、数据库设计、UI稿确认、后端脚手架搭建</div>
-            <span class="tl-time">Day 1-7</span>
+            <div class="tl-title">第 1 周 · 骨架搭建（Day 1-7）</div>
+            <div class="tl-desc">Day 1-2: 需求对齐 + 数据库设计 + UI kit 选型<br>
+            Day 3-5: 后端脚手架 + JWT 认证 + 上传脱敏 API<br>
+            Day 5-7: 前端项目 + 登录注册 + 主框架（与后端并行）</div>
+            <span class="tl-time">里程碑 M1: 后端API可调用，前端能跑</span>
         </div>
         <div class="tl-item">
-            <div class="tl-title">第 2 周 · 后端核心 + 前端启动</div>
-            <div class="tl-desc">用户认证、数据上传API、脱敏引擎、前端页面框架</div>
-            <span class="tl-time">Day 8-14</span>
+            <div class="tl-title">第 2 周 · 核心业务打通（Day 8-14）</div>
+            <div class="tl-desc">Day 8-10: 数据市场 + 资产详情 + 上传向导<br>
+            Day 11-12: 代币账户 + 订单 + 付费解锁 + 下载<br>
+            Day 13-14: 搜索筛选 + 个人中心 + 首轮联调</div>
+            <span class="tl-time">里程碑 M2: 核心闭环可演示（上传→浏览→花代币→解锁下载）</span>
         </div>
         <div class="tl-item">
-            <div class="tl-title">第 3 周 · 交易闭环打通</div>
-            <div class="tl-desc">市场页、详情页、下单、微信支付接入、卖家收款</div>
-            <span class="tl-time">Day 15-21</span>
+            <div class="tl-title">第 3 周 · 收尾交付（Day 15-21）</div>
+            <div class="tl-desc">Day 15-16: 管理后台（审核+用户+代币发放）<br>
+            Day 17-18: UI 打磨 + 移动端适配 + 完整测试<br>
+            Day 19-20: 部署上线 + 域名 SSL<br>
+            Day 21: 验收 + 文档 + 运营培训</div>
+            <span class="tl-time">里程碑 M3: 上线交付</span>
         </div>
-        <div class="tl-item">
-            <div class="tl-title">第 4 周 · 管理后台 + 测试</div>
-            <div class="tl-desc">审核后台、用户管理、搜索、功能测试、Bug修复</div>
-            <span class="tl-time">Day 22-28</span>
-        </div>
-        <div class="tl-item">
-            <div class="tl-title">第 5 周 · 部署上线 + 验收</div>
-            <div class="tl-desc">云服务器部署、域名SSL、最终验收、文档交付、运营培训</div>
-            <span class="tl-time">Day 29-35</span>
-        </div>
+    </div>
+
+    <div class="highlight highlight-orange" style="margin-top:14px;">
+        <strong>&#9888; 3 周是<u>紧凑节奏</u></strong>，能压下来的前提：需求变更不多、UI 接受直接用组件库风格、每周验收会按时开。
+        如果中途需求反复或要做大量 UI 定制，工期会到 4 周。
     </div>
 </div>
 
@@ -474,15 +484,15 @@ a.nav-link:hover { color: #38a169; }
             </tr>
             <tr>
                 <td style="font-weight:600;">需求</td>
-                <td>询单数 / 付费转化</td>
-                <td>&ge; 20 笔真实付费交易</td>
-                <td>只有询价无成单</td>
+                <td>代币消费笔数 / 询单转化</td>
+                <td>&ge; 20 笔代币消费 + 访谈时 &ge; 50% 用户说"如果是真钱也愿意花"</td>
+                <td>代币免费送也没人花</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">定价</td>
-                <td>成交单价分布</td>
-                <td>有数据支撑做定价模型</td>
-                <td>价格全压在最低档</td>
+                <td>代币价格分布</td>
+                <td>不同数据代币定价有明显分层</td>
+                <td>所有数据都压在最低档代币</td>
             </tr>
             <tr>
                 <td style="font-weight:600;">客诉</td>
@@ -500,50 +510,87 @@ a.nav-link:hover { color: #38a169; }
     </table>
 
     <div class="highlight highlight-blue" style="margin-top:14px;">
-        <strong>关键判断：</strong> 如果 3 个月内同时出现"付费交易 &ge; 20 笔"+"机构采购询问资质"两个信号，就说明商业模式成立且到了必须上合规/区块链的时候 &rarr; 升级V1.0。
+        <strong>验证路径建议：</strong>
+        <ol style="margin:8px 0 0 20px;">
+            <li>MVP 上线后 1-2 个月，跑代币模式 + 用户访谈，验证"愿不愿意花"</li>
+            <li>如果信号积极 &rarr; 加<strong>支付升级包 P1（人工收款，+¥800）</strong>，真金白银验证</li>
+            <li>真实付费跑通 &rarr; 按需加 P2/P3（聚合支付/官方 API）</li>
+            <li>出现机构询问资质 &rarr; 加升级包 A（交易所对接）</li>
+            <li>出现纠纷存证需求 &rarr; 加升级包 B（区块链）</li>
+        </ol>
     </div>
 </div>
 
 <!-- ==================== 升级路径 ==================== -->
 <div class="section">
-    <div class="section-title">&#128640; 后续升级路径</div>
-    <p style="color:#718096;margin-bottom:14px;">MVP验证通过后，按需分模块加功能，不必一次补齐。<strong>已付 &yen;18,800 全额计入总价</strong>，升级到完整方案只需补差价。</p>
+    <div class="section-title">&#128640; 后续升级路径（按需追加）</div>
+    <p style="color:#718096;margin-bottom:14px;">MVP验证通过后按需加功能，<strong>已付 &yen;14,400 全额计入总价</strong>。支付部分按成熟度阶梯拆成 P1→P2→P3，业务功能拆成 A/B/C/D。</p>
+
+    <h4 style="font-size:14px;color:#22543d;margin:14px 0 10px;">&#128176; 支付升级阶梯（按需要的"钱流真实度"逐档上）</h4>
 
     <div class="upgrade-step">
-        <div class="step-num">1</div>
+        <div class="step-num">P1</div>
         <div class="step-body">
-            <div class="step-title">升级包 A · 合规对接（+ &yen;10,000）</div>
-            <div class="step-desc">贵阳大数据交易所API对接（资产登记、确权、上架、周结算、对账）+ 额外支付宝通道。适合"开始有机构来询资质"时追加。</div>
+            <div class="step-title">人工收款接入（+ &yen;800 · 1 天）</div>
+            <div class="step-desc">下单后弹出个人微信/支付宝收款码，用户截图付款，客服在后台点"确认收款"→ 系统自动充代币/解锁数据。<strong>验证真金白银意愿的最轻方案</strong>，无需商户号。</div>
         </div>
-        <div class="step-price">+ &yen;10,000</div>
+        <div class="step-price">+ &yen;800</div>
     </div>
     <div class="upgrade-step">
-        <div class="step-num">2</div>
+        <div class="step-num">P2</div>
         <div class="step-body">
-            <div class="step-title">升级包 B · 区块链存证（+ &yen;6,000）</div>
-            <div class="step-desc">长安链/FISCO BCOS节点部署、智能合约（确权+访问记录+收益分配）、溯源可视化。适合"开始有纠纷需要存证"时追加。</div>
+            <div class="step-title">聚合支付接入（+ &yen;2,000 · 2 天）</div>
+            <div class="step-desc">接入"收钱吧 / 微信小商店 / 微信支付分"等聚合平台，自动回调对账，不用客服人工操作。费率 0.6-1%。适合月订单 &gt; 50 笔时。</div>
+        </div>
+        <div class="step-price">+ &yen;2,000</div>
+    </div>
+    <div class="upgrade-step">
+        <div class="step-num">P3</div>
+        <div class="step-body">
+            <div class="step-title">官方支付 API（+ &yen;3,000 · 2-3 天）</div>
+            <div class="step-desc">微信支付 + 支付宝官方商户版对接（下单、回调、退款、分账、对账）。费率最低（0.3%）、功能最全。适合月交易额 &gt; 10 万、需要自动分账/退款时。</div>
+        </div>
+        <div class="step-price">+ &yen;3,000</div>
+    </div>
+
+    <h4 style="font-size:14px;color:#22543d;margin:20px 0 10px;">&#127963; 业务功能升级包（按业务信号触发）</h4>
+
+    <div class="upgrade-step">
+        <div class="step-num">A</div>
+        <div class="step-body">
+            <div class="step-title">交易所对接（+ &yen;5,000 · 5 天）</div>
+            <div class="step-desc">贵阳大数据交易所API 全流程（资产登记、确权、上架、周结算、对账）。触发条件：机构来询合规资质。</div>
+        </div>
+        <div class="step-price">+ &yen;5,000</div>
+    </div>
+    <div class="upgrade-step">
+        <div class="step-num">B</div>
+        <div class="step-body">
+            <div class="step-title">区块链存证（+ &yen;6,000 · 5 天）</div>
+            <div class="step-desc">长安链/FISCO BCOS 节点、智能合约（确权+访问记录+收益分配）、溯源可视化。触发条件：出现纠纷存证需求。</div>
         </div>
         <div class="step-price">+ &yen;6,000</div>
     </div>
     <div class="upgrade-step">
-        <div class="step-num">3</div>
+        <div class="step-num">C</div>
         <div class="step-body">
-            <div class="step-title">升级包 C · 智能化增强（+ &yen;6,000）</div>
-            <div class="step-desc">AI脱敏引擎（医疗NER模型）、Elasticsearch语义搜索、收益分红引擎。适合"数据量起来了，需要更好体验"时追加。</div>
+            <div class="step-title">智能化增强（+ &yen;6,000 · 5 天）</div>
+            <div class="step-desc">AI脱敏（医疗NER）+ Elasticsearch 语义搜索 + 收益自动分红引擎。触发条件：数据量上来，搜索体验和脱敏质量成瓶颈。</div>
         </div>
         <div class="step-price">+ &yen;6,000</div>
     </div>
     <div class="upgrade-step">
-        <div class="step-num">4</div>
+        <div class="step-num">D</div>
         <div class="step-body">
-            <div class="step-title">升级包 D · 小程序 + 安全（+ &yen;18,000）</div>
-            <div class="step-desc">UniApp小程序端、等保适配、渗透测试、安全审计。适合"规模化上量"阶段。</div>
+            <div class="step-title">小程序 + 安全加固（+ &yen;18,000 · 10 天）</div>
+            <div class="step-desc">UniApp 小程序端、等保适配、渗透测试、安全审计。触发条件：开始规模化上量、对接政府/国企采购。</div>
         </div>
         <div class="step-price">+ &yen;18,000</div>
     </div>
 
     <div class="highlight highlight-green" style="margin-top:14px;">
-        <strong>全部升级后 = &yen;58,800</strong>（比一次性签完整V1.0+V1.5方案多 &yen;800，分步交付的小幅溢价），但可以根据验证结果和现金流节奏<strong>分步追加</strong>，风险最低。
+        <strong>全部升级后 ≈ &yen;55,200</strong>（MVP ¥14,400 + 支付 ¥5,800 + 业务 ¥35,000）。<br>
+        比一次性签 V1.0+V1.5 <strong>¥58,000</strong> 略低 ¥2,800——因为 MVP 对 UI/管理后台/搜索等做了精简，升级时如果要补齐到完整版的精细度还会略加。但实际使用中按需追加就好，不用一次到位。
     </div>
 </div>
 
@@ -553,10 +600,10 @@ a.nav-link:hover { color: #38a169; }
     <table>
         <thead><tr><th>节点</th><th>金额</th><th>触发条件</th></tr></thead>
         <tbody>
-            <tr><td>项目启动</td><td class="price">&yen;6,000 (32%)</td><td>合同签署，开始开发</td></tr>
-            <tr><td>核心闭环可演示</td><td class="price">&yen;6,000 (32%)</td><td>第 3 周末，数据上传+浏览+支付走通</td></tr>
-            <tr><td>上线验收</td><td class="price">&yen;6,800 (36%)</td><td>第 5 周末，部署上线+验收通过</td></tr>
-            <tr class="total-row"><td>合计</td><td colspan="2">&yen;18,800</td></tr>
+            <tr><td>项目启动</td><td class="price">&yen;4,800 (33%)</td><td>合同签署，开始开发</td></tr>
+            <tr><td>核心闭环可演示</td><td class="price">&yen;4,800 (33%)</td><td>第 2 周末，M2 里程碑：上传→浏览→花代币→解锁下载可演示</td></tr>
+            <tr><td>上线验收</td><td class="price">&yen;4,800 (34%)</td><td>第 3 周末，部署上线 + 验收通过</td></tr>
+            <tr class="total-row"><td>合计</td><td colspan="2">&yen;14,400</td></tr>
         </tbody>
     </table>
 </div>
@@ -568,20 +615,23 @@ a.nav-link:hover { color: #38a169; }
         <div>
             <h4 style="color:#22543d;margin-bottom:10px;">报价包含</h4>
             <ul class="feat-list kept">
-                <li>全部源代码（前端+后端）及Git仓库</li>
-                <li>数据库设计文档及DDL脚本</li>
-                <li>API接口文档（OpenAPI自动生成）</li>
-                <li>Docker部署文档</li>
-                <li>交付后30天免费Bug修复期</li>
+                <li>响应式 Web 应用（PC + 手机浏览器）</li>
+                <li>全部源代码（前端+后端）及 Git 仓库</li>
+                <li>数据库设计文档及 DDL 脚本</li>
+                <li>API 文档（OpenAPI/Swagger 自动生成）</li>
+                <li>Docker Compose 部署文档</li>
+                <li>交付后 30 天免费 Bug 修复</li>
                 <li>一次免费的需求范围内小调整</li>
             </ul>
         </div>
         <div>
             <h4 style="color:#c53030;margin-bottom:10px;">报价不包含</h4>
             <ul class="feat-list cut">
+                <li>Android / iOS 原生 App（不做，用 Web 替代）</li>
+                <li>微信小程序（在升级包 D 里）</li>
+                <li>真实支付（在支付升级包 P1/P2/P3 里）</li>
                 <li>云服务器费用（阿里云约 &yen;500-1,500/月起）</li>
-                <li>域名及SSL证书费用</li>
-                <li>微信支付商户号申请费</li>
+                <li>域名及 SSL 证书费用</li>
                 <li>法律文件起草（用户协议、隐私政策）</li>
                 <li>需求范围外的功能开发</li>
                 <li>后续运维（可选 &yen;2,000/月）</li>
@@ -599,8 +649,12 @@ a.nav-link:hover { color: #38a169; }
         </thead>
         <tbody>
             <tr>
-                <td style="font-weight:600;">"还不确定有没有人买，想先试试水"</td>
-                <td><strong style="color:#2f855a;">&rarr; 本方案 MVP &yen;18,800</strong></td>
+                <td style="font-weight:600;">"还不确定产品形态 / 想先跑通流程"</td>
+                <td><strong style="color:#2f855a;">&rarr; 本方案 Lean MVP &yen;14,400</strong></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">"想验证真金白银付费意愿（不止代币）"</td>
+                <td><strong style="color:#2f855a;">&rarr; Lean MVP + 支付升级 P1 = &yen;15,200</strong></td>
             </tr>
             <tr>
                 <td style="font-weight:600;">"需要给投资人/合作方演示完整能力"</td>
@@ -616,7 +670,7 @@ a.nav-link:hover { color: #38a169; }
             </tr>
             <tr>
                 <td style="font-weight:600;">"预算很紧，但要能验证商业模式"</td>
-                <td><strong style="color:#2f855a;">&rarr; 本方案 MVP &yen;18,800</strong></td>
+                <td><strong style="color:#2f855a;">&rarr; 本方案 Lean MVP &yen;14,400</strong></td>
             </tr>
         </tbody>
     </table>
