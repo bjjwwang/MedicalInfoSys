@@ -230,7 +230,7 @@ a.nav-link:hover { color: #38a169; }
     <div class="section-title">&#127919; 这个版本是做什么的</div>
 
     <div class="highlight highlight-green">
-        <strong>一句话：</strong>用 3 周、约 1.4 万，跑通"用户上传数据 &rarr; 别人用代币解锁下载 &rarr; 卖家获得代币收益"的完整闭环，验证产品流程与用户价值。
+        <strong>一句话：</strong>用 3 周、约 1.5 万，跑通"用户上传数据 &rarr; 别人用代币解锁下载 &rarr; 卖家获得代币收益"的完整闭环，验证产品流程与用户价值。
         <strong>支付先用代币模拟</strong>，等真的验证出付费意愿再按阶梯升级到真实支付。
     </div>
 
@@ -270,7 +270,7 @@ a.nav-link:hover { color: #38a169; }
         <div class="pricing-card mvp">
             <div class="p-label">Lean MVP</div>
             <div class="p-name">最小MVP</div>
-            <div class="p-price">&yen;14,400</div>
+            <div class="p-price">&yen;15,400</div>
             <div class="p-duration">约 3 周</div>
             <div class="p-desc">代币模拟支付<br>跑通核心流程</div>
         </div>
@@ -307,6 +307,7 @@ a.nav-link:hover { color: #38a169; }
                 <li><strong>代币余额 + 下单消费代币</strong></li>
                 <li><strong>购买前样本预览 / 购买后解锁下载</strong></li>
                 <li>卖家代币收益 + 后台可查</li>
+                <li><strong>站内信通知</strong>（审核结果、购买成功、代币到账、系统公告）</li>
                 <li>管理后台：数据审核、用户管理、代币充值</li>
                 <li>响应式 Web（PC + 手机浏览器）</li>
             </ul>
@@ -392,6 +393,12 @@ a.nav-link:hover { color: #38a169; }
                 <td class="text-right price">&yen;1,000</td>
             </tr>
             <tr>
+                <td style="font-weight:600;">站内信通知</td>
+                <td>notifications 表 + 未读数 API + 前端铃铛/未读badge/消息列表；关键事件（审核通过/驳回、购买成功、代币到账、系统公告）自动触发</td>
+                <td class="text-center">1.5天</td>
+                <td class="text-right price">&yen;1,000</td>
+            </tr>
+            <tr>
                 <td style="font-weight:600;">UI/UX</td>
                 <td>Ant Design / Tailwind 组件库直接用，不做定制设计稿</td>
                 <td class="text-center">1.5天</td>
@@ -410,15 +417,15 @@ a.nav-link:hover { color: #38a169; }
                 <td class="text-right price">&yen;500</td>
             </tr>
             <tr class="total-row">
-                <td colspan="3">Lean MVP 合计（约 17.5 人天，3 周交付）</td>
-                <td class="text-right" style="font-size:20px;">&yen;14,400</td>
+                <td colspan="3">Lean MVP 合计（约 19 人天，3 周交付）</td>
+                <td class="text-right" style="font-size:20px;">&yen;15,400</td>
             </tr>
         </tbody>
     </table>
 
     <div class="highlight highlight-green" style="margin-top:16px;">
-        <strong>&#128073; 相比完整V1.0方案（&yen;40,000）节省 &yen;25,600（64%）</strong><br>
-        相比之前 ¥18,800 版本再砍 ¥4,400，主要来自：代币替代真实支付、UI 不做定制、管理后台用现成方案、搜索从 PG全文检索降到 SQL LIKE。
+        <strong>&#128073; 相比完整V1.0方案（&yen;40,000）节省 &yen;24,600（62%）</strong><br>
+        省在：代币替代真实支付、UI 不做定制、管理后台用现成方案、搜索降到 SQL LIKE、不接交易所/区块链/AI脱敏。
     </div>
     <div class="highlight highlight-blue" style="margin-top:10px;">
         <strong>交付物：响应式 Web 应用</strong>（PC 浏览器 + 手机浏览器通用）。本报价<strong>默认不含</strong>原生 App 和小程序。<br>
@@ -454,7 +461,7 @@ a.nav-link:hover { color: #38a169; }
 <!-- ==================== 时间表 ==================== -->
 <div class="section">
     <div class="section-title">&#128197; 时间表（3 周 · 21 天）</div>
-    <p style="color:#718096;font-size:13px;margin-bottom:14px;">前后端部分并行开发，17.5 人天工作量压进 15 个工作日。</p>
+    <p style="color:#718096;font-size:13px;margin-bottom:14px;">前后端部分并行开发，19 人天工作量压进 15 个工作日。</p>
 
     <div class="timeline">
         <div class="tl-item">
@@ -468,7 +475,7 @@ a.nav-link:hover { color: #38a169; }
             <div class="tl-title">第 2 周 · 核心业务打通（Day 8-14）</div>
             <div class="tl-desc">Day 8-10: 数据市场 + 资产详情 + 上传向导<br>
             Day 11-12: 代币账户 + 订单 + 付费解锁 + 下载<br>
-            Day 13-14: 搜索筛选 + 个人中心 + 首轮联调</div>
+            Day 13-14: 搜索筛选 + 个人中心 + 站内信 + 首轮联调</div>
             <span class="tl-time">里程碑 M2: 核心闭环可演示（上传→浏览→花代币→解锁下载）</span>
         </div>
         <div class="tl-item">
@@ -550,7 +557,7 @@ a.nav-link:hover { color: #38a169; }
 <!-- ==================== 升级路径 ==================== -->
 <div class="section">
     <div class="section-title">&#128640; 后续升级路径（按需追加）</div>
-    <p style="color:#718096;margin-bottom:14px;">MVP验证通过后按需加功能，<strong>已付 &yen;14,400 全额计入总价</strong>。支付部分按成熟度阶梯拆成 P1→P2→P3，业务功能拆成 A/B/C/D。</p>
+    <p style="color:#718096;margin-bottom:14px;">MVP验证通过后按需加功能，<strong>已付 &yen;15,400 全额计入总价</strong>。支付部分按成熟度阶梯拆成 P1→P2→P3，业务功能拆成 A/B/C/D。</p>
 
     <h4 style="font-size:14px;color:#22543d;margin:14px 0 10px;">&#128176; 支付升级阶梯（按需要的"钱流真实度"逐档上）</h4>
 
@@ -615,8 +622,8 @@ a.nav-link:hover { color: #38a169; }
     </div>
 
     <div class="highlight highlight-green" style="margin-top:14px;">
-        <strong>全部升级后 ≈ &yen;55,200</strong>（MVP ¥14,400 + 支付 ¥5,800 + 业务 ¥35,000）。<br>
-        比一次性签 V1.0+V1.5 <strong>¥58,000</strong> 略低 ¥2,800——因为 MVP 对 UI/管理后台/搜索等做了精简，升级时如果要补齐到完整版的精细度还会略加。但实际使用中按需追加就好，不用一次到位。
+        <strong>全部升级后 ≈ &yen;56,200</strong>（MVP ¥15,400 + 支付 ¥5,800 + 业务 ¥35,000）。<br>
+        比一次性签 V1.0+V1.5 <strong>¥58,000</strong> 略低 ¥1,800——因为 MVP 对 UI/管理后台/搜索等做了精简，升级时如果要补齐到完整版的精细度还会略加。但实际使用中按需追加就好，不用一次到位。
     </div>
 </div>
 
@@ -626,10 +633,10 @@ a.nav-link:hover { color: #38a169; }
     <table>
         <thead><tr><th>节点</th><th>金额</th><th>触发条件</th></tr></thead>
         <tbody>
-            <tr><td>项目启动</td><td class="price">&yen;4,800 (33%)</td><td>合同签署，开始开发</td></tr>
-            <tr><td>核心闭环可演示</td><td class="price">&yen;4,800 (33%)</td><td>第 2 周末，M2 里程碑：上传→浏览→花代币→解锁下载可演示</td></tr>
-            <tr><td>上线验收</td><td class="price">&yen;4,800 (34%)</td><td>第 3 周末，部署上线 + 验收通过</td></tr>
-            <tr class="total-row"><td>合计</td><td colspan="2">&yen;14,400</td></tr>
+            <tr><td>项目启动</td><td class="price">&yen;5,100 (33%)</td><td>合同签署，开始开发</td></tr>
+            <tr><td>核心闭环可演示</td><td class="price">&yen;5,100 (33%)</td><td>第 2 周末，M2 里程碑：上传→浏览→花代币→解锁下载可演示</td></tr>
+            <tr><td>上线验收</td><td class="price">&yen;5,200 (34%)</td><td>第 3 周末，部署上线 + 验收通过</td></tr>
+            <tr class="total-row"><td>合计</td><td colspan="2">&yen;15,400</td></tr>
         </tbody>
     </table>
 </div>
@@ -676,11 +683,11 @@ a.nav-link:hover { color: #38a169; }
         <tbody>
             <tr>
                 <td style="font-weight:600;">"还不确定产品形态 / 想先跑通流程"</td>
-                <td><strong style="color:#2f855a;">&rarr; 本方案 Lean MVP &yen;14,400</strong></td>
+                <td><strong style="color:#2f855a;">&rarr; 本方案 Lean MVP &yen;15,400</strong></td>
             </tr>
             <tr>
                 <td style="font-weight:600;">"想验证真金白银付费意愿（不止代币）"</td>
-                <td><strong style="color:#2f855a;">&rarr; Lean MVP + 支付升级 P1 = &yen;15,200</strong></td>
+                <td><strong style="color:#2f855a;">&rarr; Lean MVP + 支付升级 P1 = &yen;16,200</strong></td>
             </tr>
             <tr>
                 <td style="font-weight:600;">"需要给投资人/合作方演示完整能力"</td>
@@ -696,7 +703,7 @@ a.nav-link:hover { color: #38a169; }
             </tr>
             <tr>
                 <td style="font-weight:600;">"预算很紧，但要能验证商业模式"</td>
-                <td><strong style="color:#2f855a;">&rarr; 本方案 Lean MVP &yen;14,400</strong></td>
+                <td><strong style="color:#2f855a;">&rarr; 本方案 Lean MVP &yen;15,400</strong></td>
             </tr>
         </tbody>
     </table>
