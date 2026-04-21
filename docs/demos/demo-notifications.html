@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通 - 站内信通知</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* Notification bell */
+.bell-demo {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #fff; border-radius: 10px; padding: 10px 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    position: relative; cursor: pointer;
+}
+.bell-icon { font-size: 20px; }
+.unread-badge {
+    position: absolute; top: 4px; right: 4px;
+    background: #e53e3e; color: #fff;
+    min-width: 18px; height: 18px; border-radius: 9px;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 5px;
+    animation: pulse 1.5s infinite;
+}
+
+/* Notification list */
+.notif-list { display: flex; flex-direction: column; gap: 10px; }
+.notif-item {
+    background: #fff; border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 12px; border-left: 3px solid transparent;
+    transition: all 0.2s; cursor: pointer;
+}
+.notif-item:hover { background: #f7fafc; }
+.notif-item.unread { border-left-color: #3182ce; background: #ebf8ff; }
+.notif-item.unread:hover { background: #dceefb; }
+.notif-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+}
+.notif-icon.green { background: #e6ffed; }
+.notif-icon.red { background: #fed7d7; }
+.notif-icon.blue { background: #ebf4ff; }
+.notif-icon.orange { background: #fffaf0; }
+.notif-icon.purple { background: #faf5ff; }
+.notif-body { flex: 1; min-width: 0; }
+.notif-title {
+    font-size: 14px; font-weight: 600; color: #1a3a5c; margin-bottom: 3px;
+    display: flex; align-items: center; gap: 6px;
+}
+.notif-title .dot { width: 6px; height: 6px; border-radius: 50%; background: #3182ce; }
+.notif-item:not(.unread) .notif-title .dot { display: none; }
+.notif-desc { font-size: 13px; color: #4a5568; line-height: 1.5; }
+.notif-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 6px; font-size: 12px; color: #a0aec0;
+}
+.notif-link { color: #3182ce; cursor: pointer; }
+.notif-link:hover { text-decoration: underline; }
+
+/* Filter tabs */
+.filter-bar {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.filter-btn {
+    padding: 6px 14px; border-radius: 20px; font-size: 13px;
+    background: #fff; border: 1px solid #e2e8f0; color: #4a5568;
+    cursor: pointer; transition: all 0.2s;
+}
+.filter-btn:hover { border-color: #3182ce; color: #3182ce; }
+.filter-btn.active { background: #3182ce; color: #fff; border-color: #3182ce; }
+.filter-btn .count {
+    display: inline-block; background: rgba(255,255,255,0.3); color: inherit;
+    padding: 0 6px; border-radius: 10px; font-size: 11px; margin-left: 4px;
+}
+.filter-btn:not(.active) .count { background: #edf2f7; }
+
+/* Header actions */
+.page-actions {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+}
+
+/* Empty state for filtered */
+.empty-state {
+    text-align: center; padding: 40px 20px; color: #a0aec0;
+    background: #fff; border-radius: 10px;
+}
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 8px; }
+
+/* Trigger examples */
+.trigger-table { margin-top: 8px; }
+.trigger-table td { padding: 8px 12px; }
+.trigger-event { font-weight: 600; color: #2c5282; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>功能演示</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+
+<div class="feature-header">
+    <span class="feature-badge">Lean MVP · 站内信</span>
+    <h1>站内信通知</h1>
+    <p>关键事件自动推送到用户消息中心——审核结果、购买通知、代币到账、系统公告，不用用户主动刷新查询。</p>
+</div>
+
+<div class="demo-container medium">
+
+    <!-- Top: bell preview -->
+    <div class="card">
+        <div class="card-title">&#128276; 顶栏通知铃铛</div>
+        <div class="card-subtitle">用户登录后在页面右上角实时可见，有新消息时红点+数字提示</div>
+        <div style="display:flex;align-items:center;gap:24px;margin-top:8px;flex-wrap:wrap;">
+            <div class="bell-demo" onclick="scrollToList()">
+                <span class="bell-icon">&#128276;</span>
+                <span style="font-size:13px;color:#4a5568;">消息中心</span>
+                <span class="unread-badge" id="bellBadge">3</span>
+            </div>
+            <div style="color:#718096;font-size:13px;">
+                &larr; 点击铃铛查看消息列表（下方演示）<br>
+                <span class="text-sm" style="color:#a0aec0;">未读数实时更新，已读消息不再提示</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification list -->
+    <div class="card" id="notif-card">
+        <div class="page-actions">
+            <div class="card-title" style="margin-bottom:0;">&#128236; 消息中心</div>
+            <button class="btn btn-sm btn-outline" onclick="markAllRead()">全部标为已读</button>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">全部 <span class="count" id="c-all">0</span></button>
+            <button class="filter-btn" data-filter="unread" onclick="setFilter('unread')">未读 <span class="count" id="c-unread">0</span></button>
+            <button class="filter-btn" data-filter="audit" onclick="setFilter('audit')">审核 <span class="count" id="c-audit">0</span></button>
+            <button class="filter-btn" data-filter="trade" onclick="setFilter('trade')">交易 <span class="count" id="c-trade">0</span></button>
+            <button class="filter-btn" data-filter="wallet" onclick="setFilter('wallet')">代币 <span class="count" id="c-wallet">0</span></button>
+            <button class="filter-btn" data-filter="system" onclick="setFilter('system')">系统 <span class="count" id="c-system">0</span></button>
+        </div>
+
+        <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- Trigger reference -->
+    <div class="card">
+        <div class="card-title">&#128204; 自动触发事件清单</div>
+        <div class="card-subtitle">MVP 期覆盖的关键触发点（后端关键事件自动写入 notifications 表并推送）</div>
+        <table class="data-table trigger-table">
+            <thead>
+                <tr><th>分类</th><th>触发事件</th><th>标题示例</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="badge badge-success">审核</span></td><td class="trigger-event">资产审核通过</td><td>您的数据资产《2型糖尿病血糖数据》已通过审核</td></tr>
+                <tr><td><span class="badge badge-warning">审核</span></td><td class="trigger-event">资产审核驳回</td><td>您的数据资产审核未通过：字段缺失</td></tr>
+                <tr><td><span class="badge badge-info">交易</span></td><td class="trigger-event">数据被购买</td><td>您的数据被购买，获得收益 60 代币</td></tr>
+                <tr><td><span class="badge badge-info">交易</span></td><td class="trigger-event">购买成功</td><td>您已成功购买《肠道菌群检测数据》，可前往下载</td></tr>
+                <tr><td><span class="badge badge-success">代币</span></td><td class="trigger-event">代币充值到账</td><td>管理员为您充值 500 代币</td></tr>
+                <tr><td><span class="badge badge-warning">代币</span></td><td class="trigger-event">代币余额不足</td><td>余额不足，请充值后再下单</td></tr>
+                <tr><td><span class="badge badge-danger">系统</span></td><td class="trigger-event">系统公告</td><td>平台维护通知：今晚 23:00-24:00 暂停服务</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Technical note -->
+    <div class="highlight highlight-blue">
+        <strong>技术实现（MVP 简化版）：</strong>
+        <ul style="margin:6px 0 0 20px;">
+            <li>数据库：<code style="background:#fff;padding:1px 4px;border-radius:3px;">notifications</code> 表（user_id / category / title / body / link / is_read / created_at）</li>
+            <li>后端：3 个 API —— <code style="background:#fff;padding:1px 4px;border-radius:3px;">GET /notifications</code>、<code style="background:#fff;padding:1px 4px;border-radius:3px;">GET /notifications/unread_count</code>、<code style="background:#fff;padding:1px 4px;border-radius:3px;">POST /notifications/{id}/read</code></li>
+            <li>前端：铃铛组件每 30 秒轮询未读数；消息列表支持筛选、标记已读、点击跳转</li>
+            <li><strong>暂不做</strong>实时 WebSocket 推送、邮件/短信通知、APP 推送（这些在升级包里）</li>
+        </ul>
+    </div>
+
+</div>
+
+<script>
+const NOTIFICATIONS = [
+    { id:1, category:'audit', type:'success', icon:'&#9989;', iconClass:'green', title:'资产审核通过', body:'您的数据资产《2型糖尿病3年随访血糖及用药数据》已通过审核，现已上架数据市场。', link:'查看详情 &rarr;', time:'5 分钟前', read:false },
+    { id:2, category:'trade', type:'info', icon:'&#128176;', iconClass:'blue', title:'数据被购买', body:'您的数据《肠道菌群多样性数据》被"某药企***"购买，获得收益 60 代币。', link:'查看订单 &rarr;', time:'12 分钟前', read:false },
+    { id:3, category:'wallet', type:'success', icon:'&#127873;', iconClass:'purple', title:'代币充值到账', body:'管理员为您充值 500 代币，当前余额 1,280 代币。', link:'查看钱包 &rarr;', time:'1 小时前', read:false },
+    { id:4, category:'trade', type:'info', icon:'&#128230;', iconClass:'blue', title:'购买成功', body:'您已成功购买《高血压12个月监测数据》，消费 50 代币，可前往"我的订单"下载。', link:'去下载 &rarr;', time:'3 小时前', read:true },
+    { id:5, category:'audit', type:'warning', icon:'&#9888;', iconClass:'orange', title:'资产审核未通过', body:'您的数据《血糖记录》审核未通过，原因：部分字段缺失（用药记录、检测时间）。请补充后重新提交。', link:'去修改 &rarr;', time:'昨天 14:30', read:true },
+    { id:6, category:'system', type:'info', icon:'&#128226;', iconClass:'red', title:'系统维护通知', body:'平台将于今晚 23:00-24:00 进行例行维护升级，期间服务暂停，请提前安排。', link:'', time:'昨天 09:15', read:true },
+    { id:7, category:'wallet', type:'warning', icon:'&#128181;', iconClass:'orange', title:'代币余额不足', body:'您尝试购买的资产需要 200 代币，当前余额 120 代币。请充值后再下单。', link:'去充值 &rarr;', time:'2 天前', read:true },
+    { id:8, category:'trade', type:'info', icon:'&#127942;', iconClass:'blue', title:'累计收益达成里程碑', body:'恭喜！您的数据累计收益突破 1,000 代币，已加入"金牌提供者"名单。', link:'查看排行 &rarr;', time:'3 天前', read:true },
+];
+
+let currentFilter = 'all';
+
+function render() {
+    const list = document.getElementById('notifList');
+    const filtered = NOTIFICATIONS.filter(n => {
+        if (currentFilter === 'all') return true;
+        if (currentFilter === 'unread') return !n.read;
+        return n.category === currentFilter;
+    });
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128235;</div><div>暂无此类消息</div></div>';
+    } else {
+        list.innerHTML = filtered.map(n => `
+            <div class="notif-item ${n.read ? '' : 'unread'}" onclick="markRead(${n.id})">
+                <div class="notif-icon ${n.iconClass}">${n.icon}</div>
+                <div class="notif-body">
+                    <div class="notif-title"><span class="dot"></span>${n.title}</div>
+                    <div class="notif-desc">${n.body}</div>
+                    <div class="notif-meta">
+                        <span>${n.time}</span>
+                        ${n.link ? `<span class="notif-link">${n.link}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    updateCounts();
+}
+
+function updateCounts() {
+    const cnt = (f) => NOTIFICATIONS.filter(n => f(n)).length;
+    const unread = cnt(n => !n.read);
+    document.getElementById('c-all').textContent = NOTIFICATIONS.length;
+    document.getElementById('c-unread').textContent = unread;
+    document.getElementById('c-audit').textContent = cnt(n => n.category === 'audit');
+    document.getElementById('c-trade').textContent = cnt(n => n.category === 'trade');
+    document.getElementById('c-wallet').textContent = cnt(n => n.category === 'wallet');
+    document.getElementById('c-system').textContent = cnt(n => n.category === 'system');
+    document.getElementById('bellBadge').textContent = unread;
+    document.getElementById('bellBadge').style.display = unread > 0 ? 'flex' : 'none';
+}
+
+function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.filter === f);
+    });
+    render();
+}
+
+function markRead(id) {
+    const n = NOTIFICATIONS.find(x => x.id === id);
+    if (n && !n.read) {
+        n.read = true;
+        render();
+    }
+}
+
+function markAllRead() {
+    NOTIFICATIONS.forEach(n => n.read = true);
+    render();
+}
+
+function scrollToList() {
+    document.getElementById('notif-card').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+render();
+</script>
+</body>
+</html>
