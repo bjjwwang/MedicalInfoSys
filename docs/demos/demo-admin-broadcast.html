@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通管理后台 - 系统公告 / 站内信发送</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.top-bar { background: #0d2137 !important; }
+
+.badge-type-system  { background: #ebf4ff; color: #2b6cb0; }
+.badge-type-activity{ background: #fff5eb; color: #7b341e; }
+.badge-type-policy  { background: #f3e8ff; color: #553c9a; }
+.badge-type-maint   { background: #fed7d7; color: #9b2c2c; }
+
+.compose-grid {
+    display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px;
+}
+@media (max-width: 900px) { .compose-grid { grid-template-columns: 1fr; } }
+
+.radio-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.radio-chip {
+    padding: 8px 14px; border: 1px solid #e2e8f0; border-radius: 20px;
+    font-size: 13px; color: #4a5568; cursor: pointer; transition: all 0.2s;
+    background: #fff;
+}
+.radio-chip.active { background: #3182ce; color: #fff; border-color: #3182ce; }
+.radio-chip:hover { border-color: #3182ce; }
+
+.chip-user-box {
+    border: 1px dashed #cbd5e0; border-radius: 8px; padding: 10px; min-height: 60px;
+    margin-top: 8px; display: none; flex-wrap: wrap; gap: 6px; align-items: center;
+}
+.chip-user-box.show { display: flex; }
+.user-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #ebf4ff; color: #2b6cb0; padding: 4px 10px;
+    border-radius: 14px; font-size: 12px;
+}
+.user-chip .x { cursor: pointer; font-weight: 700; }
+.chip-input {
+    border: none; outline: none; padding: 4px 6px; font-size: 13px;
+    background: transparent; flex: 1; min-width: 120px;
+}
+
+/* Live preview notification card */
+.preview-wrap {
+    position: sticky; top: 80px;
+    background: #f7fafc; border-radius: 12px; padding: 18px;
+    border: 1px solid #e2e8f0;
+}
+.preview-wrap h4 {
+    font-size: 13px; color: #718096; margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+}
+.notif-card {
+    background: #fff; border-radius: 10px; padding: 14px;
+    border-left: 4px solid #3182ce; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    animation: fadeIn 0.3s;
+}
+.notif-card.t-activity { border-left-color: #dd6b20; }
+.notif-card.t-policy   { border-left-color: #805ad5; }
+.notif-card.t-maint    { border-left-color: #e53e3e; }
+.notif-card .nc-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+}
+.notif-card .nc-title { font-size: 14px; font-weight: 600; color: #1a3a5c; }
+.notif-card .nc-time { font-size: 11px; color: #a0aec0; }
+.notif-card .nc-body { font-size: 13px; color: #4a5568; line-height: 1.6; margin-bottom: 8px; }
+.notif-card .nc-link { font-size: 12px; color: #3182ce; }
+.notif-card .nc-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #e53e3e;
+    display: inline-block; margin-right: 6px;
+}
+
+.schedule-row { display: flex; gap: 10px; align-items: center; }
+.schedule-row select { width: auto; }
+.schedule-row input[type="datetime-local"] { width: 240px; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>管理后台</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">管理后台</span>
+    <h1>系统公告 / 站内信发送</h1>
+    <p>后台主动给用户发送站内信通知，可以发给全部用户或指定用户</p>
+</div>
+<div class="demo-container">
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('compose', this)">&#x270F;&#xFE0F; 发送新通知</button>
+        <button class="tab" onclick="switchTab('history', this)">&#x1F4DC; 历史通知</button>
+    </div>
+
+    <!-- Compose Tab -->
+    <div id="tab-compose">
+        <div class="compose-grid">
+            <!-- Left: Form -->
+            <div class="card">
+                <div class="card-title">&#x270F;&#xFE0F; 编写通知</div>
+
+                <div class="form-group">
+                    <label>通知类型</label>
+                    <select id="fType" onchange="updatePreview()">
+                        <option value="system">系统公告</option>
+                        <option value="activity">活动通知</option>
+                        <option value="policy">政策更新</option>
+                        <option value="maint">维护通知</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>接收对象</label>
+                    <div class="radio-row">
+                        <div class="radio-chip active" data-audience="all" onclick="selectAudience(this)">全部用户 (1,206)</div>
+                        <div class="radio-chip" data-audience="provider" onclick="selectAudience(this)">数据提供者 (432)</div>
+                        <div class="radio-chip" data-audience="consumer" onclick="selectAudience(this)">数据消费者 (774)</div>
+                        <div class="radio-chip" data-audience="specific" onclick="selectAudience(this)">指定用户</div>
+                    </div>
+                    <div class="chip-user-box" id="chipBox">
+                        <span class="user-chip">user_138 <span class="x" onclick="removeChip(this)">&times;</span></span>
+                        <span class="user-chip">user_256 <span class="x" onclick="removeChip(this)">&times;</span></span>
+                        <span class="user-chip">贵医附院_A01 <span class="x" onclick="removeChip(this)">&times;</span></span>
+                        <input type="text" class="chip-input" placeholder="输入用户ID后回车添加..." onkeydown="addChip(event)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" id="fTitle" placeholder="通知标题（最多 50 字）" value="【系统公告】五一假期客服服务时间调整" oninput="updatePreview()">
+                </div>
+
+                <div class="form-group">
+                    <label>正文内容</label>
+                    <textarea id="fBody" rows="5" placeholder="支持简单 Markdown" oninput="updatePreview()">尊敬的用户您好：
+
+五一假期期间（5月1日-5月5日）平台客服响应时间调整为每日 9:00-18:00。紧急问题可通过在线工单提交，我们会尽快处理。感谢您的理解！</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>跳转链接（可选）</label>
+                    <input type="text" id="fLink" placeholder="例如：/help/holiday-service" value="/help/holiday-service" oninput="updatePreview()">
+                </div>
+
+                <div class="form-group">
+                    <label>推送时间</label>
+                    <div class="schedule-row">
+                        <select id="fSchedule" onchange="toggleSchedule()">
+                            <option value="now">立即发送</option>
+                            <option value="schedule">定时发送</option>
+                        </select>
+                        <input type="datetime-local" id="fScheduleTime" value="2026-04-30T09:00" style="display:none;">
+                    </div>
+                </div>
+
+                <div style="border-top:1px solid #edf2f7; padding-top:14px; margin-top:8px;">
+                    <button class="btn btn-outline" onclick="updatePreview()">&#x1F441;&#xFE0F; 预览</button>
+                    <button class="btn btn-primary" onclick="openSendModal()">&#x1F4E4; 发送</button>
+                </div>
+            </div>
+
+            <!-- Right: Preview -->
+            <div>
+                <div class="preview-wrap">
+                    <h4>&#x1F4F1; 用户端预览效果</h4>
+                    <div style="font-size:11px; color:#718096; margin-bottom:8px;">以下是用户点击"铃铛"时看到的通知卡片</div>
+                    <div class="notif-card" id="previewCard">
+                        <div class="nc-head">
+                            <div class="nc-title"><span class="nc-dot"></span><span id="pvTitle">【系统公告】五一假期客服服务时间调整</span></div>
+                            <div class="nc-time">刚刚</div>
+                        </div>
+                        <div class="nc-body" id="pvBody">尊敬的用户您好：五一假期期间（5月1日-5月5日）平台客服响应时间调整为每日 9:00-18:00...</div>
+                        <div class="nc-link" id="pvLink">查看详情 &rarr;</div>
+                    </div>
+                    <div class="highlight highlight-blue" style="margin-top:12px; font-size:12px;">
+                        &#x1F4A1; 预计将发送给 <b id="pvAudience">1,206</b> 个用户。用户会在铃铛处看到红点提醒。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Tab -->
+    <div id="tab-history" style="display:none;">
+        <div class="card">
+            <div class="card-title">&#x1F4DC; 历史通知</div>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索标题...">
+                <select>
+                    <option>全部类型</option>
+                    <option>系统公告</option>
+                    <option>活动通知</option>
+                    <option>政策更新</option>
+                    <option>维护通知</option>
+                </select>
+                <select>
+                    <option>近30天</option>
+                    <option>近90天</option>
+                    <option>全部</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>发送时间</th><th>标题</th><th>类型</th>
+                            <th>接收对象</th><th>已读 / 总数</th><th>发送人</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2026-04-20 10:30</td>
+                            <td>关于代币分成比例调整的说明</td>
+                            <td><span class="badge badge-type-policy">政策更新</span></td>
+                            <td>全部用户</td>
+                            <td><b style="color:#38a169;">1,082</b> / 1,206 (89.7%)</td>
+                            <td>王经理</td>
+                            <td>
+                                <button class="btn btn-outline btn-sm">详情</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2026-04-15 09:00</td>
+                            <td>【活动】4月上架资产奖励计划</td>
+                            <td><span class="badge badge-type-activity">活动通知</span></td>
+                            <td>数据提供者</td>
+                            <td><b style="color:#38a169;">398</b> / 432 (92.1%)</td>
+                            <td>李运营</td>
+                            <td>
+                                <button class="btn btn-outline btn-sm">详情</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2026-04-12 23:45</td>
+                            <td>【紧急】系统维护通知（4月13日凌晨）</td>
+                            <td><span class="badge badge-type-maint">维护通知</span></td>
+                            <td>全部用户</td>
+                            <td><b style="color:#38a169;">1,206</b> / 1,206 (100%)</td>
+                            <td>张技术</td>
+                            <td>
+                                <button class="btn btn-outline btn-sm">详情</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2026-04-10 14:00</td>
+                            <td>新功能上线：数据质量评分公示</td>
+                            <td><span class="badge badge-type-system">系统公告</span></td>
+                            <td>全部用户</td>
+                            <td><b style="color:#dd6b20;">234</b> / 350 (66.8%)</td>
+                            <td>王经理</td>
+                            <td>
+                                <button class="btn btn-outline btn-sm">详情</button>
+                                <button class="btn btn-warning btn-sm" onclick="recallNotice()">撤回</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2026-04-05 18:20</td>
+                            <td>【活动】邀请好友双重奖励</td>
+                            <td><span class="badge badge-type-activity">活动通知</span></td>
+                            <td>指定用户 (120)</td>
+                            <td><b style="color:#38a169;">115</b> / 120 (95.8%)</td>
+                            <td>李运营</td>
+                            <td>
+                                <button class="btn btn-outline btn-sm">详情</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="text-align:right; margin-top:12px; color:#718096; font-size:12px;">
+                共 5 条 &nbsp;|&nbsp; 第 1 / 1 页
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Send Confirm Modal -->
+<div class="modal-overlay" id="sendModal">
+    <div class="modal-box">
+        <h3>&#x1F4E4; 确认发送通知</h3>
+        <div class="highlight highlight-orange" style="margin-top:0;">
+            确认发送给 <b id="mAudienceCount">1,206</b> 个用户？<br>
+            <span style="font-size:12px; color:#7b341e;">通知一旦发送，用户将立即收到。24小时内仍可撤回（如未被读）。</span>
+        </div>
+        <div style="font-size:13px; color:#4a5568; margin: 12px 0;">
+            <div><b>类型：</b><span id="mType">系统公告</span></div>
+            <div><b>标题：</b><span id="mTitle">【系统公告】五一假期客服服务时间调整</span></div>
+            <div><b>推送时间：</b><span id="mTime">立即</span></div>
+        </div>
+        <div style="text-align:right;">
+            <button class="btn btn-outline" onclick="closeModal('sendModal')">取消</button>
+            <button class="btn btn-primary" onclick="confirmSend()">&#x2714; 确认发送</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+    el.classList.add('active');
+    document.getElementById('tab-compose').style.display = (name === 'compose') ? 'block' : 'none';
+    document.getElementById('tab-history').style.display = (name === 'history') ? 'block' : 'none';
+}
+
+var audienceMap = {
+    all: { name: '全部用户', count: 1206 },
+    provider: { name: '数据提供者', count: 432 },
+    consumer: { name: '数据消费者', count: 774 },
+    specific: { name: '指定用户', count: 3 }
+};
+var currentAudience = 'all';
+
+function selectAudience(el) {
+    document.querySelectorAll('.radio-chip').forEach(function(c){ c.classList.remove('active'); });
+    el.classList.add('active');
+    currentAudience = el.getAttribute('data-audience');
+    document.getElementById('chipBox').classList.toggle('show', currentAudience === 'specific');
+    updatePreview();
+}
+
+function addChip(e) {
+    if (e.key !== 'Enter') return;
+    var v = e.target.value.trim();
+    if (!v) return;
+    var chip = document.createElement('span');
+    chip.className = 'user-chip';
+    chip.innerHTML = v + ' <span class="x" onclick="removeChip(this)">&times;</span>';
+    e.target.parentElement.insertBefore(chip, e.target);
+    e.target.value = '';
+    audienceMap.specific.count = document.querySelectorAll('#chipBox .user-chip').length;
+    updatePreview();
+}
+function removeChip(el) {
+    el.parentElement.remove();
+    audienceMap.specific.count = document.querySelectorAll('#chipBox .user-chip').length;
+    updatePreview();
+}
+
+function toggleSchedule() {
+    var v = document.getElementById('fSchedule').value;
+    document.getElementById('fScheduleTime').style.display = (v === 'schedule') ? 'inline-block' : 'none';
+}
+
+function updatePreview() {
+    var title = document.getElementById('fTitle').value || '(未填写标题)';
+    var body = document.getElementById('fBody').value || '(未填写正文)';
+    var link = document.getElementById('fLink').value;
+    var type = document.getElementById('fType').value;
+
+    document.getElementById('pvTitle').textContent = title;
+    document.getElementById('pvBody').textContent = body.length > 80 ? body.slice(0, 80) + '...' : body;
+    document.getElementById('pvLink').style.display = link ? 'block' : 'none';
+
+    var card = document.getElementById('previewCard');
+    card.className = 'notif-card t-' + type;
+
+    document.getElementById('pvAudience').textContent = audienceMap[currentAudience].count.toLocaleString();
+}
+
+function openSendModal() {
+    var title = document.getElementById('fTitle').value.trim();
+    var body = document.getElementById('fBody').value.trim();
+    if (!title || !body) {
+        showToast('请填写标题和正文', '#e53e3e');
+        return;
+    }
+    var typeMap = { system:'系统公告', activity:'活动通知', policy:'政策更新', maint:'维护通知' };
+    document.getElementById('mAudienceCount').textContent = audienceMap[currentAudience].count.toLocaleString();
+    document.getElementById('mType').textContent = typeMap[document.getElementById('fType').value];
+    document.getElementById('mTitle').textContent = title;
+    var sch = document.getElementById('fSchedule').value;
+    document.getElementById('mTime').textContent = (sch === 'now') ? '立即发送' : ('定时：' + document.getElementById('fScheduleTime').value);
+    document.getElementById('sendModal').classList.add('show');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function confirmSend() {
+    closeModal('sendModal');
+    var count = audienceMap[currentAudience].count.toLocaleString();
+    showToast('通知已发送，预计 ' + count + ' 用户将收到', '#38a169');
+}
+
+function recallNotice() {
+    if (confirm('确认撤回这条通知？已读用户仍可看到。')) {
+        showToast('已撤回，未读用户将不再收到', '#dd6b20');
+    }
+}
+
+function showToast(msg, color) {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    if (color) toast.style.background = color;
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.remove(); }, 3000);
+}
+
+// Initialize preview
+updatePreview();
+</script>
+</body>
+</html>

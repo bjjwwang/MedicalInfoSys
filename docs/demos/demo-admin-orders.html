@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通管理后台 - 订单管理</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.top-bar { background: #0d2137 !important; }
+
+.badge-paid      { background: #e6ffed; color: #22543d; }
+.badge-pending-pay { background: #fefcbf; color: #744210; }
+.badge-refunded  { background: #fed7d7; color: #9b2c2c; }
+.badge-dispute   { background: #fff5eb; color: #7b341e; }
+.badge-processing{ background: #ebf4ff; color: #2b6cb0; }
+
+.order-detail-row td {
+    background: #f7fafc !important; padding: 0 !important; border-bottom: 2px solid #e2e8f0;
+}
+.order-detail-inner {
+    padding: 20px; animation: fadeIn 0.3s;
+}
+.detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;
+}
+@media (max-width: 800px) { .detail-grid { grid-template-columns: 1fr; } }
+.detail-card {
+    background: #fff; border-radius: 8px; padding: 14px;
+    border: 1px solid #e2e8f0;
+}
+.detail-card h4 { font-size: 13px; color: #1a3a5c; margin-bottom: 10px; font-weight: 600; }
+.detail-card .row { display: flex; justify-content: space-between; font-size: 12px; color: #4a5568; margin-bottom: 5px; }
+.detail-card .row .k { color: #718096; }
+
+.dispute-log {
+    background: #fff5eb; border-left: 4px solid #dd6b20;
+    padding: 12px 14px; border-radius: 6px; font-size: 12px;
+    color: #7b341e; margin-top: 10px;
+}
+.mini-timeline { font-size: 12px; }
+.mini-timeline .mt-item { padding: 4px 0; display: flex; gap: 10px; }
+.mini-timeline .mt-time { color: #a0aec0; min-width: 70px; }
+.mini-timeline .mt-ok::before { content: '\2713'; color: #38a169; margin-right: 4px; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>管理后台</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">管理后台</span>
+    <h1>订单管理</h1>
+    <p>查看平台所有订单，处理纠纷、退款、强制结算</p>
+</div>
+<div class="demo-container">
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue">&#x1F6D2;</div>
+            <div>
+                <div class="stat-value">23</div>
+                <div class="stat-label">今日订单</div>
+                <div class="stat-trend">&uparrow; 较昨日 +12%</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">&#x23F3;</div>
+            <div>
+                <div class="stat-value">5</div>
+                <div class="stat-label">进行中</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">&#x2705;</div>
+            <div>
+                <div class="stat-value">18</div>
+                <div class="stat-label">已完成</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">&#x26A0;&#xFE0F;</div>
+            <div>
+                <div class="stat-value">0</div>
+                <div class="stat-label">异常订单</div>
+                <div class="stat-trend" style="color:#38a169;">无异常</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="card">
+        <div class="card-title">&#x1F4CB; 全部订单</div>
+        <div class="search-bar">
+            <input type="text" placeholder="订单号 / 用户ID / 资产名称 搜索...">
+            <select>
+                <option>全部状态</option>
+                <option>待支付</option>
+                <option>已完成</option>
+                <option>已退款</option>
+                <option>纠纷中</option>
+            </select>
+            <select>
+                <option>今日</option>
+                <option>近7天</option>
+                <option>近30天</option>
+                <option>自定义日期</option>
+            </select>
+            <button class="btn btn-outline">导出</button>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>订单号</th><th>时间</th><th>买家</th><th>卖家</th>
+                        <th>资产名称</th><th>金额</th><th>状态</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="orderBody">
+                </tbody>
+            </table>
+        </div>
+        <div style="text-align:right; margin-top:12px; color:#718096; font-size:12px;">
+            共 23 条 &nbsp;|&nbsp; 第 1 / 3 页 &nbsp;
+            <button class="btn btn-outline btn-sm">上一页</button>
+            <button class="btn btn-outline btn-sm">下一页</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Refund Modal -->
+<div class="modal-overlay" id="refundModal">
+    <div class="modal-box">
+        <h3>&#x1F4B8; 发起退款</h3>
+        <div class="card-subtitle">订单号：<span class="hash-text" id="refundOrderId">#2026042312</span></div>
+        <div class="form-group">
+            <label>退款金额（代币）</label>
+            <input type="number" id="refundAmount" value="80">
+            <div class="hint">最大可退 80 代币（原支付金额）</div>
+        </div>
+        <div class="form-group">
+            <label>退款原因</label>
+            <textarea id="refundReason" rows="3" placeholder="例如：数据质量问题、买家申诉成立..."></textarea>
+        </div>
+        <div style="text-align:right;">
+            <button class="btn btn-outline" onclick="closeModal('refundModal')">取消</button>
+            <button class="btn btn-danger" onclick="confirmRefund()">&#x2714; 确认退款</button>
+        </div>
+    </div>
+</div>
+
+<script>
+var orders = [
+    { id:'#2026042312', time:'13:30:05', buyer:'李**(user_256)', seller:'贵医附院', asset:'贵阳社区2型糖尿病随访数据集', amount:80, status:'已完成', statusClass:'badge-paid', disputed:false },
+    { id:'#2026042311', time:'12:48:20', buyer:'陈研究员(user_310)', seller:'华大基因贵阳', asset:'肠道菌群与代谢综合征关联数据', amount:320, status:'已完成', statusClass:'badge-paid', disputed:false },
+    { id:'#2026042310', time:'11:22:15', buyer:'王博士(user_189)', seller:'南明卫健委', asset:'南明区居民血压监测年度报告', amount:150, status:'处理中', statusClass:'badge-processing', disputed:false },
+    { id:'#2026042309', time:'10:18:42', buyer:'保险公司A(user_412)', seller:'云岩社区医院', asset:'慢性病用药依从性追踪数据', amount:200, status:'待支付', statusClass:'badge-pending-pay', disputed:false },
+    { id:'#2026042308', time:'09:55:11', buyer:'赵**(user_074)', seller:'贵医附院', asset:'贵阳地区高血压人群十年追踪', amount:500, status:'已完成', statusClass:'badge-paid', disputed:false },
+    { id:'#2026042307', time:'09:20:38', buyer:'药企B(user_512)', seller:'康健体检', asset:'体检人群肝功能指标数据', amount:180, status:'纠纷中', statusClass:'badge-dispute', disputed:true },
+    { id:'#2026042306', time:'08:45:26', buyer:'user_198', seller:'贵州中医院', asset:'中医药膳配方数据集', amount:60, status:'已退款', statusClass:'badge-refunded', disputed:false },
+    { id:'#2026042305', time:'08:30:10', buyer:'张研究员(user_223)', seller:'贵医附院', asset:'儿童生长发育标准曲线', amount:120, status:'已完成', statusClass:'badge-paid', disputed:false }
+];
+
+function renderOrders() {
+    var html = '';
+    orders.forEach(function(o, idx) {
+        html += '<tr id="row-' + idx + '">' +
+            '<td class="hash-text">' + o.id + '</td>' +
+            '<td>' + o.time + '</td>' +
+            '<td>' + o.buyer + '</td>' +
+            '<td>' + o.seller + '</td>' +
+            '<td style="max-width:200px;">' + o.asset + '</td>' +
+            '<td><b style="color:#dd6b20;">' + o.amount + '</b> 代币</td>' +
+            '<td><span class="badge ' + o.statusClass + '">' + o.status + '</span></td>' +
+            '<td>' +
+                '<button class="btn btn-outline btn-sm" onclick="toggleDetail(' + idx + ')">详情</button> ' +
+                (o.status === '处理中' ? '<button class="btn btn-success btn-sm" onclick="forceComplete(' + idx + ')">强制完成</button> ' : '') +
+                (o.status === '已完成' ? '<button class="btn btn-warning btn-sm" onclick="openRefund(\'' + o.id + '\', ' + o.amount + ')">退款</button> ' : '') +
+                (!o.disputed && o.status !== '已退款' ? '<button class="btn btn-outline btn-sm" onclick="markDispute(' + idx + ')">标记纠纷</button>' : '') +
+            '</td>' +
+        '</tr>' +
+        '<tr class="order-detail-row" id="detail-' + idx + '" style="display:none;"><td colspan="8">' +
+            '<div class="order-detail-inner">' + buildDetail(o) + '</div>' +
+        '</td></tr>';
+    });
+    document.getElementById('orderBody').innerHTML = html;
+}
+
+function buildDetail(o) {
+    var disputeBlock = o.disputed ?
+        '<div class="dispute-log"><b>&#x26A0;&#xFE0F; 纠纷记录：</b><br>' +
+        '2026-04-23 10:12 买家提交申诉：数据字段缺失严重，质量不符描述<br>' +
+        '2026-04-23 11:05 客服已介入，已通知卖家回应<br>' +
+        '2026-04-23 12:30 卖家回应：愿意补充数据或部分退款</div>' : '';
+
+    return '<div class="detail-grid">' +
+        '<div class="detail-card">' +
+            '<h4>&#x1F4C5; 支付时间轴</h4>' +
+            '<div class="mini-timeline">' +
+                '<div class="mt-item"><span class="mt-time">' + o.time + '</span><span class="mt-ok">订单创建</span></div>' +
+                '<div class="mt-item"><span class="mt-time">+2 分钟</span><span class="mt-ok">支付完成</span></div>' +
+                '<div class="mt-item"><span class="mt-time">+3 分钟</span><span class="mt-ok">数据交付</span></div>' +
+                (o.status === '已完成' ? '<div class="mt-item"><span class="mt-time">+5 分钟</span><span class="mt-ok">确认收货，分成发放</span></div>' : '') +
+            '</div>' +
+        '</div>' +
+        '<div class="detail-card">' +
+            '<h4>&#x1F4C4; 资产信息</h4>' +
+            '<div class="row"><span class="k">资产ID</span><span class="hash-text">DA-20260415-001</span></div>' +
+            '<div class="row"><span class="k">数据类型</span><span>随访数据 / CSV</span></div>' +
+            '<div class="row"><span class="k">数据量</span><span>12,450 条 / 28.6 MB</span></div>' +
+            '<div class="row"><span class="k">交付方式</span><span>加密下载链接</span></div>' +
+            '<div class="row"><span class="k">授权期限</span><span>永久使用</span></div>' +
+        '</div>' +
+        '<div class="detail-card">' +
+            '<h4>&#x1F465; 买卖双方</h4>' +
+            '<div class="row"><span class="k">买家</span><span>' + o.buyer + '</span></div>' +
+            '<div class="row"><span class="k">买家信用</span><span style="color:#38a169;">A 级（98 分）</span></div>' +
+            '<div class="row"><span class="k">卖家</span><span>' + o.seller + '</span></div>' +
+            '<div class="row"><span class="k">卖家信用</span><span style="color:#38a169;">A+ 级（100 分）</span></div>' +
+            '<div class="row"><span class="k">分成比例</span><span>买家付 ' + o.amount + ' / 卖家得 ' + Math.round(o.amount * 0.8) + '</span></div>' +
+        '</div>' +
+    '</div>' +
+    disputeBlock +
+    '<div style="text-align:right; margin-top:10px;">' +
+        '<button class="btn btn-outline btn-sm" onclick="toggleDetail(-1)">&#x2715; 收起</button>' +
+    '</div>';
+}
+
+var openIdx = -1;
+function toggleDetail(idx) {
+    if (openIdx >= 0) {
+        document.getElementById('detail-' + openIdx).style.display = 'none';
+    }
+    if (idx >= 0 && idx !== openIdx) {
+        document.getElementById('detail-' + idx).style.display = 'table-row';
+        openIdx = idx;
+    } else {
+        openIdx = -1;
+    }
+}
+
+function openRefund(id, amt) {
+    document.getElementById('refundOrderId').textContent = id;
+    document.getElementById('refundAmount').value = amt;
+    document.getElementById('refundModal').classList.add('show');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function confirmRefund() {
+    var reason = document.getElementById('refundReason').value.trim();
+    if (!reason) {
+        showToast('请填写退款原因', '#e53e3e');
+        return;
+    }
+    closeModal('refundModal');
+    showToast('退款已成功发起，代币将退还至买家账户', '#38a169');
+}
+function forceComplete(idx) {
+    showToast('订单 ' + orders[idx].id + ' 已强制完成', '#38a169');
+    orders[idx].status = '已完成'; orders[idx].statusClass = 'badge-paid';
+    renderOrders();
+}
+function markDispute(idx) {
+    showToast('订单 ' + orders[idx].id + ' 已标记为纠纷', '#dd6b20');
+    orders[idx].status = '纠纷中'; orders[idx].statusClass = 'badge-dispute'; orders[idx].disputed = true;
+    renderOrders();
+}
+function showToast(msg, color) {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    if (color) toast.style.background = color;
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.remove(); }, 3000);
+}
+
+renderOrders();
+</script>
+</body>
+</html>

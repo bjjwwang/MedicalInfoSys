@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健数通管理后台 - 代币管理</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.top-bar { background: #0d2137 !important; }
+
+.badge-recharge { background: #e6ffed; color: #22543d; }
+.badge-consume  { background: #fed7d7; color: #9b2c2c; }
+.badge-earn     { background: #ebf4ff; color: #2b6cb0; }
+.badge-refund   { background: #fff5eb; color: #7b341e; }
+.badge-freeze   { background: #edf2f7; color: #4a5568; }
+
+.amount-pos { color: #38a169; font-weight: 700; }
+.amount-neg { color: #e53e3e; font-weight: 700; }
+
+.rule-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 700px) { .rule-list { grid-template-columns: 1fr; } }
+.rule-list li {
+    background: #f7fafc; border-left: 3px solid #3182ce;
+    padding: 10px 14px; border-radius: 6px; font-size: 13px; color: #4a5568;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.rule-list li b { color: #38a169; }
+
+.token-icon {
+    display: inline-block; width: 18px; height: 18px; border-radius: 50%;
+    background: linear-gradient(135deg, #f6ad55, #dd6b20); color: #fff;
+    font-size: 11px; font-weight: 700; text-align: center; line-height: 18px;
+    margin-right: 2px; vertical-align: middle;
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="logo">健数通 <small>管理后台</small></div>
+    <div class="spacer"></div>
+    <a href="../quotation.html" class="back-link">&larr; 返回报价方案</a>
+</div>
+<div class="feature-header">
+    <span class="feature-badge">管理后台</span>
+    <h1>代币管理</h1>
+    <p>查看代币流水、给用户充值/扣减代币、查看代币总量分布</p>
+</div>
+<div class="demo-container">
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue">&#x1F4B0;</div>
+            <div>
+                <div class="stat-value">1,250,000</div>
+                <div class="stat-label">平台代币总量</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">&#x1F4B8;</div>
+            <div>
+                <div class="stat-value">845,200</div>
+                <div class="stat-label">流通中</div>
+                <div class="stat-trend">占比 67.6%</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">&#x1F525;</div>
+            <div>
+                <div class="stat-value">405,800</div>
+                <div class="stat-label">已消费</div>
+                <div class="stat-trend">占比 32.4%</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">&#x2728;</div>
+            <div>
+                <div class="stat-value">12,500</div>
+                <div class="stat-label">今日发放</div>
+                <div class="stat-trend">&uparrow; 较昨日 +8%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adjust Tokens -->
+    <div class="card">
+        <div class="card-title">&#x2696;&#xFE0F; 代币充值 / 调整</div>
+        <div class="card-subtitle">手动为指定用户充值、扣减或冻结代币</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>用户ID / 手机号</label>
+                <input type="text" id="userId" placeholder="例如：user_138 或 138****5621" value="user_138">
+            </div>
+            <div class="form-group">
+                <label>调整类型</label>
+                <select id="adjustType">
+                    <option value="充值">充值（+）</option>
+                    <option value="扣减">扣减（-）</option>
+                    <option value="冻结">冻结</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>数量（代币）</label>
+            <input type="number" id="amount" placeholder="输入正整数" value="500">
+        </div>
+        <div class="form-group">
+            <label>备注说明（必填）</label>
+            <textarea id="remark" rows="2" placeholder="请填写调整原因，会记录在流水中">企业批量采购方案，线下打款已确认</textarea>
+        </div>
+        <button class="btn btn-primary" onclick="submitAdjust()">&#x2714; 提交调整</button>
+        <button class="btn btn-outline" onclick="clearForm()">清空</button>
+    </div>
+
+    <!-- Token Flow Table -->
+    <div class="card">
+        <div class="card-title">&#x1F4C3; 代币流水</div>
+        <div class="search-bar">
+            <input type="text" placeholder="流水号 / 用户ID / 订单号 搜索...">
+            <select>
+                <option>全部类型</option>
+                <option>充值</option>
+                <option>消费</option>
+                <option>收益</option>
+                <option>退款</option>
+                <option>冻结</option>
+            </select>
+            <select>
+                <option>近7天</option>
+                <option>近30天</option>
+                <option>近90天</option>
+            </select>
+            <button class="btn btn-outline">导出 CSV</button>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>流水号</th><th>时间</th><th>用户</th><th>类型</th>
+                        <th>数量</th><th>余额</th><th>关联订单</th><th>操作员</th><th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="hash-text">TX20260423-00142</td>
+                        <td>13:42:18</td>
+                        <td>user_138</td>
+                        <td><span class="badge badge-recharge">充值</span></td>
+                        <td class="amount-pos">+500</td>
+                        <td>1,280</td>
+                        <td>—</td>
+                        <td>王经理</td>
+                        <td style="max-width:180px; color:#718096;">企业批量采购</td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">TX20260423-00141</td>
+                        <td>13:30:05</td>
+                        <td>user_256</td>
+                        <td><span class="badge badge-consume">消费</span></td>
+                        <td class="amount-neg">-80</td>
+                        <td>420</td>
+                        <td class="hash-text">#2026042312</td>
+                        <td>系统</td>
+                        <td style="color:#718096;">购买糖尿病数据集</td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">TX20260423-00140</td>
+                        <td>13:30:05</td>
+                        <td>user_089</td>
+                        <td><span class="badge badge-earn">收益</span></td>
+                        <td class="amount-pos">+64</td>
+                        <td>3,856</td>
+                        <td class="hash-text">#2026042312</td>
+                        <td>系统</td>
+                        <td style="color:#718096;">数据售出分成（80%）</td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">TX20260423-00139</td>
+                        <td>12:15:40</td>
+                        <td>user_412</td>
+                        <td><span class="badge badge-recharge">充值</span></td>
+                        <td class="amount-pos">+100</td>
+                        <td>100</td>
+                        <td>—</td>
+                        <td>系统</td>
+                        <td style="color:#718096;">新用户注册赠送</td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">TX20260423-00138</td>
+                        <td>11:47:22</td>
+                        <td>user_256</td>
+                        <td><span class="badge badge-refund">退款</span></td>
+                        <td class="amount-pos">+50</td>
+                        <td>500</td>
+                        <td class="hash-text">#2026042208</td>
+                        <td>王经理</td>
+                        <td style="color:#718096;">数据质量问题退款</td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">TX20260423-00137</td>
+                        <td>10:32:11</td>
+                        <td>user_310</td>
+                        <td><span class="badge badge-consume">消费</span></td>
+                        <td class="amount-neg">-150</td>
+                        <td>850</td>
+                        <td class="hash-text">#2026042310</td>
+                        <td>系统</td>
+                        <td style="color:#718096;">购买随访数据</td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">TX20260423-00136</td>
+                        <td>09:18:05</td>
+                        <td>user_074</td>
+                        <td><span class="badge badge-earn">收益</span></td>
+                        <td class="amount-pos">+5</td>
+                        <td>1,205</td>
+                        <td>—</td>
+                        <td>系统</td>
+                        <td style="color:#718096;">每日签到奖励</td>
+                    </tr>
+                    <tr>
+                        <td class="hash-text">TX20260423-00135</td>
+                        <td>08:55:49</td>
+                        <td>user_198</td>
+                        <td><span class="badge badge-freeze">冻结</span></td>
+                        <td class="amount-neg">-200</td>
+                        <td>300</td>
+                        <td>—</td>
+                        <td>王经理</td>
+                        <td style="color:#718096;">申诉纠纷临时冻结</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="text-align:right; margin-top:12px; color:#718096; font-size:12px;">
+            共 8 条 &nbsp;|&nbsp; 第 1 / 312 页 &nbsp;
+            <button class="btn btn-outline btn-sm">上一页</button>
+            <button class="btn btn-outline btn-sm">下一页</button>
+        </div>
+    </div>
+
+    <!-- Token Rules -->
+    <div class="card">
+        <div class="card-title">&#x1F4CF; 代币发放规则（当前生效）</div>
+        <div class="card-subtitle">以下规则由系统自动执行，修改需超级管理员审批</div>
+        <ul class="rule-list">
+            <li><span>&#x1F389; 新用户注册赠送</span><b>+100 代币</b></li>
+            <li><span>&#x1F91D; 邀请好友注册</span><b>+50 代币 / 人</b></li>
+            <li><span>&#x1F4C5; 每日签到</span><b>+5 代币</b></li>
+            <li><span>&#x1F4DD; 完成资料完善</span><b>+20 代币</b></li>
+            <li><span>&#x1F4E4; 首次上架资产</span><b>+30 代币</b></li>
+            <li><span>&#x1F4B3; 数据售出分成</span><b>80% 归卖家</b></li>
+            <li><span>&#x1F393; 完成新手教程</span><b>+15 代币</b></li>
+            <li><span>&#x1F4AC; 有效评价订单</span><b>+3 代币</b></li>
+        </ul>
+        <div class="highlight highlight-blue" style="margin-top:14px;">
+            &#x1F4A1; <b>说明：</b>1 代币 = 1 元人民币，平台支持代币与现金按 1:1 兑换（企业用户）。最近一次规则修改：2026-03-15 由超级管理员执行。
+        </div>
+    </div>
+
+</div>
+
+<script>
+function submitAdjust() {
+    var uid = document.getElementById('userId').value.trim();
+    var type = document.getElementById('adjustType').value;
+    var amt = document.getElementById('amount').value;
+    var remark = document.getElementById('remark').value.trim();
+    if (!uid || !amt || !remark) {
+        showToast('请填写完整信息', '#e53e3e');
+        return;
+    }
+    showToast('操作成功，已为 ' + uid + ' ' + type + ' ' + amt + ' 代币', '#38a169');
+}
+function clearForm() {
+    document.getElementById('userId').value = '';
+    document.getElementById('amount').value = '';
+    document.getElementById('remark').value = '';
+}
+function showToast(msg, color) {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    if (color) toast.style.background = color;
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.remove(); }, 3000);
+}
+</script>
+</body>
+</html>
