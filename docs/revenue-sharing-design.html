@@ -1,0 +1,2386 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>分润设计 - 医疗数据资产分润机制说明</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css" />
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg: #f6f4ef;
+      --paper: #ffffff;
+      --ink: #1f2a37;
+      --muted: #64748b;
+      --line: #d9dee7;
+      --blue: #315fbd;
+      --teal: #1b998b;
+      --green: #357f4d;
+      --amber: #d89614;
+      --coral: #cf4b56;
+      --purple: #6f5bd7;
+      --soft-blue: #e9f0ff;
+      --soft-teal: #e6f6f4;
+      --soft-amber: #fff4d6;
+      --soft-coral: #ffe9eb;
+      --shadow: 0 16px 38px rgba(31, 42, 55, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    .reveal {
+      color: var(--ink);
+      font-family: inherit;
+    }
+
+    .reveal .slides {
+      text-align: left;
+    }
+
+    .reveal section {
+      width: 100%;
+      height: 100%;
+      padding: 28px 40px 28px;
+    }
+
+    .reveal h1,
+    .reveal h2,
+    .reveal h3,
+    .reveal p {
+      margin: 0;
+      color: inherit;
+      font-family: inherit;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .reveal h1 {
+      max-width: 920px;
+      font-size: 55px;
+      line-height: 1.08;
+      font-weight: 850;
+    }
+
+    .reveal h2 {
+      font-size: 33px;
+      line-height: 1.16;
+      font-weight: 840;
+    }
+
+    .reveal h3 {
+      font-size: 19px;
+      line-height: 1.28;
+      font-weight: 780;
+    }
+
+    .reveal p,
+    .reveal li,
+    .reveal td,
+    .reveal th {
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .reveal ul,
+    .reveal ol {
+      margin: 0;
+      padding-left: 1.05em;
+    }
+
+    .reveal small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .slide-frame {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100%;
+      gap: 14px;
+    }
+
+    .slide-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .slide-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      padding: 0 10px;
+      color: #235a54;
+      background: var(--soft-teal);
+      border: 1px solid #b9ded8;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .slide-kicker svg,
+    .icon svg,
+    .chip svg,
+    .nav-hint svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 2;
+    }
+
+    .sub {
+      max-width: 960px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .footer-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .panel,
+    .card,
+    .mini,
+    .table-wrap {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 20px;
+    }
+
+    .card {
+      padding: 16px;
+      min-height: 130px;
+    }
+
+    .card h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .icon {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 8px;
+      flex: none;
+    }
+
+    .icon.teal {
+      background: var(--teal);
+    }
+
+    .icon.amber {
+      background: var(--amber);
+    }
+
+    .icon.coral {
+      background: var(--coral);
+    }
+
+    .icon.green {
+      background: var(--green);
+    }
+
+    .cover {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(340px, 0.96fr);
+      gap: 28px;
+      align-items: stretch;
+      min-height: 100%;
+    }
+
+    .cover-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .cover-card {
+      display: grid;
+      gap: 12px;
+      padding: 22px;
+      color: #fff;
+      background: #172337;
+      border-radius: 8px;
+      box-shadow: 0 24px 58px rgba(23, 35, 55, 0.24);
+    }
+
+    .cover-step {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+    }
+
+    .cover-step b {
+      color: #fff;
+      font-size: 17px;
+    }
+
+    .cover-step span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+    }
+
+    .num {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      color: #102032;
+      background: #b8f0e7;
+      border-radius: 8px;
+      font-weight: 850;
+    }
+
+    .headline-box {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      padding: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .big-icon {
+      display: grid;
+      width: 96px;
+      height: 96px;
+      place-items: center;
+      color: #fff;
+      background: var(--teal);
+      border-radius: 8px;
+    }
+
+    .big-icon svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .headline-box strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1.25;
+    }
+
+    .headline-box span {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .flow-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .flow-item {
+      position: relative;
+      min-height: 132px;
+      padding: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .flow-item::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 10px;
+      height: 2px;
+      background: var(--line);
+    }
+
+    .flow-item:last-child::after {
+      display: none;
+    }
+
+    .flow-item b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .flow-item span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .analogy-grid {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .analogy-card {
+      padding: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .analogy-card.dark {
+      color: #fff;
+      background: #172337;
+      border-color: #172337;
+    }
+
+    .analogy-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .analogy-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .analogy-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 8px;
+    }
+
+    .analogy-card:not(.dark) .analogy-row {
+      background: #f8fafc;
+      border-color: #e5eaf2;
+    }
+
+    .analogy-row b {
+      display: block;
+      font-size: 15px;
+    }
+
+    .analogy-row span {
+      display: block;
+      margin-top: 2px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    .analogy-card:not(.dark) .analogy-row span {
+      color: var(--muted);
+    }
+
+    .bridge {
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+    }
+
+    .bridge svg {
+      width: 44px;
+      height: 44px;
+      stroke-width: 1.8;
+    }
+
+    .story-board {
+      display: grid;
+      grid-template-columns: 0.86fr 1.14fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .phone {
+      width: min(320px, 100%);
+      margin: 0 auto;
+      padding: 14px;
+      background: #172337;
+      border-radius: 28px;
+      box-shadow: 0 20px 44px rgba(23, 35, 55, 0.22);
+    }
+
+    .screen {
+      min-height: 484px;
+      padding: 18px;
+      background: #f8fafc;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .screen-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .app-card {
+      padding: 14px;
+      margin-bottom: 10px;
+      background: #fff;
+      border: 1px solid #e3e8f1;
+      border-radius: 8px;
+    }
+
+    .app-card b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .app-card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    .app-action {
+      display: grid;
+      place-items: center;
+      min-height: 38px;
+      margin-top: 12px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 13px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .timeline-row strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 16px;
+    }
+
+    .timeline-row span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .data-entry-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .consent-stack {
+      display: grid;
+      gap: 9px;
+    }
+
+    .consent-step {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 11px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .consent-step b {
+      display: block;
+      font-size: 15px;
+    }
+
+    .consent-step span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.36;
+    }
+
+    .asset-preview {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      background: #172337;
+      color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 18px 42px rgba(23, 35, 55, 0.22);
+    }
+
+    .asset-preview h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .asset-preview p {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+    }
+
+    .asset-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 14px;
+    }
+
+    .asset-row span:last-child {
+      color: #b8f0e7;
+      text-align: right;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .pipe-card {
+      position: relative;
+      min-height: 122px;
+      padding: 13px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .pipe-card::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 10px;
+      height: 2px;
+      background: var(--line);
+    }
+
+    .pipe-card:last-child::after {
+      display: none;
+    }
+
+    .pipe-card b {
+      display: block;
+      margin: 7px 0 4px;
+      font-size: 15px;
+    }
+
+    .pipe-card span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.34;
+    }
+
+    .pipe-card.raw {
+      border-top: 5px solid var(--coral);
+    }
+
+    .pipe-card.mid {
+      border-top: 5px solid var(--teal);
+    }
+
+    .pipe-card.product {
+      border-top: 5px solid var(--blue);
+    }
+
+    .pipe-icon {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 8px;
+    }
+
+    .raw .pipe-icon {
+      background: var(--coral);
+    }
+
+    .mid .pipe-icon {
+      background: var(--teal);
+    }
+
+    .product .pipe-icon {
+      background: var(--blue);
+    }
+
+    .process-map {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .phase {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .phase h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+      font-size: 17px;
+    }
+
+    .phase-step {
+      display: grid;
+      grid-template-columns: 26px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      padding: 8px;
+      background: #f8fafc;
+      border: 1px solid #e5eaf2;
+      border-radius: 8px;
+    }
+
+    .phase-step b {
+      display: block;
+      font-size: 13px;
+    }
+
+    .phase-step span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.32;
+    }
+
+    .story-map {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .story-map-card {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .story-map-card img {
+      display: block;
+      width: 100%;
+      height: 148px;
+      object-fit: cover;
+    }
+
+    .story-map-card div {
+      padding: 12px;
+    }
+
+    .story-map-card b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .story-map-card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.36;
+    }
+
+    .illustrated {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .illustration-frame {
+      overflow: hidden;
+      min-height: 500px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .illustration-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: left center;
+      background: #fff;
+    }
+
+    .story-detail {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .story-step {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 11px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .story-step b {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 15px;
+    }
+
+    .story-step span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.36;
+    }
+
+    .caption-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .caption-card {
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .caption-card b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .caption-card span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.34;
+    }
+
+    .closure-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .loop-diagram {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr) 56px minmax(0, 1fr) 56px minmax(0, 1fr);
+      gap: 8px;
+      min-height: 430px;
+      padding: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .loop-card {
+      display: grid;
+      align-content: start;
+      gap: 7px;
+      min-height: 92px;
+      padding: 13px;
+      background: #f8fafc;
+      border: 1px solid #e5eaf2;
+      border-radius: 8px;
+    }
+
+    .loop-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+    }
+
+    .loop-card p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .loop-card.user {
+      border-top: 5px solid var(--teal);
+    }
+
+    .loop-card.product {
+      border-top: 5px solid var(--blue);
+    }
+
+    .loop-card.money {
+      border-top: 5px solid var(--amber);
+    }
+
+    .loop-card.center {
+      grid-column: 3;
+      grid-row: 5;
+      place-content: center;
+      text-align: center;
+      color: #fff;
+      background: #172337;
+      border-color: #172337;
+      border-top: 0;
+    }
+
+    .loop-card.center p {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .loop-arrow {
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .loop-arrow svg {
+      width: 32px;
+      height: 32px;
+      stroke-width: 2.2;
+    }
+
+    .closure-side {
+      display: grid;
+      gap: 12px;
+      align-content: stretch;
+    }
+
+    .closure-side .quote {
+      font-size: 18px;
+      line-height: 1.48;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 26px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    .badge.blue {
+      color: #244b94;
+      background: var(--soft-blue);
+    }
+
+    .badge.teal {
+      color: #1d665f;
+      background: var(--soft-teal);
+    }
+
+    .badge.amber {
+      color: #74510b;
+      background: var(--soft-amber);
+    }
+
+    .badge.coral {
+      color: #8e1f2b;
+      background: var(--soft-coral);
+    }
+
+    .do-dont {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .do,
+    .dont {
+      padding: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .do {
+      border-top: 5px solid var(--teal);
+    }
+
+    .dont {
+      border-top: 5px solid var(--coral);
+    }
+
+    .do h3,
+    .dont h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .do p,
+    .dont p {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .table-wrap {
+      overflow: hidden;
+      align-self: start;
+    }
+
+    .protocol-detail {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+    }
+
+    .compact-cards .card {
+      min-height: 92px;
+      padding: 12px;
+    }
+
+    .compact-cards .card h3 {
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .compact-cards .card p {
+      font-size: 13px;
+      line-height: 1.36;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      vertical-align: top;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: #334155;
+      background: #f8fafc;
+      font-weight: 820;
+      font-size: 14px;
+    }
+
+    td {
+      font-size: 15px;
+      color: #405069;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .mermaid-box {
+      overflow: auto;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .mermaid {
+      min-width: 760px;
+    }
+
+    .chart {
+      width: 100%;
+      min-height: 430px;
+    }
+
+    .chart.short {
+      min-height: 360px;
+    }
+
+    .money-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini {
+      padding: 14px;
+    }
+
+    .mini .label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 740;
+    }
+
+    .mini .value {
+      margin-top: 5px;
+      font-size: 28px;
+      font-weight: 850;
+      line-height: 1.18;
+    }
+
+    .mini p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .formula {
+      padding: 14px 16px;
+      background: #172337;
+      color: #fff;
+      border-radius: 8px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    .formula .muted {
+      color: rgba(255, 255, 255, 0.66);
+    }
+
+    .check-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .check svg {
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      color: var(--teal);
+    }
+
+    .check b {
+      display: block;
+      font-size: 16px;
+    }
+
+    .check span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .warning svg {
+      color: var(--coral);
+    }
+
+    .schema {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .schema-card {
+      min-height: 344px;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .schema-card h3 {
+      margin-bottom: 10px;
+    }
+
+    .field {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      color: #405069;
+      border-bottom: 1px dashed #dbe2ec;
+      font-size: 14px;
+    }
+
+    .field span:last-child {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .quote {
+      padding: 20px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--amber);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      font-size: 21px;
+      line-height: 1.52;
+      font-weight: 720;
+    }
+
+    .small-note {
+      padding: 12px 14px;
+      color: #405069;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--amber);
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .nav-hint {
+      position: fixed;
+      right: 20px;
+      bottom: 18px;
+      z-index: 40;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 10px;
+      color: #405069;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      backdrop-filter: blur(12px);
+    }
+
+    .home-link {
+      position: fixed;
+      left: 20px;
+      top: 18px;
+      z-index: 45;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 10px;
+      color: #405069;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      font-weight: 760;
+      text-decoration: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .home-link:hover {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .reveal .controls {
+      color: var(--blue);
+    }
+
+    .reveal .progress {
+      color: var(--teal);
+    }
+
+    @media (max-width: 900px) {
+      .reveal section {
+        padding: 22px;
+      }
+
+      .cover,
+      .story-board,
+      .data-entry-grid,
+      .analogy-grid,
+      .illustrated,
+      .closure-layout,
+      .money-grid,
+      .do-dont,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-3,
+      .grid-4,
+      .schema {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .flow-strip,
+      .pipeline,
+      .process-map,
+      .story-map,
+      .caption-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="home-link" href="index.html"><i data-lucide="arrow-left"></i>返回首页</a>
+  <div class="nav-hint"><i data-lucide="keyboard"></i>方向键 / 空格翻页</div>
+
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <div class="cover">
+          <div class="cover-left">
+            <div class="slide-kicker"><i data-lucide="presentation"></i>机制说明演示稿</div>
+            <h1>医疗数据资产分润机制：从故事到规则</h1>
+            <p class="sub">
+              目标不是把患者病历拿去卖，而是把健康服务过程中产生的数据，
+              在用户授权、脱敏加工、可审计引用后，变成能参与后续收益分配的数据产品。
+            </p>
+            <div class="headline-box">
+              <div class="big-icon"><i data-lucide="route"></i></div>
+              <div>
+                <strong>一笔订单，只分给这笔订单实际用到的数据资产。</strong>
+                <span>这是和无限层级分销最关键的区别。</span>
+              </div>
+            </div>
+          </div>
+          <div class="cover-card">
+            <div class="cover-step">
+              <div class="num">1</div>
+              <div><b>老用户贡献数据</b><span>检查、干预、随访、评价，单独授权后进入加工流程。</span></div>
+            </div>
+            <div class="cover-step">
+              <div class="num">2</div>
+              <div><b>平台形成数据产品</b><span>脱敏、聚合、相似匹配，形成病例经验包或统计报告。</span></div>
+            </div>
+            <div class="cover-step">
+              <div class="num">3</div>
+              <div><b>新用户购买服务</b><span>看到参考价值，购买专家解读、健康服务或机构数据产品。</span></div>
+            </div>
+            <div class="cover-step">
+              <div class="num">4</div>
+              <div><b>订单完成后分润</b><span>系统按引用记录和贡献权重，把分润发到贡献者钱包。</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>为什么前面会提 TMGM</h2>
+              <p class="sub">TMGM 是“信号跟单”的金融交易场景。我们不是照搬它，而是借它的产品结构：先把合作条件做成可选择的协议，再让系统自动按协议结算。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="repeat-2"></i>借鉴对象</div>
+          </div>
+          <div class="analogy-grid">
+            <div class="analogy-card dark">
+              <h3><span class="icon teal"><i data-lucide="line-chart"></i></span>TMGM 信号社区</h3>
+              <div class="analogy-list">
+                <div class="analogy-row"><div class="num">1</div><div><b>信号方创建报盘</b><span>设置绩效费比例、周期、月费、注册费、公开/私密。</span></div></div>
+                <div class="analogy-row"><div class="num">2</div><div><b>跟单者加入报盘</b><span>加入后相当于接受这套跟单条件。</span></div></div>
+                <div class="analogy-row"><div class="num">3</div><div><b>盈利后扣绩效费</b><span>按 HWM 高水位机制，只对新增盈利收取。</span></div></div>
+                <div class="analogy-row"><div class="num">4</div><div><b>绩效费池再拆分</b><span>信号方、公开代理、额外代理按比例分。</span></div></div>
+              </div>
+            </div>
+            <div class="bridge"><i data-lucide="arrow-right-left"></i></div>
+            <div class="analogy-card">
+              <h3><span class="icon"><i data-lucide="heart-pulse"></i></span>医疗数据资产平台</h3>
+              <div class="analogy-list">
+                <div class="analogy-row"><div class="num">1</div><div><b>平台创建数据产品规则</b><span>定义数据授权、展示边界、订单分润池比例。</span></div></div>
+                <div class="analogy-row"><div class="num">2</div><div><b>贡献者授权加入</b><span>用户授权后，脱敏数据才可进入某个数据产品。</span></div></div>
+                <div class="analogy-row"><div class="num">3</div><div><b>订单实际引用后结算</b><span>不是盈利分成，而是健康服务订单完成后分润。</span></div></div>
+                <div class="analogy-row"><div class="num">4</div><div><b>数据分润池按贡献权重拆分</b><span>只分给本次被引用的数据资产提供者。</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="small-note">要借鉴的是“协议化 + 自动结算 + 可审计分账”，不是金融跟单、不是多级代理，也不是无限上游抽成。</div>
+          <div class="footer-line"><span>先讲 TMGM，是为了让读者理解“报盘/协议/自动分账”的抽象结构</span><span>01</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>先把一句话模型讲清楚</h2>
+              <p class="sub">这套机制不是“卖隐私”，也不是“投钱返利”，而是订单价值的一部分回流给真实数据贡献者。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="message-square-text"></i>业务解释</div>
+          </div>
+          <div class="grid-3">
+            <div class="card">
+              <h3><span class="icon teal"><i data-lucide="shield-check"></i></span>卖什么</h3>
+              <p>卖的是脱敏加工后的数据产品使用权，例如相似病例统计、干预效果参考、专家解读报告。</p>
+            </div>
+            <div class="card">
+              <h3><span class="icon amber"><i data-lucide="ban"></i></span>不卖什么</h3>
+              <p>不卖原始病历、不卖身份证明、不卖可识别个人的数据、不承诺某个方案一定有效。</p>
+            </div>
+            <div class="card">
+              <h3><span class="icon"><i data-lucide="wallet-cards"></i></span>钱怎么分</h3>
+              <p>订单完成后，固定比例进入数据分润池，再按本次被引用数据的贡献权重分给提供者。</p>
+            </div>
+          </div>
+          <div class="quote">
+            对用户最容易懂的说法：你在平台完成健康服务后，可以授权把脱敏后的结果变成“健康数据权益”。以后别人购买类似服务时，如果参考到了你的数据，你按规则获得一笔小额收益。
+          </div>
+          <div class="footer-line"><span>核心原则：可用不可见、实际引用才分润、订单完成才结算</span><span>02</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>有哪些参与者</h2>
+              <p class="sub">不要只看“患者”和“平台”。这件事真正复杂，是因为它同时有医疗服务、数据产品、支付结算和监管存证。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="users-round"></i>角色地图</div>
+          </div>
+          <div class="grid-3">
+            <div class="card">
+              <h3><span class="icon teal"><i data-lucide="circle-user-round"></i></span>数据贡献者</h3>
+              <p>上传检查、干预和随访结果。授权后形成数据资产，未来被引用时拿分润。</p>
+            </div>
+            <div class="card">
+              <h3><span class="icon"><i data-lucide="search-check"></i></span>数据消费者</h3>
+              <p>为了看相似案例、方案参考、专家解读而购买服务或报告。</p>
+            </div>
+            <div class="card">
+              <h3><span class="icon green"><i data-lucide="stethoscope"></i></span>医生/营养师/专家</h3>
+              <p>提供诊疗或健康管理服务，把数据产品解释成用户能用的建议。</p>
+            </div>
+            <div class="card">
+              <h3><span class="icon amber"><i data-lucide="database-zap"></i></span>平台</h3>
+              <p>负责授权、脱敏、审核、匹配、订单、钱包、分润、客服和风控。</p>
+            </div>
+            <div class="card">
+              <h3><span class="icon"><i data-lucide="building-2"></i></span>交易所/存证方</h3>
+              <p>负责资产登记、交易存证、分润记录审计，MVP 可以先批量对接。</p>
+            </div>
+            <div class="card">
+              <h3><span class="icon coral"><i data-lucide="megaphone"></i></span>渠道推荐人</h3>
+              <p>带来用户和订单。建议从渠道佣金池拿钱，不要混入数据贡献分润池。</p>
+            </div>
+          </div>
+          <div class="footer-line"><span>结论：数据分润、服务收入、渠道佣金需要分账，不要混成一锅钱</span><span>03</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>故事先看全景：四个动作，不要跳着理解</h2>
+              <p class="sub">从用户视角看，这不是“上传数据马上赚钱”，而是一条更长的链：先服务，后授权，再被引用，最后才分润。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="panels-top-left"></i>漫画分镜</div>
+          </div>
+          <div class="story-map">
+            <div class="story-map-card">
+              <img src="assets/story/story-01-service.png" alt="李阿姨完成健康服务" />
+              <div><b>1. 李阿姨先完成服务</b><span>检测、咨询、干预、随访，这些是数据可信度的来源。</span></div>
+            </div>
+            <div class="story-map-card">
+              <img src="assets/story/story-02-anonymize.png" alt="平台脱敏加工数据" />
+              <div><b>2. 平台脱敏并生成资产</b><span>原始数据不外流，变成可审计的健康数据权益。</span></div>
+            </div>
+            <div class="story-map-card">
+              <img src="assets/story/story-03-consume.png" alt="王先生购买健康服务" />
+              <div><b>3. 王先生购买服务</b><span>他买的是专家服务和相似案例统计，不是某个人的病历。</span></div>
+            </div>
+            <div class="story-map-card">
+              <img src="assets/story/story-04-settlement.png" alt="订单完成后自动分润" />
+              <div><b>4. 订单完成后分润</b><span>系统只给本次被实际引用的数据贡献者发收益。</span></div>
+            </div>
+          </div>
+          <div class="small-note">后面几页按这四张图展开，每一步都讲清楚：用户看到什么、后台记录什么、为什么这一步不能省。</div>
+          <div class="footer-line"><span>故事原则：把“服务、授权、引用、结算”拆开讲，读者才不会误解成卖病历或返利</span><span>04</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>第 1 步：李阿姨不是先“卖数据”，而是先完成健康服务</h2>
+              <p class="sub">这一步要把“真实服务场景”讲出来。否则数据来源不可信，后面的分润也会像空中楼阁。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="heart-handshake"></i>真实服务</div>
+          </div>
+          <div class="illustrated">
+            <div class="illustration-frame"><img src="assets/story/story-01-service.png" alt="李阿姨和健康管理师完成服务" /></div>
+            <div class="story-detail">
+              <div class="story-step"><div class="num">1</div><div><b>李阿姨购买一次服务</b><span>例如 3000 元肠道菌群检测 + 营养干预 + 3 个月随访。她此时的主要目的仍然是健康管理，不是投资。</span></div></div>
+              <div class="story-step"><div class="num">2</div><div><b>服务产生过程数据</b><span>检测报告、饮食记录、干预方案、用药/产品使用情况、随访指标变化、用户反馈。</span></div></div>
+              <div class="story-step"><div class="num">3</div><div><b>平台先做质量判断</b><span>报告来源是否可靠、随访是否完整、是否有前后对比、是否适合进入某个数据产品。</span></div></div>
+              <div class="story-step"><div class="num">4</div><div><b>此时还没有分润</b><span>上传和服务完成只是“产生候选数据”。只有后续被别的订单实际引用，才可能产生收益。</span></div></div>
+              <div class="caption-grid">
+                <div class="caption-card"><b>用户看到</b><span>我的服务记录、可上传报告、未来可能形成健康数据权益。</span></div>
+                <div class="caption-card"><b>后台记录</b><span>service_order、report_file、followup_record、quality_score。</span></div>
+                <div class="caption-card"><b>为什么必要</b><span>没有真实服务，数据没有可信来源，也难以让后来者愿意付费参考。</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>第一步只解决“数据从哪里来”，还没有进入交易和分润</span><span>05</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>第 2 步：李阿姨要单独授权，平台才可以加工</h2>
+              <p class="sub">这里要讲慢一点。授权不是一句“我同意”，而是分开确认：采集、加工、进入产品、参与分润。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="file-signature"></i>授权动作</div>
+          </div>
+          <div class="data-entry-grid">
+            <div class="consent-stack">
+              <div class="consent-step"><div class="num">1</div><div><b>基础服务授权</b><span>允许平台为她提供健康管理服务、保存服务订单和必要沟通记录。</span></div></div>
+              <div class="consent-step"><div class="num">2</div><div><b>数据上传授权</b><span>允许上传报告、随访结果，并用 OCR/人工审核做结构化。</span></div></div>
+              <div class="consent-step"><div class="num">3</div><div><b>数据加工授权</b><span>允许脱敏、去标识化、质量评分、相似性匹配。</span></div></div>
+              <div class="consent-step"><div class="num">4</div><div><b>交易使用授权</b><span>允许脱敏后的结果进入指定数据产品，例如糖尿病微生态干预参考包。</span></div></div>
+              <div class="consent-step"><div class="num">5</div><div><b>收益分配授权</b><span>同意未来订单实际引用时，按平台规则计算收益并进入钱包。</span></div></div>
+            </div>
+            <div class="asset-preview">
+              <h3><span class="icon teal"><i data-lucide="badge-check"></i></span>授权后生成“健康数据权益卡”</h3>
+              <p>这张卡给用户看。它不是技术数据库字段，而是让用户理解自己的数据会如何被使用。</p>
+              <div class="asset-row"><span>数据权益编号</span><span>DA-2026-0001</span></div>
+              <div class="asset-row"><span>数据类型</span><span>菌群检测 + 干预随访</span></div>
+              <div class="asset-row"><span>可展示内容</span><span>年龄段、标签、趋势、随访结果</span></div>
+              <div class="asset-row"><span>不可展示内容</span><span>姓名、证件、电话、原始报告</span></div>
+              <div class="asset-row"><span>授权状态</span><span>已授权，可撤回</span></div>
+              <div class="asset-row"><span>收益规则</span><span>被订单实际引用后按权重分润</span></div>
+              <div class="asset-row"><span>当前收益</span><span>0.00 元</span></div>
+              <div class="app-action">查看被引用记录</div>
+            </div>
+          </div>
+          <div class="footer-line"><span>授权要拆开做，因为医疗健康数据不是普通评论或普通消费记录</span><span>06</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>第 3 步：平台把原始数据变成“可用不可见”的数据产品</h2>
+              <p class="sub">这一步是全场景的合规核心。原始病历不卖，身份信息不展示，对外只提供脱敏后的统计、相似性和专家解释。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="file-lock-2"></i>加工过程</div>
+          </div>
+          <div class="illustrated">
+            <div class="illustration-frame"><img src="assets/story/story-02-anonymize.png" alt="平台对医疗数据做脱敏加工" /></div>
+            <div class="story-detail">
+              <div class="pipeline" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div class="pipe-card raw"><div class="pipe-icon"><i data-lucide="file-text"></i></div><b>原始报告</b><span>只存安全域，不作为商品直接展示。</span></div>
+                <div class="pipe-card mid"><div class="pipe-icon"><i data-lucide="scan-text"></i></div><b>结构化</b><span>提取指标、干预、随访、结果。</span></div>
+                <div class="pipe-card mid"><div class="pipe-icon"><i data-lucide="shield-off"></i></div><b>脱敏</b><span>去掉身份，保留年龄段和标签。</span></div>
+                <div class="pipe-card product"><div class="pipe-icon"><i data-lucide="package-check"></i></div><b>产品化</b><span>进入病例经验包或统计报告。</span></div>
+              </div>
+              <div class="do-dont">
+                <div class="do"><h3><i data-lucide="circle-check-big"></i>可以展示</h3><p>样本量、年龄段、疾病标签、干预类型、指标趋势、整体有效率区间、专家解释。</p></div>
+                <div class="dont"><h3><i data-lucide="octagon-alert"></i>不能展示</h3><p>姓名、身份证、手机号、原始报告图片、精确罕见组合、可反推出个人的信息。</p></div>
+              </div>
+              <div class="small-note">产品表达建议：前台叫“病例经验包/干预参考包”，后台再叫“数据资产”。</div>
+            </div>
+          </div>
+          <div class="footer-line"><span>这一步把“病历”变成“可交易的参考产品”，也是防止误解的关键</span><span>07</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>第 4 步：王先生付费买服务，专家在服务里调用数据产品</h2>
+              <p class="sub">这里不能简单说“王先生买数据”，也不能说“专家偷偷代买”。MVP 最清楚的结构是：王先生买健康服务，专家/平台在服务过程中合规调用数据产品。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="search-check"></i>新用户入口</div>
+          </div>
+          <div class="illustrated">
+            <div class="illustration-frame"><img src="assets/story/story-03-consume.png" alt="王先生和医生查看相似案例统计" /></div>
+            <div class="story-detail">
+              <div class="story-step"><div class="num">1</div><div><b>王先生输入自身情况</b><span>例如血糖偏高、肠道不适、体重超标、有检测报告。他想知道有没有类似人群的经验。</span></div></div>
+              <div class="story-step"><div class="num">2</div><div><b>系统推荐相似案例包</b><span>前台展示“相似人群、样本量、随访完整度、专家可解读”，不展示任何个人身份。</span></div></div>
+              <div class="story-step"><div class="num">3</div><div><b>他先看到免费摘要</b><span>摘要只讲适用范围和整体趋势，让他判断是否值得继续咨询。</span></div></div>
+              <div class="story-step"><div class="num">4</div><div><b>他购买 10000 元健康服务包</b><span>付款人是王先生；数据产品调用方是专家/平台；服务结果受益人也是王先生。</span></div></div>
+              <div class="caption-grid">
+                <div class="caption-card"><b>付款人</b><span>王先生支付健康服务订单。</span></div>
+                <div class="caption-card"><b>调用人</b><span>专家或平台算法调用数据产品辅助服务。</span></div>
+                <div class="caption-card"><b>后台记录</b><span>payer_id、operator_id、beneficiary_id、product_id。</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>用户不是为了“数据资产”而来，是为了解决健康问题而来</span><span>08</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>这一步到底谁买：分成三种模式</h2>
+              <p class="sub">为避免业务混乱，订单里要分清“付款人、数据产品调用人、服务结果受益人”。这三者可以是同一个人，也可以不同。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="user-cog"></i>购买模式</div>
+          </div>
+          <div class="grid-3">
+            <div class="card">
+              <span class="badge teal">MVP 推荐</span>
+              <h3><span class="icon teal"><i data-lucide="circle-user-round"></i></span>用户买服务，专家调用</h3>
+              <p>王先生买健康服务包；专家/平台在服务中调用相似案例包。用户理解成本最低，也最像正常医疗健康服务。</p>
+            </div>
+            <div class="card">
+              <span class="badge amber">后续可做</span>
+              <h3><span class="icon amber"><i data-lucide="stethoscope"></i></span>专家买专业工具</h3>
+              <p>专家自己购买数据产品作为工作工具，用于多个咨询场景。需要专家资质、用途记录和更强审计。</p>
+            </div>
+            <div class="card">
+              <span class="badge blue">B 端场景</span>
+              <h3><span class="icon"><i data-lucide="building-2"></i></span>机构买数据产品</h3>
+              <p>药企、科研机构、医院购买数据集或计算结果。这是另一条 B2B 交易链，不要和 C 端服务订单混在一起。</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>模式</th><th>付款人</th><th>调用人</th><th>受益人</th><th>建议</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><b>C 端健康服务</b></td><td>王先生</td><td>专家/平台</td><td>王先生</td><td>先做这个，最容易讲清楚。</td></tr>
+                <tr><td><b>专家工具订阅</b></td><td>专家/机构</td><td>专家</td><td>多个服务对象</td><td>后续做，需要权限和用途审计。</td></tr>
+                <tr><td><b>机构数据采购</b></td><td>药企/科研机构</td><td>机构账号</td><td>机构项目</td><td>单独做 B2B 合同和数据交易所流程。</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="footer-line"><span>MVP 先用“用户买服务，专家调用数据产品”，不要一开始就做复杂代买</span><span>09</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>第 5 步：订单完成后，系统才计算谁该分多少钱</h2>
+              <p class="sub">分润不是看谁先注册，也不是看谁推荐了谁，而是看这笔订单实际引用了哪些数据资产。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="wallet-cards"></i>分润触发</div>
+          </div>
+          <div class="illustrated">
+            <div class="illustration-frame"><img src="assets/story/story-04-settlement.png" alt="订单完成后进入分润池" /></div>
+            <div class="story-detail">
+              <div class="story-step"><div class="num">1</div><div><b>服务先完成</b><span>王先生完成咨询或健康管理服务，报告已交付，订单状态变成 completed。</span></div></div>
+              <div class="story-step"><div class="num">2</div><div><b>过退款/投诉期</b><span>平台先冻结待结算金额，避免刚发分润后订单退款。</span></div></div>
+              <div class="story-step"><div class="num">3</div><div><b>系统读取引用记录</b><span>usage_record 里写清楚这笔订单用了哪些数据资产，各自贡献权重是多少。</span></div></div>
+              <div class="story-step"><div class="num">4</div><div><b>创建结算批次</b><span>服务方、平台、渠道、数据贡献者分别入账。李阿姨只拿她被引用这一笔的份额。</span></div></div>
+              <div class="formula">
+                数据分润池 = 订单金额 × 数据池比例<br />
+                李阿姨收益 = 数据分润池 × 李阿姨贡献权重
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>分润发生在订单完成之后，而不是数据上传之后</span><span>10</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>分润比例怎么定：先定订单类型，再定数据池</h2>
+              <p class="sub">不要全平台一刀切 30%。30% 可以作为演示数字，但真实业务应该按“数据在这笔订单里的价值占比”来定。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="percent"></i>比例规则</div>
+          </div>
+          <div class="grid-3">
+            <div class="card">
+              <span class="badge teal">服务为主</span>
+              <h3><span class="icon teal"><i data-lucide="stethoscope"></i></span>健康服务订单</h3>
+              <p>专家服务、咨询、干预交付占主要价值。数据池建议 10%-20%，渠道 0%-10%，服务方拿较大头。</p>
+            </div>
+            <div class="card">
+              <span class="badge amber">数据为主</span>
+              <h3><span class="icon amber"><i data-lucide="file-bar-chart"></i></span>付费报告/病例包</h3>
+              <p>用户主要为相似案例统计和报告付费。数据池可提高到 30%-50%，平台和专家解释拿剩余。</p>
+            </div>
+            <div class="card">
+              <span class="badge blue">机构采购</span>
+              <h3><span class="icon"><i data-lucide="flask-conical"></i></span>B2B 数据产品</h3>
+              <p>药企、科研机构购买数据集或计算结果。数据池可为 50%-70%，另按合同分平台、专家、交易所服务费。</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>订单类型</th><th>服务方</th><th>平台</th><th>渠道</th><th>数据分润池</th><th>适合 MVP 吗</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><b>健康服务包 10000 元</b></td><td>55%-70%</td><td>10%-20%</td><td>0%-10%</td><td>10%-20%</td><td>最适合先做</td></tr>
+                <tr><td><b>相似病例报告 199 元</b></td><td>10%-25%</td><td>20%-35%</td><td>0%-10%</td><td>30%-50%</td><td>第二阶段</td></tr>
+                <tr><td><b>机构数据采购</b></td><td>0%-20%</td><td>20%-35%</td><td>0%-5%</td><td>50%-70%</td><td>单独 B2B</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="small-note">建议第一版后台支持“按订单类型配置比例”，不要把比例写死在代码里。每个订单保存当时采用的比例快照，方便后续审计。</div>
+          <div class="footer-line"><span>比例不是凭感觉定，是按订单中“服务价值、数据价值、获客价值”的占比定</span><span>11</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>第 6 步：王先生也可以变成后来的数据贡献者</h2>
+              <p class="sub">闭环在这里形成：他消费后产生新的检测和随访结果，如果他授权，这些结果又进入下一轮数据产品。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="refresh-cw"></i>下一轮循环</div>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <h3>王先生这次服务之后发生什么</h3>
+              <div class="check-list" style="margin-top: 14px;">
+                <div class="check"><i data-lucide="clipboard-plus"></i><div><b>产生新数据</b><span>例如复查指标、菌群变化、体重变化、主观感受、专家调整方案。</span></div></div>
+                <div class="check"><i data-lucide="file-signature"></i><div><b>重新授权</b><span>王先生需要像李阿姨一样确认数据加工、产品使用和收益规则。</span></div></div>
+                <div class="check"><i data-lucide="badge-check"></i><div><b>生成新资产</b><span>审核通过后形成 DA-2026-0101，进入同类数据产品候选池。</span></div></div>
+                <div class="check"><i data-lucide="git-branch"></i><div><b>不做无限上游抽成</b><span>李阿姨不会因为王先生以后产生新数据，就永久抽王先生后续收益。</span></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>这和普通商城的区别</h3>
+              <div class="quote" style="box-shadow:none; margin-top: 14px;">
+                普通商城：用户买完东西，交易结束。<br /><br />
+                这个平台：用户买服务解决问题，服务过程产生数据；数据经授权和脱敏后，未来如果被别人实际参考，就继续产生权益收益。
+              </div>
+              <div class="small-note" style="margin-top: 12px;">但这个收益必须来自真实引用和真实订单，不能表达成固定回报或拉人头收益。</div>
+            </div>
+          </div>
+          <div class="footer-line"><span>闭环是“消费产生数据”，不是“上家永久吃下家”</span><span>12</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>协议到底是怎么达成的</h2>
+              <p class="sub">借鉴 TMGM 的“报盘”思想，但医疗场景不能只靠一个协议。这里至少要拆成三层。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="file-signature"></i>三层协议</div>
+          </div>
+          <div class="protocol-detail">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>协议层</th>
+                    <th>谁确认</th>
+                    <th>解决什么问题</th>
+                    <th>后台应生成什么记录</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><b>数据授权协议</b></td>
+                    <td>数据贡献者</td>
+                    <td>同意采集哪些数据、如何脱敏、用于哪些产品、能否分润、是否可撤回。</td>
+                    <td>authorization_id、授权范围、版本号、签署时间、撤回状态。</td>
+                  </tr>
+                  <tr>
+                    <td><b>数据产品协议</b></td>
+                    <td>平台/专家/交易所</td>
+                    <td>定义某个病例包或数据集包含哪些资产、展示边界、适用范围、有效期。</td>
+                    <td>product_id、资产清单、脱敏级别、质量规则、可售状态。</td>
+                  </tr>
+                  <tr>
+                    <td><b>订单结算协议</b></td>
+                    <td>消费者/服务方/平台</td>
+                    <td>定义订单金额如何拆分、什么条件触发分润、退款和投诉如何处理。</td>
+                    <td>order_id、usage_record、settlement_batch、wallet_record。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="grid-3 compact-cards">
+              <div class="card"><h3>贡献者点了什么</h3><p>勾选授权范围、查看脱敏预览、确认收益规则，系统保存协议版本。</p></div>
+              <div class="card"><h3>消费者点了什么</h3><p>购买服务或报告时接受订单条款，知道费用中有一部分进入数据分润池。</p></div>
+              <div class="card"><h3>平台做了什么</h3><p>把资产、产品、订单、引用、结算关联起来，保证每笔钱可解释。</p></div>
+            </div>
+          </div>
+          <div class="small-note">对用户说简单一点：你授权贡献数据；平台把数据做成参考产品；别人购买服务时如果用到你的数据，订单完成后你拿到对应收益。</div>
+          <div class="footer-line"><span>核心：协议不是口头达成，而是通过授权记录、产品规则和订单结算记录达成</span><span>13</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>完整协作顺序</h2>
+              <p class="sub">这张图适合给开发团队看：每一步都要留下可审计记录，否则后面分润一定会乱。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="workflow"></i>时序图</div>
+          </div>
+          <div class="process-map">
+            <div class="phase">
+              <h3><span class="icon teal"><i data-lucide="user-round-check"></i></span>贡献侧</h3>
+              <div class="phase-step"><div class="badge teal">1</div><div><b>用户上传</b><span>报告、干预、随访、评价。</span></div></div>
+              <div class="phase-step"><div class="badge teal">2</div><div><b>脱敏预览</b><span>用户确认未来可展示内容。</span></div></div>
+              <div class="phase-step"><div class="badge teal">3</div><div><b>签署授权</b><span>记录授权版本、范围、撤回状态。</span></div></div>
+            </div>
+            <div class="phase">
+              <h3><span class="icon"><i data-lucide="database-zap"></i></span>平台加工</h3>
+              <div class="phase-step"><div class="badge blue">4</div><div><b>结构化</b><span>OCR、人工修正、质量审核。</span></div></div>
+              <div class="phase-step"><div class="badge blue">5</div><div><b>登记存证</b><span>平台编号，交易所/链上批量存证。</span></div></div>
+              <div class="phase-step"><div class="badge blue">6</div><div><b>组合产品</b><span>病例包、统计报告、相似匹配。</span></div></div>
+            </div>
+            <div class="phase">
+              <h3><span class="icon amber"><i data-lucide="shopping-bag"></i></span>消费侧</h3>
+              <div class="phase-step"><div class="badge amber">7</div><div><b>新用户购买</b><span>健康服务、专家解读或数据报告。</span></div></div>
+              <div class="phase-step"><div class="badge amber">8</div><div><b>专家服务</b><span>咨询、报告交付、干预方案。</span></div></div>
+              <div class="phase-step"><div class="badge amber">9</div><div><b>记录引用</b><span>写入 usage_record 和贡献权重。</span></div></div>
+            </div>
+            <div class="phase">
+              <h3><span class="icon coral"><i data-lucide="wallet"></i></span>结算侧</h3>
+              <div class="phase-step"><div class="badge coral">10</div><div><b>订单完成</b><span>服务完成且过退款/投诉期。</span></div></div>
+              <div class="phase-step"><div class="badge coral">11</div><div><b>创建批次</b><span>按订单规则生成 settlement。</span></div></div>
+              <div class="phase-step"><div class="badge coral">12</div><div><b>钱包发放</b><span>数据贡献者、服务方、渠道分别入账。</span></div></div>
+            </div>
+          </div>
+          <div class="small-note">这页原来用时序图，容易超出 16:9 画面；现在改成四段流程，开发仍能看清每一步要落哪张表。</div>
+          <div class="footer-line"><span>实现关键：先有 usage_record，后有 settlement_record</span><span>14</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>什么时候才触发分润</h2>
+              <p class="sub">不是用户一浏览就一定分钱，也不是数据一上传就有收益。要把触发条件说死。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="timer-reset"></i>结算条件</div>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <h3>推荐触发条件</h3>
+              <div class="check-list" style="margin-top: 14px;">
+                <div class="check"><i data-lucide="check-circle-2"></i><div><b>订单已支付</b><span>用户真实支付，不能用虚拟点击量替代。</span></div></div>
+                <div class="check"><i data-lucide="check-circle-2"></i><div><b>确实引用数据产品</b><span>后台记录了本次服务用了哪个病例包、哪些资产、各自权重。</span></div></div>
+                <div class="check"><i data-lucide="check-circle-2"></i><div><b>服务已完成</b><span>专家咨询、报告交付、健康服务状态完成。</span></div></div>
+                <div class="check"><i data-lucide="check-circle-2"></i><div><b>过退款期/投诉期</b><span>避免刚发分润后又退款，造成账务回滚。</span></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>不建议触发</h3>
+              <div class="check-list" style="margin-top: 14px;">
+                <div class="check warning"><i data-lucide="circle-x"></i><div><b>只浏览免费摘要</b><span>可以记录热度，但不一定触发分润。</span></div></div>
+                <div class="check warning"><i data-lucide="circle-x"></i><div><b>订单未完成</b><span>只预约、未付款、未服务，不应进入正式分润。</span></div></div>
+                <div class="check warning"><i data-lucide="circle-x"></i><div><b>授权已撤回</b><span>撤回后的数据不再参与新交易，历史已完成订单另行按协议处理。</span></div></div>
+                <div class="check warning"><i data-lucide="circle-x"></i><div><b>资产审核异常</b><span>疑似造假、隐私风险、质量不达标，进入冻结或人工审核。</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>一句话：分润发生在订单完成之后，而不是数据上传之后</span><span>15</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>具体钱怎么分：10000 元订单</h2>
+              <p class="sub">这是最容易讲清楚的一版。先用固定比例跑通，后续再按不同服务、不同数据产品调整。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="landmark"></i>资金流</div>
+          </div>
+          <div class="money-grid">
+            <div class="panel">
+              <div id="sankeyChart" class="chart"></div>
+            </div>
+            <div class="side-stack">
+              <div class="mini"><div class="label">订单金额</div><div class="value">10000 元</div><p>王先生购买糖尿病肠道微生态健康管理服务。</p></div>
+              <div class="mini"><div class="label">数据分润池</div><div class="value">1500 元</div><p>服务型订单示例：15% 用于回馈本次被引用的数据贡献者。</p></div>
+              <div class="mini"><div class="label">李阿姨收益</div><div class="value">27 元</div><p>假设她在本次引用中的贡献权重为 1.8%。</p></div>
+              <div class="formula">
+                <span class="muted">公式：</span><br />
+                数据池 = 订单金额 × 数据池比例<br />
+                个人收益 = 数据池 × 个人贡献权重
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>注意：渠道佣金和数据贡献分润应分开建账</span><span>16</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>数据分润池内部怎么切</h2>
+              <p class="sub">不要简单永远平均分。第一版可以设一个清楚、可解释的权重公式。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="scale"></i>权重算法</div>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <div id="weightChart" class="chart short"></div>
+            </div>
+            <div class="panel">
+              <h3>权重可以这样理解</h3>
+              <div class="formula" style="margin-top: 14px;">
+                贡献权重 = 相似度 35%<br />
+                + 数据完整度 25%<br />
+                + 认证等级 20%<br />
+                + 随访质量 12%<br />
+                + 时间新鲜度 8%
+              </div>
+              <div class="check-list" style="margin-top: 14px;">
+                <div class="check"><i data-lucide="radar"></i><div><b>相似度</b><span>和本次消费者越像，权重越高。</span></div></div>
+                <div class="check"><i data-lucide="clipboard-check"></i><div><b>完整度</b><span>有前后指标、干预方案、随访结果，比只有单张报告更有价值。</span></div></div>
+                <div class="check"><i data-lucide="badge-check"></i><div><b>认证等级</b><span>三甲医院报告、合作机构检测、自填数据可以分级。</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>MVP 可以先固定权重，后续再用模型优化</span><span>17</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>到底有没有“嵌套分润”</h2>
+              <p class="sub">答案：可以有一笔订单内的多方分账，不建议有无限上游的永久抽成。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="git-branch"></i>边界设计</div>
+          </div>
+          <div class="do-dont">
+            <div class="do">
+              <h3><i data-lucide="circle-check-big"></i>推荐：同一订单内分账</h3>
+              <p>订单收入同时分给服务方、平台、渠道、本次被引用的数据资产。每个角色有明确来源和上限。</p>
+              <div class="mermaid-box" style="margin-top: 12px;">
+                <pre class="mermaid">
+flowchart LR
+  O["订单 10000"] --> S["服务方 4500"]
+  O --> P["平台 2000"]
+  O --> Q["渠道 500"]
+  O --> D["数据池 3000"]
+  D --> A["李阿姨 54"]
+  D --> B["其他贡献者"]
+                </pre>
+              </div>
+            </div>
+            <div class="dont">
+              <h3><i data-lucide="octagon-alert"></i>不建议：无限上游抽成</h3>
+              <p>A 的数据影响 B，B 又产生数据影响 C，然后 A 继续抽 C、D、E 的钱。这会快速变成难解释的层级返利。</p>
+              <div class="mermaid-box" style="margin-top: 12px;">
+                <pre class="mermaid">
+flowchart LR
+  A["A"] --> B["B"]
+  B --> C["C"]
+  C --> D["D"]
+  D -. "不建议回流给 A" .-> A
+                </pre>
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>判断标准：这笔订单有没有实际引用这个人的数据</span><span>18</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>后台最少要记哪几张账</h2>
+              <p class="sub">真正防止混乱的不是前端页面，而是后台账本。先把三张核心表跑通。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="table-properties"></i>数据结构</div>
+          </div>
+          <div class="schema">
+            <div class="schema-card">
+              <h3>资产表 data_asset</h3>
+              <div class="field"><span>asset_id</span><span>资产编号</span></div>
+              <div class="field"><span>owner_user_id</span><span>贡献者</span></div>
+              <div class="field"><span>asset_type</span><span>检测/随访/评价</span></div>
+              <div class="field"><span>quality_score</span><span>质量评分</span></div>
+              <div class="field"><span>auth_status</span><span>授权状态</span></div>
+              <div class="field"><span>deid_level</span><span>脱敏等级</span></div>
+              <div class="field"><span>registry_no</span><span>确权/存证号</span></div>
+            </div>
+            <div class="schema-card">
+              <h3>引用记录 usage_record</h3>
+              <div class="field"><span>usage_id</span><span>引用编号</span></div>
+              <div class="field"><span>order_id</span><span>订单</span></div>
+              <div class="field"><span>product_id</span><span>数据产品</span></div>
+              <div class="field"><span>asset_id</span><span>被引用资产</span></div>
+              <div class="field"><span>weight</span><span>贡献权重</span></div>
+              <div class="field"><span>reason</span><span>引用原因</span></div>
+              <div class="field"><span>created_at</span><span>生成时间</span></div>
+            </div>
+            <div class="schema-card">
+              <h3>分润明细 settlement</h3>
+              <div class="field"><span>settlement_id</span><span>结算编号</span></div>
+              <div class="field"><span>order_id</span><span>订单</span></div>
+              <div class="field"><span>payee_user_id</span><span>收款人</span></div>
+              <div class="field"><span>role</span><span>数据/服务/渠道</span></div>
+              <div class="field"><span>amount</span><span>金额</span></div>
+              <div class="field"><span>status</span><span>冻结/发放/撤销</span></div>
+              <div class="field"><span>audit_hash</span><span>审计哈希</span></div>
+            </div>
+          </div>
+          <div class="footer-line"><span>没有 usage_record，就无法证明某个人为什么拿钱</span><span>19</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>目前最大的顾虑</h2>
+              <p class="sub">这些点如果不提前设计，业务后期会越做越乱。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="shield-alert"></i>风险清单</div>
+          </div>
+          <div class="grid-4">
+            <div class="card">
+              <span class="badge coral">高</span>
+              <h3>被理解成卖病历</h3>
+              <p>前端必须避免展示原始报告和可识别个人的信息。</p>
+            </div>
+            <div class="card">
+              <span class="badge coral">高</span>
+              <h3>分润像多层级分销</h3>
+              <p>只做本次订单实际引用分润，渠道收益另算。</p>
+            </div>
+            <div class="card">
+              <span class="badge coral">高</span>
+              <h3>医疗效果被误解</h3>
+              <p>数据产品是参考，不是对疗效的确定承诺。</p>
+            </div>
+            <div class="card">
+              <span class="badge amber">中</span>
+              <h3>确权概念太重</h3>
+              <p>对用户讲权益和收益记录，对后台讲登记存证。</p>
+            </div>
+            <div class="card">
+              <span class="badge amber">中</span>
+              <h3>退款后账务回滚</h3>
+              <p>订单完成且过退款期后再正式发放。</p>
+            </div>
+            <div class="card">
+              <span class="badge amber">中</span>
+              <h3>权重算法不透明</h3>
+              <p>公开核心维度，保留每笔计算快照。</p>
+            </div>
+            <div class="card">
+              <span class="badge teal">可控</span>
+              <h3>交易所接口不成熟</h3>
+              <p>MVP 先平台内编号和批量清算，后续接口化。</p>
+            </div>
+            <div class="card">
+              <span class="badge teal">可控</span>
+              <h3>用户听不懂资产</h3>
+              <p>用“我的健康数据权益”和“被参考收益”表达。</p>
+            </div>
+          </div>
+          <div class="footer-line"><span>风控原则：收益表达要克制，医疗表达要谨慎，分润链路要短</span><span>20</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>MVP 先做什么</h2>
+              <p class="sub">先别一上来做完整交易所、复杂智能合约和多类数据产品。先跑通一个可讲明白的闭环。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="rocket"></i>落地路线</div>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <h3>第一版只做一条链</h3>
+              <div class="check-list" style="margin-top: 14px;">
+                <div class="check"><i data-lucide="badge-check"></i><div><b>一个疾病/健康管理主题</b><span>例如糖尿病肠道微生态，或肿瘤康复管理。</span></div></div>
+                <div class="check"><i data-lucide="package"></i><div><b>一个数据产品类型</b><span>相似病例干预参考包，不要同时做太多品类。</span></div></div>
+                <div class="check"><i data-lucide="receipt"></i><div><b>一种订单触发方式</b><span>健康服务订单完成后触发分润。</span></div></div>
+                <div class="check"><i data-lucide="wallet"></i><div><b>一种结算方式</b><span>订单固定比例进入数据分润池，按权重发钱包。</span></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>第一版先不要做</h3>
+              <div class="check-list" style="margin-top: 14px;">
+                <div class="check warning"><i data-lucide="circle-x"></i><div><b>无限层级收益</b><span>会把业务和合规复杂度迅速放大。</span></div></div>
+                <div class="check warning"><i data-lucide="circle-x"></i><div><b>直接展示个人病例</b><span>这会直接破坏“可用不可见”的产品边界。</span></div></div>
+                <div class="check warning"><i data-lucide="circle-x"></i><div><b>复杂代币系统</b><span>用人民币订单、钱包余额、提现记录即可。</span></div></div>
+                <div class="check warning"><i data-lucide="circle-x"></i><div><b>过早承诺资产升值</b><span>收益来自被引用和订单结算，不是金融收益承诺。</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>第一版目标：让业务方、用户、开发都能解释“这笔钱为什么这么分”</span><span>21</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>最后用一张图收束</h2>
+              <p class="sub">这就是推荐的闭环：消费产生数据，数据经过授权和加工后参与后续消费分润。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="refresh-cw"></i>闭环</div>
+          </div>
+          <div class="closure-layout">
+            <div class="loop-diagram">
+              <div class="loop-card user" style="grid-column:1;grid-row:1;">
+                <h3><span class="icon teal"><i data-lucide="heart-handshake"></i></span>1. 完成健康服务</h3>
+                <p>用户先为健康问题付费，产生检测、干预、随访和评价。</p>
+              </div>
+              <div class="loop-arrow" style="grid-column:2;grid-row:1;"><i data-lucide="arrow-right"></i></div>
+              <div class="loop-card user" style="grid-column:3;grid-row:1;">
+                <h3><span class="icon teal"><i data-lucide="file-signature"></i></span>2. 授权贡献数据</h3>
+                <p>用户确认采集、脱敏加工、进入产品和收益分配规则。</p>
+              </div>
+
+              <div class="loop-arrow" style="grid-column:3;grid-row:2;"><i data-lucide="arrow-down"></i></div>
+              <div class="loop-card product" style="grid-column:3;grid-row:3;">
+                <h3><span class="icon"><i data-lucide="package-check"></i></span>3. 形成数据产品</h3>
+                <p>平台做脱敏、质量评分、相似匹配和病例经验包。</p>
+              </div>
+
+              <div class="loop-arrow" style="grid-column:2;grid-row:3;"><i data-lucide="arrow-left"></i></div>
+              <div class="loop-card product" style="grid-column:1;grid-row:3;">
+                <h3><span class="icon"><i data-lucide="shopping-bag"></i></span>4. 新用户购买服务</h3>
+                <p>买服务、专家解释和统计参考，不买个人原始病历。</p>
+              </div>
+
+              <div class="loop-arrow" style="grid-column:1;grid-row:4;"><i data-lucide="arrow-down"></i></div>
+              <div class="loop-card money" style="grid-column:1;grid-row:5;">
+                <h3><span class="icon amber"><i data-lucide="wallet-cards"></i></span>5. 订单完成后分润</h3>
+                <p>只给本次被实际引用的数据贡献者发收益。</p>
+              </div>
+
+              <div class="loop-arrow" style="grid-column:2;grid-row:5;"><i data-lucide="arrow-right"></i></div>
+              <div class="loop-card center">
+                <h3><span class="icon"><i data-lucide="refresh-cw"></i></span>继续循环</h3>
+                <p>新用户服务结果经授权后，又可成为新的数据资产。</p>
+              </div>
+            </div>
+            <div class="closure-side">
+              <div class="quote">
+                最稳的产品定义：这是一个“健康服务 + 数据权益”的平台。用户先为健康问题付费，服务过程产生的数据在授权后进入数据产品，后续订单实际引用时再产生收益。
+              </div>
+              <div class="caption-grid" style="grid-template-columns:1fr;">
+                <div class="caption-card"><b>一句话讲给用户</b><span>你贡献的是脱敏后的健康经验；别人购买服务时如果参考到你的数据，你获得对应权益收益。</span></div>
+                <div class="caption-card"><b>一句话讲给开发</b><span>先有 asset，再有 product，再有 usage_record，最后才有 settlement。</span></div>
+                <div class="caption-card"><b>一句话讲给业务</b><span>这是服务驱动的数据复用，不是金融投资、不是卖隐私、不是多级分销。</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-line"><span>建议下一步：把这个 slides 版拿去和业务方逐页对齐，再画 App 线框图</span><span>22</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>最后要问总裁确认的核心问题</h2>
+              <p class="sub">如果总裁明确方向是“用户买数据”，那产品经理要先确认：买的是哪一种数据商品，以及买到的到底是什么使用权。</p>
+            </div>
+            <div class="slide-kicker"><i data-lucide="circle-help"></i>待确认</div>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <h3>1. 用户买的是哪种数据商品？</h3>
+              <div class="check-list" style="margin-top: 14px;">
+                <div class="check"><i data-lucide="file-bar-chart"></i><div><b>相似病例报告</b><span>用户买脱敏统计、相似人群趋势、干预效果摘要。</span></div></div>
+                <div class="check"><i data-lucide="package-check"></i><div><b>干预方案数据包</b><span>用户买某类方案在相似人群中的效果参考。</span></div></div>
+                <div class="check"><i data-lucide="database"></i><div><b>数据集使用权</b><span>专家、药企、科研机构买限定用途的数据产品或计算结果。</span></div></div>
+                <div class="check"><i data-lucide="stethoscope"></i><div><b>专家解读版数据报告</b><span>用户买数据报告 + 专家解释，这里数据和服务要分账。</span></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>2. 必须确认的边界</h3>
+              <div class="check-list" style="margin-top: 14px;">
+                <div class="check warning"><i data-lucide="shield-alert"></i><div><b>不是买原始病历</b><span>建议统一定义为“脱敏、加工、确权后的数据产品使用权”。</span></div></div>
+                <div class="check"><i data-lucide="wallet-cards"></i><div><b>分润分哪笔钱</b><span>分的是这笔数据产品订单收入中的数据分润池，不是平台最终利润。</span></div></div>
+                <div class="check"><i data-lucide="percent"></i><div><b>比例按商品定</b><span>相似病例报告可 30%-50%；机构数据产品可 50%-70%；专家解读版要拆服务费和数据池。</span></div></div>
+                <div class="check"><i data-lucide="list-checks"></i><div><b>MVP 先选一个</b><span>建议先确认第一版到底做“相似病例报告”还是“专家解读版数据报告”。</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="quote">
+            建议向总裁这样确认：如果我们定义为“买数据”，第一版用户买到的是相似病例报告、干预方案数据包、数据集使用权，还是专家解读版数据报告？并且是否统一表述为“脱敏数据产品使用权”，而不是原始患者数据？
+          </div>
+          <div class="footer-line"><span>这页用于和总裁对齐商品定义；商品定义定不下来，分润规则就定不下来</span><span>23</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const reveal = new Reveal({
+      hash: true,
+      controls: true,
+      progress: true,
+      center: false,
+      width: 1280,
+      height: 720,
+      margin: 0.04,
+      transition: "slide",
+      backgroundTransition: "fade"
+    });
+
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: "loose",
+      theme: "base",
+      themeVariables: {
+        fontFamily: "-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+        primaryColor: "#e9f0ff",
+        primaryTextColor: "#1f2a37",
+        primaryBorderColor: "#315fbd",
+        lineColor: "#64748b",
+        secondaryColor: "#e6f6f4",
+        tertiaryColor: "#fff4d6"
+      }
+    });
+
+    const fmt = new Intl.NumberFormat("zh-CN");
+    let sankeyChart;
+    let weightChart;
+
+    function renderSankey() {
+      const el = document.getElementById("sankeyChart");
+      if (!el) return;
+      sankeyChart = sankeyChart || echarts.init(el);
+      sankeyChart.setOption({
+        tooltip: {
+          trigger: "item",
+          formatter: params => {
+            if (params.dataType === "edge") {
+              return `${params.data.source} → ${params.data.target}<br/><b>${fmt.format(params.data.value)} 元</b>`;
+            }
+            return params.name;
+          }
+        },
+        series: [{
+          type: "sankey",
+          top: 18,
+          bottom: 18,
+          left: 8,
+          right: 118,
+          nodeWidth: 18,
+          nodeGap: 16,
+          draggable: false,
+          emphasis: { focus: "adjacency" },
+          label: { color: "#1f2a37", fontSize: 11 },
+          lineStyle: { color: "gradient", curveness: 0.5, opacity: 0.42 },
+          itemStyle: { borderWidth: 0 },
+          data: [
+            { name: "王先生订单", itemStyle: { color: "#315fbd" } },
+            { name: "服务方", itemStyle: { color: "#1b998b" } },
+            { name: "平台", itemStyle: { color: "#64748b" } },
+            { name: "渠道推荐人", itemStyle: { color: "#d89614" } },
+            { name: "数据分润池", itemStyle: { color: "#cf4b56" } },
+            { name: "李阿姨", itemStyle: { color: "#357f4d" } },
+            { name: "高相似案例", itemStyle: { color: "#6f5bd7" } },
+            { name: "认证随访案例", itemStyle: { color: "#2d9cdb" } },
+            { name: "其他贡献者", itemStyle: { color: "#93a3b8" } }
+          ],
+          links: [
+            { source: "王先生订单", target: "服务方", value: 6200 },
+            { source: "王先生订单", target: "平台", value: 1800 },
+            { source: "王先生订单", target: "渠道推荐人", value: 500 },
+            { source: "王先生订单", target: "数据分润池", value: 1500 },
+            { source: "数据分润池", target: "李阿姨", value: 27 },
+            { source: "数据分润池", target: "高相似案例", value: 180 },
+            { source: "数据分润池", target: "认证随访案例", value: 270 },
+            { source: "数据分润池", target: "其他贡献者", value: 1023 }
+          ]
+        }]
+      });
+    }
+
+    function renderWeights() {
+      const el = document.getElementById("weightChart");
+      if (!el) return;
+      weightChart = weightChart || echarts.init(el);
+      weightChart.setOption({
+        tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+        grid: { left: 118, right: 34, top: 20, bottom: 20 },
+        xAxis: {
+          type: "value",
+          max: 40,
+          axisLabel: { formatter: "{value}%" },
+          splitLine: { lineStyle: { color: "#eef2f7" } }
+        },
+        yAxis: {
+          type: "category",
+          data: ["相似度", "数据完整度", "认证等级", "随访质量", "时间新鲜度"],
+          axisTick: { show: false },
+          axisLine: { show: false }
+        },
+        series: [{
+          type: "bar",
+          barWidth: 26,
+          data: [
+            { value: 35, itemStyle: { color: "#315fbd" } },
+            { value: 25, itemStyle: { color: "#1b998b" } },
+            { value: 20, itemStyle: { color: "#d89614" } },
+            { value: 12, itemStyle: { color: "#cf4b56" } },
+            { value: 8, itemStyle: { color: "#64748b" } }
+          ],
+          label: { show: true, position: "right", formatter: "{c}%" }
+        }]
+      });
+    }
+
+    function resizeCharts() {
+      if (sankeyChart) sankeyChart.resize();
+      if (weightChart) weightChart.resize();
+    }
+
+    reveal.initialize().then(() => {
+      lucide.createIcons();
+      if (window.mermaid) {
+        mermaid.run({ querySelector: ".mermaid" }).catch(() => {});
+      }
+      renderSankey();
+      renderWeights();
+      setTimeout(resizeCharts, 120);
+      gsap.from(".slides section.present .slide-kicker, .slides section.present h1, .slides section.present h2, .slides section.present .sub", {
+        y: 14,
+        opacity: 0,
+        duration: 0.55,
+        stagger: 0.05,
+        ease: "power2.out"
+      });
+    });
+
+    reveal.on("slidechanged", () => {
+      lucide.createIcons();
+      setTimeout(resizeCharts, 80);
+      gsap.from(".slides section.present .card, .slides section.present .panel, .slides section.present .timeline-row, .slides section.present .flow-item, .slides section.present .mini, .slides section.present .schema-card", {
+        y: 12,
+        opacity: 0,
+        duration: 0.45,
+        stagger: 0.025,
+        ease: "power2.out"
+      });
+    });
+
+    window.addEventListener("resize", resizeCharts);
+  </script>
+</body>
+</html>
