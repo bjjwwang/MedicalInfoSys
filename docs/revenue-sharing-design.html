@@ -10,6 +10,15 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const wantsDesktop = params.get("desktop") === "1";
+      if (!wantsDesktop && window.matchMedia("(max-width: 760px)").matches) {
+        window.location.replace("revenue-sharing-design-mobile.html");
+      }
+    })();
+  </script>
   <style>
     :root {
       --bg: #f6f4ef;
@@ -1286,6 +1295,31 @@
       text-decoration: none;
     }
 
+    .mobile-link {
+      position: fixed;
+      left: 20px;
+      top: 62px;
+      z-index: 45;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 10px;
+      color: #405069;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      font-weight: 760;
+      text-decoration: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .mobile-link:hover {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
     .reveal .controls {
       color: var(--blue);
     }
@@ -1329,6 +1363,7 @@
 </head>
 <body>
   <a class="home-link" href="index.html"><i data-lucide="arrow-left"></i>返回首页</a>
+  <a class="mobile-link" href="revenue-sharing-design-mobile.html"><i data-lucide="smartphone"></i>手机版</a>
   <div class="nav-hint"><i data-lucide="keyboard"></i>方向键 / 空格翻页</div>
 
   <div class="reveal">

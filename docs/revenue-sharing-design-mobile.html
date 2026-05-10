@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>分润设计手机版 - 医疗数据资产分润机制</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --paper: #ffffff;
+      --ink: #1f2a37;
+      --muted: #667085;
+      --line: #d8dee8;
+      --blue: #315fbd;
+      --teal: #168f83;
+      --green: #357f4d;
+      --amber: #c98509;
+      --coral: #c2414e;
+      --purple: #6f5bd7;
+      --soft-blue: #e9f0ff;
+      --soft-teal: #e6f6f4;
+      --soft-green: #e9f7ef;
+      --soft-amber: #fff3d6;
+      --soft-coral: #ffe8eb;
+      --shadow: 0 14px 34px rgba(31, 42, 55, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(49, 95, 189, 0.08), transparent 34rem),
+        linear-gradient(180deg, #fbfaf7 0%, var(--bg) 42%, #eef5f3 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.62;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 54px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid rgba(216, 222, 232, 0.9);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar a,
+    .topbar button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 12px;
+      color: #344054;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 760;
+      box-shadow: 0 8px 18px rgba(31, 42, 55, 0.06);
+    }
+
+    .topbar button {
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .progress {
+      position: fixed;
+      top: 54px;
+      left: 0;
+      z-index: 21;
+      width: 100%;
+      height: 3px;
+      background: rgba(216, 222, 232, 0.65);
+    }
+
+    .progress span {
+      display: block;
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--blue));
+    }
+
+    .shell {
+      width: 390px;
+      max-width: 100vw;
+      margin: 0;
+      padding: 18px 14px 42px;
+    }
+
+    .hero {
+      padding: 22px 0 12px;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      color: #155b54;
+      background: var(--soft-teal);
+      border: 1px solid #b8ddd8;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+      word-break: break-all;
+      line-break: anywhere;
+    }
+
+    h1 {
+      margin-top: 12px;
+      font-size: clamp(24px, 6.2vw, 36px);
+      line-height: 1.14;
+      font-weight: 880;
+    }
+
+    h2 {
+      font-size: clamp(21px, 5.6vw, 30px);
+      line-height: 1.18;
+      font-weight: 860;
+    }
+
+    h3 {
+      font-size: 17px;
+      line-height: 1.28;
+      font-weight: 820;
+    }
+
+    .lead {
+      margin-top: 12px;
+      color: #475467;
+      font-size: 16px;
+    }
+
+    .hero-callout {
+      margin-top: 16px;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--teal);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-callout b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 17px;
+    }
+
+    .hero-callout span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .toc a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 8px 10px;
+      color: #344054;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 780;
+      box-shadow: 0 8px 18px rgba(31, 42, 55, 0.06);
+      text-align: center;
+    }
+
+    section {
+      margin-top: 18px;
+      padding: 19px 14px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(216, 222, 232, 0.96);
+      border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(31, 42, 55, 0.07);
+      scroll-margin-top: 72px;
+    }
+
+    section > .section-head {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .cards {
+      display: grid;
+      gap: 10px;
+    }
+
+    .card {
+      padding: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .card p,
+    .card li {
+      color: #475467;
+      font-size: 14px;
+    }
+
+    .card ul,
+    .card ol {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 9px;
+      color: #344054;
+      background: #f2f4f7;
+      border: 1px solid #e4e7ec;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .grid-2 {
+      display: grid;
+      gap: 10px;
+    }
+
+    .story-card {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .story-card figure {
+      margin: 0;
+      background: #edf3f4;
+    }
+
+    .story-card img {
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .story-card .body {
+      padding: 13px;
+    }
+
+    .story-card .step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 8px;
+      color: #0f3d39;
+      background: #b9f0e9;
+      border-radius: 9px;
+      font-weight: 880;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .detail {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 11px;
+      background: #f8fafc;
+      border: 1px solid #e4e7ec;
+      border-radius: 12px;
+    }
+
+    .detail .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .detail b {
+      display: block;
+      font-size: 15px;
+      line-height: 1.32;
+    }
+
+    .detail span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-node {
+      position: relative;
+      display: grid;
+      gap: 4px;
+      padding: 13px 13px 13px 46px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .flow-node::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 12px;
+      top: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      color: #fff;
+      background: var(--teal);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 860;
+    }
+
+    .flow-node:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 24px;
+      bottom: -11px;
+      width: 2px;
+      height: 10px;
+      background: var(--teal);
+    }
+
+    .flow-node b {
+      font-size: 15px;
+    }
+
+    .flow-node span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .split-card {
+      padding: 14px;
+      color: #fff;
+      background: #1f2a37;
+      border-radius: 14px;
+    }
+
+    .split-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .bar {
+      height: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+    }
+
+    .bar span {
+      display: block;
+      width: var(--w);
+      height: 100%;
+      background: var(--c);
+      border-radius: inherit;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 560px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #edf0f5;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #344054;
+      background: #f8fafc;
+      font-weight: 820;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .warning {
+      padding: 13px;
+      color: #713f12;
+      background: #fff7df;
+      border: 1px solid #f3d48a;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 760;
+    }
+
+    .loop {
+      display: grid;
+      gap: 10px;
+      counter-reset: loop;
+    }
+
+    .loop-item {
+      counter-increment: loop;
+      position: relative;
+      padding: 13px 13px 13px 46px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .loop-item::before {
+      content: counter(loop);
+      position: absolute;
+      left: 12px;
+      top: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      color: #fff;
+      background: var(--purple);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 860;
+    }
+
+    .loop-item b {
+      display: block;
+      font-size: 15px;
+    }
+
+    .loop-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .question {
+      padding: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--coral);
+      border-radius: 12px;
+    }
+
+    .question b {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+
+    .question span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .footer-actions a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      border-radius: 12px;
+      font-weight: 820;
+    }
+
+    @media (min-width: 700px) {
+      .shell {
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
+        padding-inline: 24px;
+      }
+
+      section {
+        padding: 24px;
+      }
+
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .story-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .toc {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 699px) {
+      .table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+
+      table,
+      tbody,
+      tr,
+      td {
+        display: block;
+      }
+
+      table {
+        min-width: 0;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        overflow: hidden;
+        margin-bottom: 10px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+
+      tr:last-child {
+        margin-bottom: 0;
+      }
+
+      td {
+        position: relative;
+        min-height: 42px;
+        padding: 10px 10px 10px 92px;
+        border-bottom: 1px solid #edf0f5;
+      }
+
+      td:last-child {
+        border-bottom: 0;
+      }
+
+      td::before {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        width: 72px;
+        color: #667085;
+        font-weight: 820;
+        content: "";
+      }
+
+      td:nth-child(1)::before { content: "商品"; }
+      td:nth-child(2)::before { content: "谁买"; }
+      td:nth-child(3)::before { content: "拿到"; }
+      td:nth-child(4)::before { content: "分润"; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="index.html">返回首页</a>
+    <a href="revenue-sharing-design.html?desktop=1">桌面版</a>
+    <button type="button" id="tocButton">目录</button>
+  </div>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <main class="shell">
+    <header class="hero" id="top">
+      <div class="kicker">手机版说明稿</div>
+      <h1>分润设计：用户到底买什么，分的是谁的润</h1>
+      <p class="lead">
+        这版专门给手机阅读：不用 16:9 幻灯片，不做横向翻页。核心是把“数据商品、购买方、授权、引用、结算”一步一步讲清楚。
+      </p>
+      <div class="hero-callout">
+        <b>一句话结论</b>
+        <span>分润不是分平台总利润，也不是无限拉人头返利；它分的是某一笔订单里，明确划出来的“数据使用价值池”。</span>
+      </div>
+      <nav class="toc" id="toc">
+        <a href="#model">一句话模型</a>
+        <a href="#goods">商品是什么</a>
+        <a href="#story">完整故事</a>
+        <a href="#agreement">协议怎么成</a>
+        <a href="#split">钱怎么分</a>
+        <a href="#nested">嵌套问题</a>
+        <a href="#loop">最后闭环</a>
+        <a href="#questions">问总裁</a>
+      </nav>
+    </header>
+
+    <section id="model">
+      <div class="section-head">
+        <div class="kicker">先定概念</div>
+        <h2>不是卖病历，是卖数据产品使用权</h2>
+        <p class="sub">如果这一句讲不清，后面所有分润都会乱。</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <h3>用户买的不是某个人的原始病历</h3>
+          <p>用户、专家或机构买的是平台加工后的数据产品：相似案例统计、干预效果参考、专家解读报告、某类数据集的限定使用权。</p>
+        </div>
+        <div class="card">
+          <h3>数据贡献者分的是“数据被使用”的钱</h3>
+          <p>只有本次订单实际引用到某些脱敏数据资产时，这些数据资产的提供者才参与分润。没被引用，就不参与。</p>
+        </div>
+        <div class="card">
+          <h3>平台和专家赚的是另外一类钱</h3>
+          <p>平台服务费、专家服务费、渠道佣金、交易所费用要独立记账，不能和数据贡献者分润池混在一起。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="goods">
+      <div class="section-head">
+        <div class="kicker">产品经理视角</div>
+        <h2>先把不同商品拆开</h2>
+        <p class="sub">“买数据”不能只是一句口号，要落成 SKU 和订单类型。</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>谁买</th>
+              <th>用户实际拿到</th>
+              <th>分润来源</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>相似案例报告</td>
+              <td>患者/健康消费者</td>
+              <td>和自己相似人群的统计结果、干预效果、风险提示</td>
+              <td>报告订单中的数据使用价值池</td>
+            </tr>
+            <tr>
+              <td>专家解读报告</td>
+              <td>患者或专家代用户购买</td>
+              <td>专家结合相似数据后的解释和建议</td>
+              <td>订单中拆出的数据池，不是专家全部服务费</td>
+            </tr>
+            <tr>
+              <td>机构数据包</td>
+              <td>医院、药企、研究机构</td>
+              <td>脱敏聚合数据、统计分析、限定用途数据集</td>
+              <td>机构数据产品收入的数据池</td>
+            </tr>
+            <tr>
+              <td>平台健康服务</td>
+              <td>普通用户</td>
+              <td>检测、咨询、干预、随访服务</td>
+              <td>如果服务里调用数据产品，才从数据池分润</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warning" style="margin-top: 12px;">
+        建议先选一个主商品做 MVP：相似案例报告或专家解读报告。否则“买服务”和“买数据”会继续混在一起。
+      </div>
+    </section>
+
+    <section id="story">
+      <div class="section-head">
+        <div class="kicker">四张图讲故事</div>
+        <h2>从李阿姨到王先生：一步一步看</h2>
+        <p class="sub">先服务，后授权，再加工，被购买或调用后才分润。</p>
+      </div>
+      <div class="cards story-grid grid-2">
+        <article class="story-card">
+          <figure><img src="assets/story/story-01-service.png" alt="李阿姨完成健康服务" loading="lazy"></figure>
+          <div class="body">
+            <div class="step">1</div>
+            <h3>李阿姨先完成健康服务</h3>
+            <p>她做检测、咨询、干预和随访。此时产生的是候选数据，不是马上可交易的数据资产。</p>
+          </div>
+        </article>
+        <article class="story-card">
+          <figure><img src="assets/story/story-02-anonymize.png" alt="平台脱敏加工数据" loading="lazy"></figure>
+          <div class="body">
+            <div class="step">2</div>
+            <h3>平台脱敏并加工</h3>
+            <p>平台审核质量、去标识化、聚合、打标签，把原始记录变成“可用不可见”的数据产品材料。</p>
+          </div>
+        </article>
+        <article class="story-card">
+          <figure><img src="assets/story/story-03-consume.png" alt="王先生购买数据产品" loading="lazy"></figure>
+          <div class="body">
+            <div class="step">3</div>
+            <h3>王先生购买数据产品或专家报告</h3>
+            <p>如果总裁强调“买数据”，王先生买的应是相似案例报告、干预参考或专家解读中的数据部分。</p>
+          </div>
+        </article>
+        <article class="story-card">
+          <figure><img src="assets/story/story-04-settlement.png" alt="订单完成后自动分润" loading="lazy"></figure>
+          <div class="body">
+            <div class="step">4</div>
+            <h3>订单完成后系统分润</h3>
+            <p>系统查本次实际引用了哪些数据资产，再按规则把数据池分给对应贡献者。</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="detail-list">
+        <div class="detail"><div class="num">A</div><div><b>李阿姨看到什么</b><span>服务记录、授权弹窗、我的数据资产、未来收益记录。</span></div></div>
+        <div class="detail"><div class="num">B</div><div><b>平台后台记什么</b><span>服务订单、授权版本、数据资产编号、质量评分、脱敏加工记录。</span></div></div>
+        <div class="detail"><div class="num">C</div><div><b>王先生买到什么</b><span>不是李阿姨个人信息，而是相似人群结果、案例统计和专家解释。</span></div></div>
+        <div class="detail"><div class="num">D</div><div><b>什么时候分钱</b><span>订单完成、支付成功、引用记录确认、风控无异常之后。</span></div></div>
+      </div>
+    </section>
+
+    <section id="agreement">
+      <div class="section-head">
+        <div class="kicker">协议链条</div>
+        <h2>协议不是线下谈出来的，是产品流程里点出来的</h2>
+        <p class="sub">TMGM 的借鉴点在这里：先有标准规则，再由用户加入规则，系统自动结算。</p>
+      </div>
+      <div class="flow">
+        <div class="flow-node" data-step="1"><b>平台发布数据产品规则</b><span>定义商品、价格、可见边界、分润池比例、结算周期。</span></div>
+        <div class="flow-node" data-step="2"><b>贡献者授权加入</b><span>李阿姨确认授权：哪些数据可加工，哪些用途可使用，分润怎么结算。</span></div>
+        <div class="flow-node" data-step="3"><b>平台生成数据资产</b><span>脱敏、质检、标签化、登记编号，原始数据不直接对外出售。</span></div>
+        <div class="flow-node" data-step="4"><b>购买方下单</b><span>王先生、专家或机构购买某个数据产品或含数据调用的服务。</span></div>
+        <div class="flow-node" data-step="5"><b>系统记录引用</b><span>每次订单引用哪些数据资产，都要生成可审计记录。</span></div>
+        <div class="flow-node" data-step="6"><b>订单完成后分账</b><span>平台、专家、交易所、渠道、数据贡献者按不同池子结算。</span></div>
+      </div>
+    </section>
+
+    <section id="split">
+      <div class="section-head">
+        <div class="kicker">示例账单</div>
+        <h2>10000 元订单，到底怎么分</h2>
+        <p class="sub">比例只是示例，重点是先拆池子，再分给具体对象。</p>
+      </div>
+      <div class="split-card">
+        <h3>订单总额：10000 元</h3>
+        <div class="split-row"><span>专家/服务交付</span><b>5000</b><div class="bar"><span style="--w:50%;--c:#78c6ff"></span></div></div>
+        <div class="split-row"><span>数据分润池</span><b>3000</b><div class="bar"><span style="--w:30%;--c:#6ee7b7"></span></div></div>
+        <div class="split-row"><span>平台运营与风控</span><b>1500</b><div class="bar"><span style="--w:15%;--c:#fcd34d"></span></div></div>
+        <div class="split-row"><span>交易所/支付/存证</span><b>500</b><div class="bar"><span style="--w:5%;--c:#fda4af"></span></div></div>
+      </div>
+      <div class="cards" style="margin-top: 10px;">
+        <div class="card">
+          <h3>数据分润池内部再分</h3>
+          <p>比如 3000 元数据池，只分给本次被引用的 120 份数据资产。每份数据按质量、相似度、完整度、时效性、稀缺性计算权重。</p>
+        </div>
+        <div class="card">
+          <h3>渠道佣金不要从数据池里扣</h3>
+          <p>如果有推荐人，应该从渠道佣金池或平台营销预算里出，避免变成多级分销或挤占数据贡献者权益。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="nested">
+      <div class="section-head">
+        <div class="kicker">嵌套分润</div>
+        <h2>建议不要做无限嵌套</h2>
+        <p class="sub">可以有“新数据继续入池”，但不能让每个上游永远从所有下游订单抽成。</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <h3>不建议做的版本</h3>
+          <p>李阿姨影响王先生，王先生再影响赵女士，于是李阿姨从赵女士以后所有消费里继续抽成。这会迅速变成复杂、不可解释、合规风险高的多层返利。</p>
+        </div>
+        <div class="card">
+          <h3>推荐做的版本</h3>
+          <p>每一笔订单只看本订单实际引用了哪些数据资产。王先生完成服务后，他的新数据也可以授权进入池子，但不会自动让李阿姨获得王先生未来订单的上游收益。</p>
+        </div>
+        <div class="warning">
+          推荐闭环是“消费产生数据，数据授权加工，后续订单实际引用时分润”，不是“发展下线以后层层分钱”。
+        </div>
+      </div>
+    </section>
+
+    <section id="loop">
+      <div class="section-head">
+        <div class="kicker">最后一张图</div>
+        <h2>推荐闭环</h2>
+        <p class="sub">手机版用纵向闭环表达，避免横向流程图在手机上超页。</p>
+      </div>
+      <div class="loop">
+        <div class="loop-item"><b>消费产生数据</b><span>用户完成检测、咨询、干预、随访。</span></div>
+        <div class="loop-item"><b>用户授权</b><span>明确用途、范围、期限、退出方式和分润规则。</span></div>
+        <div class="loop-item"><b>平台加工成数据产品</b><span>脱敏、聚合、质检、标签化、登记存证。</span></div>
+        <div class="loop-item"><b>后续订单购买或调用</b><span>患者、专家或机构购买相似案例、专家报告或机构数据产品。</span></div>
+        <div class="loop-item"><b>引用后自动分润</b><span>系统根据引用记录和贡献权重结算到数据贡献者钱包。</span></div>
+      </div>
+    </section>
+
+    <section id="questions">
+      <div class="section-head">
+        <div class="kicker">拿去问总裁</div>
+        <h2>最该确认的 5 个问题</h2>
+        <p class="sub">这些问题不确认，产品经理就无法定义商品和结算规则。</p>
+      </div>
+      <div class="cards">
+        <div class="question"><b>1. 总裁说“买数据”，具体买哪一种数据商品？</b><span>相似案例报告、专家解读报告、机构数据包，还是健康服务里的数据调用？</span></div>
+        <div class="question"><b>2. 谁是购买方？</b><span>患者自己买，专家代患者买，还是机构采购？不同购买方对应完全不同的页面和结算。</span></div>
+        <div class="question"><b>3. 分润分的是哪一池钱？</b><span>是订单总额、数据产品收入，还是订单中拆出来的数据使用价值池？建议选第三种。</span></div>
+        <div class="question"><b>4. 是否允许多级分润？</b><span>建议明确不做无限嵌套，只做“本订单实际引用数据”的一次分润。</span></div>
+        <div class="question"><b>5. MVP 先做哪个最小闭环？</b><span>建议先做“授权入池 + 相似案例报告购买 + 一次分润结算 + 钱包记录”。</span></div>
+      </div>
+    </section>
+
+    <div class="footer-actions">
+      <a href="#top">回到顶部</a>
+      <a href="revenue-sharing-design.html?desktop=1">打开桌面 slides 版</a>
+    </div>
+  </main>
+
+  <script>
+    const progressBar = document.getElementById("progressBar");
+    const tocButton = document.getElementById("tocButton");
+    const toc = document.getElementById("toc");
+
+    function updateProgress() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? window.scrollY / max : 0;
+      progressBar.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
+    }
+
+    tocButton.addEventListener("click", () => {
+      toc.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+    updateProgress();
+  </script>
+</body>
+</html>
