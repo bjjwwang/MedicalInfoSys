@@ -1,283 +1,163 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>项目概述 - 微生态健康数据资产交易平台</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-    font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
-    font-size: 15px;
-    line-height: 1.8;
-    color: #333;
-    background: #f5f5f5;
-    padding: 20px;
-}
-.container {
-    max-width: 960px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 40px 50px;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
-h1 {
-    font-size: 28px;
-    color: #1a1a1a;
-    border-bottom: 3px solid #2c3e50;
-    padding-bottom: 12px;
-    margin: 35px 0 20px 0;
-}
-h1:first-child { margin-top: 0; }
-h2 {
-    font-size: 22px;
-    color: #2c3e50;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 8px;
-    margin: 30px 0 15px 0;
-}
-h3 {
-    font-size: 18px;
-    color: #34495e;
-    margin: 22px 0 10px 0;
-}
-h4 {
-    font-size: 15px;
-    color: #555;
-    margin: 18px 0 8px 0;
-    font-weight: 600;
-}
-p { margin: 10px 0; }
-a { color: #3498db; text-decoration: none; }
-a:hover { text-decoration: underline; }
-strong { color: #2c3e50; }
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-    font-size: 14px;
-    overflow-x: auto;
-    display: block;
-}
-thead { background: #2c3e50; color: #fff; }
-th {
-    padding: 10px 14px;
-    text-align: left;
-    font-weight: 500;
-    white-space: nowrap;
-}
-td {
-    padding: 9px 14px;
-    border-bottom: 1px solid #eee;
-}
-tbody tr:hover { background: #f8f9fa; }
-code {
-    font-family: "Fira Code", "Source Code Pro", "Consolas", monospace;
-    background: #f0f2f5;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-    color: #e74c3c;
-}
-pre {
-    background: #282c34;
-    color: #abb2bf;
-    padding: 18px 22px;
-    border-radius: 6px;
-    overflow-x: auto;
-    margin: 16px 0;
-    line-height: 1.6;
-}
-pre code {
-    background: transparent;
-    color: inherit;
-    padding: 0;
-    font-size: 13px;
-}
-blockquote {
-    border-left: 4px solid #3498db;
-    padding: 10px 18px;
-    margin: 16px 0;
-    background: #f8f9fa;
-    color: #555;
-    border-radius: 0 4px 4px 0;
-}
-ul, ol { padding-left: 28px; margin: 10px 0; }
-li { margin-bottom: 5px; }
-hr {
-    border: none;
-    border-top: 1px solid #eee;
-    margin: 30px 0;
-}
-.page-break {
-    border-top: 2px dashed #ccc;
-    margin: 40px 0;
-    padding-top: 10px;
-}
-/* 导航栏 */
-.nav-bar {
-    max-width: 960px;
-    margin: 0 auto 15px auto;
-    padding: 12px 20px;
-    background: #2c3e50;
-    border-radius: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.nav-bar a {
-    color: #ecf0f1;
-    text-decoration: none;
-    font-size: 13px;
-    padding: 4px 12px;
-    border-radius: 4px;
-    transition: background 0.2s;
-}
-.nav-bar a:hover { background: #34495e; }
-.nav-bar a.active { background: #3498db; }
-/* 返回顶部 */
-.back-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 44px;
-    height: 44px;
-    background: #2c3e50;
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    text-decoration: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-.back-top:hover { opacity: 1; text-decoration: none; }
-/* 打印样式 */
-@media print {
-    body { background: #fff; padding: 0; }
-    .container { box-shadow: none; padding: 20px; }
-    .nav-bar, .back-top { display: none; }
-    pre { white-space: pre-wrap; }
-}
-@media (max-width: 768px) {
-    body { padding: 10px; }
-    .container { padding: 20px; }
-    h1 { font-size: 22px; }
-    h2 { font-size: 18px; }
-    table { font-size: 12px; }
-    th, td { padding: 6px 8px; }
-}
-</style>
+<title>01 项目概述 - 疑难病诊疗方案商城</title>
+<link rel="stylesheet" href="assets/revenue-docs.css?v=20260520">
 </head>
 <body>
-<nav class="nav-bar"><a href="index.html">首页</a><a href="01-项目概述.html" class="active">项目概述</a><a href="02-商业模式与团队规划.html">商业模式</a><a href="03-技术架构与数据库设计.html">技术架构</a><a href="04-功能模块设计.html">功能模块</a><a href="05-开发迭代路线图.html">迭代路线</a><a href="06-合规与安全规范.html">合规安全</a><a href="07-运营与风险管理.html">运营风险</a></nav>
+<nav class="nav-bar">
+    <a href="index.html">首页</a>
+    <a href="01-项目概述.html" class="active">01 项目概述</a>
+    <a href="02-商业模式与团队规划.html">02 商业模式</a>
+    <a href="03-技术架构与数据库设计.html">03 技术架构</a>
+    <a href="04-功能模块设计.html">04 功能模块</a>
+    <a href="05-开发迭代路线图.html">05 迭代路线</a>
+    <a href="06-合规与安全规范.html">06 合规安全</a>
+    <a href="07-运营与风险管理.html">07 运营风险</a>
+    <a href="revenue-mechanism-thoughts-slides.html">分润 Slides</a>
+</nav>
+
 <div class="container">
-<h1 id="title">微生态健康数据资产交易平台</h1>
+    <section class="hero">
+        <div>
+            <span class="eyebrow">01 Overview</span>
+            <h1>项目概述：卖诊疗方案，不卖患者数据</h1>
+            <p>项目第一版应定义为“疑难病诊疗方案商城”。用户购买的是经过平台审核、由医生或医疗机构负责履约的诊疗方案与服务权益；老用户贡献的诊疗结果、随访反馈和体验评价，是方案可信度的背书，不是直接拿去售卖的数据商品。</p>
+            <div class="quick-links">
+                <a class="btn" href="revenue-mechanism-thoughts-slides.html">看故事版 Slides</a>
+                <a class="btn secondary" href="02-商业模式与团队规划.html">下一章：商业模式</a>
+            </div>
+        </div>
+        <div>
+            <img class="doc-image" src="assets/revenue-mechanism/problem-reframe.png" alt="从数据交易改写成诊疗方案商城">
+            <p class="image-note">核心改写：先跑通“方案购买和返佣”，再谈数据资产、确权和二级市场。</p>
+        </div>
+    </section>
 
-<h2 id="vision">项目愿景</h2>
-<p>构建基于数据交易所的健康数据资产化平台，让个人健康数据成为可确权、可交易、可增值的数据资产。</p>
-<p>依托贵阳大数据交易所等国家级数据交易基础设施，开辟"微生态健康数据"专区，实现中国首个面向C端个人的健康数据资产交易，打通从数据采集、脱敏、资产封装、交易所确权到挂牌交易的全流程。</p>
+    <h2>1. 一句话定义</h2>
+    <blockquote>
+        这是一个带长期返佣机制的疑难病诊疗方案商城：新用户为解决健康问题购买方案，方案运营方负责履约，老用户因为提供真实疗效反馈而参与后续订单分润。
+    </blockquote>
 
-<h2 id="value">核心价值主张</h2>
-<ul>
-<li><strong>对患者/个人用户</strong>: 健康数据（血压、血糖、用药、饮食、肠道微生态等）不再沉睡，经资产化后可在交易所挂牌，通过区块链溯源获得数据使用分红——当数据被查阅并促成下游消费（药品购买、医生咨询等）时，收益按链上记录自动分配</li>
-<li><strong>对医生</strong>: 除问诊收入外，其贡献的诊疗方案与临床数据同样可资产化交易，获得持续的数据资产收益</li>
-<li><strong>对药企/科研机构</strong>: 通过数据交易所合规采购经脱敏处理的真实世界健康数据（RWD），用于药物研发、上市后研究、精准营销决策</li>
-<li><strong>对医疗机构/保险公司</strong>: 获取合规的群体健康数据资产，支撑精算模型、健康管理方案设计、临床路径优化</li>
-<li><strong>对数据交易所</strong>: 新增C端个人数据资产交易品类，突破现有仅B2B的交易模式，拓展交易所业务边界</li>
-</ul>
+    <h2>2. 旧叙事为什么需要改</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>旧版表达</th>
+                <th>带来的问题</th>
+                <th>新版处理</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>医疗数据资产交易平台</td>
+                <td>读者会先问数据属于谁、如何确权、能不能交易、合规边界在哪里。</td>
+                <td>第一版不卖数据，卖诊疗方案；数据作为好评证据和疗效背书。</td>
+            </tr>
+            <tr>
+                <td>患者数据拿去卖钱</td>
+                <td>容易被理解为隐私数据买卖，合规和伦理压力很高。</td>
+                <td>老用户授权展示脱敏后的反馈摘要，并因新订单获得返佣。</td>
+            </tr>
+            <tr>
+                <td>区块链确权和三权分置</td>
+                <td>技术叙事太重，MVP 没有必要一开始承载。</td>
+                <td>区块链放到 V2/V3，用于未来分润权转让和审计。</td>
+            </tr>
+        </tbody>
+    </table>
 
-<h2 id="positioning">项目定位</h2>
-<p><strong>健康数据资产服务平台</strong>（非互联网信息产品），依托国家数据交易所进行合规交易。</p>
-<p>平台作为"数据资产服务商"角色，完成完整的数据资产化链路：</p>
-<pre><code>个人健康数据采集 → 数据脱敏与结构化 → 数据资产封装 → 交易所登记确权 → 挂牌交易 → 区块链溯源分账</code></pre>
-<p>合规框架围绕数据交易所监管规范（而非单纯互联网电商合规），包括数据确权、个人信息保护、数据出境安全等。</p>
+    <h2>3. 参与者关系</h2>
+    <div class="grid">
+        <div class="card blue">
+            <h3>现在用户</h3>
+            <p>进入商城的人。他不是来买数据，而是来解决疾病治疗、康复或管理问题。</p>
+        </div>
+        <div class="card green">
+            <h3>老用户</h3>
+            <p>已经买过并完成过某个方案的人。其真实反馈进入该方案的“老用户池”，后续可参与分润。</p>
+        </div>
+        <div class="card teal">
+            <h3>方案运营方</h3>
+            <p>医生、医院、科室、专病团队或合规服务机构，负责方案上架、履约和售后。</p>
+        </div>
+        <div class="card amber">
+            <h3>推荐人 R</h3>
+            <p>带来新订单的人或机构。只拿一层推荐佣金，不形成上下级多层分销。</p>
+        </div>
+        <div class="card purple">
+            <h3>B 端代理人</h3>
+            <p>帮助老人、农村患者、低数字能力用户注册、整理反馈、管理钱包和结算。</p>
+        </div>
+        <div class="card coral">
+            <h3>平台</h3>
+            <p>提供商城、审核、订单、支付、结算、风控、客服和规则治理。</p>
+        </div>
+    </div>
 
-<h2 id="exchange">交易所合作</h2>
-<ul>
-<li>已在<strong>贵阳大数据交易所</strong>注册为数据资产服务商</li>
-<li>在交易所内开设"微生态健康数据"专区</li>
-<li>遵循交易所的数据产品上架、确权、定价、交易规则</li>
-<li>这是目前国内首个尝试将C端个人数据通过数据交易所进行资产化交易的项目，现有交易所均为B2B模式</li>
-</ul>
+    <h2>4. 用户故事</h2>
+    <div class="flow">
+        <div class="flow-card">
+            <span class="step-num">1</span>
+            <h3>找方案</h3>
+            <p>王先生患有疑难病，进入商城按病种、阶段、预算、所在地筛选诊疗方案。</p>
+        </div>
+        <div class="flow-card">
+            <span class="step-num">2</span>
+            <h3>看背书</h3>
+            <p>他看到老用户的脱敏疗效反馈、治疗路径、恢复周期和平台审核标记。</p>
+        </div>
+        <div class="flow-card">
+            <span class="step-num">3</span>
+            <h3>买服务</h3>
+            <p>他付款购买的是诊疗方案服务包，不是购买某个患者的原始数据。</p>
+        </div>
+        <div class="flow-card">
+            <span class="step-num">4</span>
+            <h3>触发分润</h3>
+            <p>订单完成后，主收入给方案运营方，分润池给推荐人和该方案老用户。</p>
+        </div>
+        <div class="flow-card">
+            <span class="step-num">5</span>
+            <h3>成为老用户</h3>
+            <p>王先生完成服务并提交有效反馈后，也进入该方案老用户池。</p>
+        </div>
+    </div>
 
-<h2 id="participants">核心参与方</h2>
-<table>
-<thead>
-<tr>
-<th>角色</th>
-<th>在数据资产链路中的位置</th>
-<th>核心需求</th>
-<th>优先级</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>个人用户/患者</td>
-<td>数据提供方（数据资产的原始权利人）</td>
-<td>数据确权、资产化、获得数据分红</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>平台（本项目）</td>
-<td>数据资产服务商（采集→脱敏→封装→确权→交易）</td>
-<td>撮合交易、赚取服务费</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>贵阳大数据交易所</td>
-<td>交易基础设施（确权登记、挂牌交易、合规监管）</td>
-<td>拓展C端数据品类、增加交易量</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>医生</td>
-<td>数据提供方 + 数据消费方</td>
-<td>贡献诊疗数据获收益、查阅数据辅助诊疗</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>药企</td>
-<td>数据消费方（采购合规健康数据）</td>
-<td>真实世界数据采购、精准研发决策</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>医疗机构</td>
-<td>数据消费方</td>
-<td>群体数据用于临床研究、路径优化</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>科研机构</td>
-<td>数据消费方</td>
-<td>合规数据用于学术研究</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>保险公司</td>
-<td>数据消费方</td>
-<td>健康数据用于精算、产品设计</td>
-<td>P3</td>
-</tr>
-</tbody>
-</table>
+    <img class="doc-image" src="assets/revenue-mechanism/user-journey.png" alt="王先生购买诊疗方案并成为老用户的故事">
 
-<h2 id="blockchain">区块链溯源与收益分配</h2>
-<p>平台通过区块链记录数据资产的每一次使用：</p>
-<ul>
-<li>数据被查阅、被引用、被用于下游决策均上链存证</li>
-<li>当数据使用促成实际交易（如用户因查阅数据后购买药品、预约医生咨询），系统通过链上溯源确定数据贡献关系</li>
-<li>收益按预设规则自动分配给数据提供者（患者、医生等）</li>
-</ul>
+    <h2>5. MVP 的核心边界</h2>
+    <div class="grid">
+        <div class="card green">
+            <h3>第一版必须做</h3>
+            <ul class="checklist">
+                <li>方案上架、审核、展示和购买。</li>
+                <li>老用户反馈采集、审核和展示。</li>
+                <li>单笔订单拆账：方案运营方、推荐人、老用户池、平台。</li>
+                <li>钱包台账、结算批次、退款回滚和风控冻结。</li>
+            </ul>
+        </div>
+        <div class="card coral">
+            <h3>第一版不做</h3>
+            <ul class="no-list">
+                <li>患者原始数据交易所挂牌。</li>
+                <li>数据确权、三权分置和链上资产发行。</li>
+                <li>复杂贡献权重、浏览路径追踪、无限层级返佣。</li>
+                <li>互联网医院全流程问诊和处方闭环。</li>
+            </ul>
+        </div>
+    </div>
 
-<h2 id="codename">项目代号</h2>
-<p>sys1（内部代号），产品名暂定"健数通"（可后续调整）</p>
+    <div class="callout">
+        <strong>产品经理要抓住的主线：</strong>商品是“诊疗方案服务包”；购买者是“现在用户”；分润来自“新订单利润池”；老用户分的是“新订单里为疗效背书预留的一部分”，不是把自己的病历单独卖给某个人。
+    </div>
 
+    <div class="pager">
+        <a class="btn secondary" href="index.html">返回首页</a>
+        <a class="btn" href="02-商业模式与团队规划.html">下一章：商业模式与团队规划</a>
+    </div>
 </div>
 <a href="#" class="back-top" title="返回顶部">&uarr;</a>
 </body>

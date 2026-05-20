@@ -1,695 +1,257 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>开发迭代路线图 - 医案通</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-    font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
-    font-size: 15px;
-    line-height: 1.8;
-    color: #333;
-    background: #f5f5f5;
-    padding: 20px;
-}
-.container {
-    max-width: 960px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 40px 50px;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
-h1 {
-    font-size: 28px;
-    color: #1a1a1a;
-    border-bottom: 3px solid #2c3e50;
-    padding-bottom: 12px;
-    margin: 35px 0 20px 0;
-}
-h1:first-child { margin-top: 0; }
-h2 {
-    font-size: 22px;
-    color: #2c3e50;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 8px;
-    margin: 30px 0 15px 0;
-}
-h3 {
-    font-size: 18px;
-    color: #34495e;
-    margin: 22px 0 10px 0;
-}
-h4 {
-    font-size: 15px;
-    color: #555;
-    margin: 18px 0 8px 0;
-    font-weight: 600;
-}
-p { margin: 10px 0; }
-a { color: #3498db; text-decoration: none; }
-a:hover { text-decoration: underline; }
-strong { color: #2c3e50; }
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-    font-size: 14px;
-    overflow-x: auto;
-    display: block;
-}
-thead { background: #2c3e50; color: #fff; }
-th {
-    padding: 10px 14px;
-    text-align: left;
-    font-weight: 500;
-    white-space: nowrap;
-}
-td {
-    padding: 9px 14px;
-    border-bottom: 1px solid #eee;
-}
-tbody tr:hover { background: #f8f9fa; }
-code {
-    font-family: "Fira Code", "Source Code Pro", "Consolas", monospace;
-    background: #f0f2f5;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-    color: #e74c3c;
-}
-pre {
-    background: #282c34;
-    color: #abb2bf;
-    padding: 18px 22px;
-    border-radius: 6px;
-    overflow-x: auto;
-    margin: 16px 0;
-    line-height: 1.6;
-}
-pre code {
-    background: transparent;
-    color: inherit;
-    padding: 0;
-    font-size: 13px;
-}
-blockquote {
-    border-left: 4px solid #3498db;
-    padding: 10px 18px;
-    margin: 16px 0;
-    background: #f8f9fa;
-    color: #555;
-    border-radius: 0 4px 4px 0;
-}
-ul, ol { padding-left: 28px; margin: 10px 0; }
-li { margin-bottom: 5px; }
-hr {
-    border: none;
-    border-top: 1px solid #eee;
-    margin: 30px 0;
-}
-.page-break {
-    border-top: 2px dashed #ccc;
-    margin: 40px 0;
-    padding-top: 10px;
-}
-/* 导航栏 */
-.nav-bar {
-    max-width: 960px;
-    margin: 0 auto 15px auto;
-    padding: 12px 20px;
-    background: #2c3e50;
-    border-radius: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.nav-bar a {
-    color: #ecf0f1;
-    text-decoration: none;
-    font-size: 13px;
-    padding: 4px 12px;
-    border-radius: 4px;
-    transition: background 0.2s;
-}
-.nav-bar a:hover { background: #34495e; }
-.nav-bar a.active { background: #3498db; }
-/* 返回顶部 */
-.back-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 44px;
-    height: 44px;
-    background: #2c3e50;
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    text-decoration: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-.back-top:hover { opacity: 1; text-decoration: none; }
-/* 打印样式 */
-@media print {
-    body { background: #fff; padding: 0; }
-    .container { box-shadow: none; padding: 20px; }
-    .nav-bar, .back-top { display: none; }
-    pre { white-space: pre-wrap; }
-}
-@media (max-width: 768px) {
-    body { padding: 10px; }
-    .container { padding: 20px; }
-    h1 { font-size: 22px; }
-    h2 { font-size: 18px; }
-    table { font-size: 12px; }
-    th, td { padding: 6px 8px; }
-}
-</style>
+<title>05 开发迭代路线图 - 疑难病诊疗方案商城</title>
+<link rel="stylesheet" href="assets/revenue-docs.css?v=20260520">
 </head>
 <body>
-<nav class="nav-bar"><a href="index.html">首页</a><a href="01-项目概述.html">项目概述</a><a href="02-商业模式与团队规划.html">商业模式</a><a href="03-技术架构与数据库设计.html">技术架构</a><a href="04-功能模块设计.html">功能模块</a><a href="05-开发迭代路线图.html" class="active">迭代路线</a><a href="06-合规与安全规范.html">合规安全</a><a href="07-运营与风险管理.html">运营风险</a></nav>
+<nav class="nav-bar">
+    <a href="index.html">首页</a>
+    <a href="01-项目概述.html">01 项目概述</a>
+    <a href="02-商业模式与团队规划.html">02 商业模式</a>
+    <a href="03-技术架构与数据库设计.html">03 技术架构</a>
+    <a href="04-功能模块设计.html">04 功能模块</a>
+    <a href="05-开发迭代路线图.html" class="active">05 迭代路线</a>
+    <a href="06-合规与安全规范.html">06 合规安全</a>
+    <a href="07-运营与风险管理.html">07 运营风险</a>
+    <a href="revenue-mechanism-thoughts-slides.html">分润 Slides</a>
+</nav>
+
 <div class="container">
-
-<h1 id="roadmap">开发迭代路线图</h1>
-
-<h2 id="overview">总览</h2>
-
-<pre><code>Phase 0（2周） → MVP（2个月） → V1.0（3个月） → V1.5（3个月） → V2.0（4个月） → V3.0（持续）</code></pre>
-
-<blockquote>
-<p>定位：健康数据资产交易服务商，对接贵阳大数据交易所，实现全国首个C端数据资产交易闭环。</p>
-</blockquote>
-
-<hr>
-
-<h2 id="phase0">Phase 0：准备期（第1-2周）</h2>
-
-<h3>目标：搭建开发基础 + 交易所技术对接</h3>
-
-<ul>
-<li>[ ] 技术选型确认 &amp; 开发环境搭建</li>
-<li>[ ] Git仓库初始化、CI/CD基础流水线</li>
-<li>[ ] 数据库设计评审 &amp; 初始化</li>
-<li>[ ] UI/UX 设计启动（原型图）</li>
-<li>[ ] 对接贵阳大数据交易所技术接口（API文档获取、沙箱环境申请、联调账号开通）</li>
-<li>[ ] 交易所数据资产登记规范研读 &amp; 数据资产包格式定义</li>
-<li>[ ] 法律顾问对接，启动数据交易相关资质申请调研</li>
-<li>[ ] 区块链节点选型（联盟链/公链评估）</li>
-</ul>
-
-<h3>交付物</h3>
-<ul>
-<li>可运行的项目骨架</li>
-<li>数据库DDL</li>
-<li>低保真原型图</li>
-<li>交易所API对接方案文档</li>
-<li>数据资产包结构定义文档</li>
-</ul>
-
-<hr>
-
-<h2 id="phase1">Phase 1：MVP（第3-10周）</h2>
-
-<h3>目标：跑通核心闭环——"上传健康数据 → 资产化处理 → 交易所登记 → 浏览/购买 → 收益分配"</h3>
-
-<h3>功能范围</h3>
-
-<h4>用户模块 (MVP)</h4>
-<ul>
-<li>手机号注册登录</li>
-<li>基本资料填写</li>
-<li>实名认证（数据资产确权前置条件）</li>
-</ul>
-
-<h4>数据资产模块 (MVP)</h4>
-<ul>
-<li>健康数据上传（体检报告、可穿戴设备数据、电子病历等，3-5种数据模板）</li>
-<li>自动化脱敏处理（正则匹配 + 规则引擎）</li>
-<li>数据资产包生成（标准化封装、质量评分）</li>
-<li>对接交易所资产登记接口（资产登记 → 确权 → 上架）</li>
-<li>数据资产列表和详情展示（含数据摘要/样本预览）</li>
-<li>付费内容区分（免费摘要/付费完整数据包）</li>
-</ul>
-
-<h4>搜索模块 (MVP)</h4>
-<ul>
-<li>ES关键词搜索</li>
-<li>基础筛选（数据类型、时间范围、数据质量等级）</li>
-</ul>
-
-<h4>交易模块 (MVP)</h4>
-<ul>
-<li>对接交易所交易接口（挂牌、摘牌、成交确认）</li>
-<li>微信支付（单次购买）</li>
-<li>基础收益分配（数据提供者60% / 平台30% / 交易所10%）</li>
-<li>每周与交易所结算对账</li>
-</ul>
-
-<h4>管理后台 (MVP)</h4>
-<ul>
-<li>数据资产审核</li>
-<li>用户管理</li>
-<li>交易所对账看板</li>
-</ul>
-
-<h3>聚焦数据类型</h3>
-<p>MVP选择 1-2 种健康数据类型切入，建议：</p>
-<ul>
-<li><strong>体检报告数据</strong>（标准化程度高，数据量大，药企/保险需求明确）</li>
-<li><strong>慢病管理数据</strong>（连续性强，研究价值高）</li>
-</ul>
-
-<h3>验证指标</h3>
-<ul>
-<li>种子用户（数据提供者）≥ 50人</li>
-<li>有效数据资产包 ≥ 100个</li>
-<li>交易所成功登记资产 ≥ 50个</li>
-<li>完成至少10笔链上交易</li>
-<li>首次与交易所完成周结算</li>
-<li>用户反馈NPS ≥ 30</li>
-</ul>
-
-<hr>
-
-<h2 id="phase2">Phase 2：V1.0（第11-22周）</h2>
-
-<h3>目标：区块链集成、收益体系完善、扩展数据类型</h3>
-
-<h3>新增功能</h3>
-
-<h4>用户模块</h4>
-<ul>
-<li>微信OAuth登录</li>
-<li>数据贡献者信用体系</li>
-<li>收益钱包 &amp; 提现</li>
-</ul>
-
-<h4>数据资产模块</h4>
-<ul>
-<li>NER脱敏模型上线（深度学习脱敏）</li>
-<li>扩展数据类型（基因检测、影像、可穿戴设备实时数据等10+类型）</li>
-<li>数据资产版本管理（数据更新 → 资产包升级）</li>
-<li>数据质量AI评分</li>
-</ul>
-
-<h4>区块链模块</h4>
-<ul>
-<li>数据资产全生命周期上链（上传 → 脱敏 → 确权 → 交易 → 收益分配）</li>
-<li>链上存证 &amp; 溯源查询</li>
-<li>智能合约自动化收益分配</li>
-<li>交易凭证链上生成</li>
-</ul>
-
-<h4>交易模块</h4>
-<ul>
-<li>支付宝支付</li>
-<li>余额支付</li>
-<li>退款流程</li>
-<li>提现到银行卡</li>
-<li>收益分配明细（含区块链交易哈希）</li>
-</ul>
-
-<h4>管理后台</h4>
-<ul>
-<li>运营仪表盘（数据资产量、交易量、收益趋势）</li>
-<li>交易管理 &amp; 交易所结算管理</li>
-<li>区块链浏览器（内部版）</li>
-</ul>
-
-<h3>验证指标</h3>
-<ul>
-<li>注册用户 ≥ 1000</li>
-<li>月活 ≥ 300</li>
-<li>数据资产包 ≥ 500个</li>
-<li>月交易额 ≥ ¥50000</li>
-<li>链上交易记录 ≥ 200条</li>
-<li>数据类型覆盖 ≥ 5种</li>
-</ul>
-
-<hr>
-
-<h2 id="phase3">Phase 3：V1.5（第23-34周）</h2>
-
-<h3>目标：智能匹配 + 数据资产组合 + 移动端</h3>
-
-<h3>新增功能</h3>
-
-<h4>数据资产模块</h4>
-<ul>
-<li>数据资产组合包（多用户脱敏数据聚合为专题数据集）</li>
-<li>同行评审 &amp; 数据质量分级体系</li>
-<li>影像数据上传 + OCR脱敏</li>
-</ul>
-
-<h4>搜索模块</h4>
-<ul>
-<li>智能匹配（买方需求 → 自动推荐匹配数据资产）</li>
-<li>热门数据排行 &amp; 趋势分析</li>
-<li>相似数据资产推荐</li>
-</ul>
-
-<h4>AI服务</h4>
-<ul>
-<li>AI自动审核</li>
-<li>数据资产摘要自动生成</li>
-<li>数据质量自动评分</li>
-<li>数据价值评估模型</li>
-</ul>
-
-<h4>交易模块</h4>
-<ul>
-<li>订阅套餐（按月/季度获取特定类型数据更新）</li>
-<li>批量采购优惠</li>
-<li>数据资产组合定价</li>
-</ul>
-
-<h4>移动端</h4>
-<ul>
-<li>小程序上线（数据上传 + 收益查看）</li>
-<li>可穿戴设备数据自动同步</li>
-</ul>
-
-<h4>运营</h4>
-<ul>
-<li>邀请制增长（数据贡献者邀请得奖励）</li>
-<li>数据贡献者排行榜</li>
-</ul>
-
-<h3>验证指标</h3>
-<ul>
-<li>注册用户 ≥ 5000</li>
-<li>数据资产包 ≥ 2000个</li>
-<li>月交易额 ≥ ¥200000</li>
-<li>数据资产组合包 ≥ 20个</li>
-<li>订阅用户占比 ≥ 15%</li>
-<li>小程序DAU ≥ 200</li>
-</ul>
-
-<hr>
-
-<h2 id="phase4">Phase 4：V2.0（第35-50周）</h2>
-
-<h3>目标：多交易所支持 + 企业服务 + 数据资产融资</h3>
-
-<h3>新增功能</h3>
-
-<h4>多交易所对接</h4>
-<ul>
-<li>接入深圳数据交易所、上海数据交易所等</li>
-<li>统一交易所适配层（多交易所API网关）</li>
-<li>跨交易所数据资产流转</li>
-</ul>
-
-<h4>企业服务</h4>
-<ul>
-<li>企业版/机构版（药企、保险公司、科研机构）</li>
-<li>定制化数据需求发布（B端发需求 → 平台匹配 → C端授权供数据）</li>
-<li>企业级API接口</li>
-<li>SLA保障 &amp; 专属客服</li>
-</ul>
-
-<h4>数据资产融资</h4>
-<ul>
-<li>数据资产质押融资（基于数据资产价值评估）</li>
-<li>数据资产收益权转让</li>
-<li>与金融机构合作的数据资产证券化探索</li>
-</ul>
-
-<h4>AI服务</h4>
-<ul>
-<li>语义搜索（向量检索）</li>
-<li>个性化推荐</li>
-<li>动态定价建议（基于供需关系）</li>
-</ul>
-
-<h4>平台</h4>
-<ul>
-<li>机构入驻体系</li>
-<li>多端一致体验优化</li>
-</ul>
-
-<h3>验证指标</h3>
-<ul>
-<li>注册用户 ≥ 20000</li>
-<li>月交易额 ≥ ¥1000000</li>
-<li>企业客户 ≥ 10家</li>
-<li>对接交易所 ≥ 3家</li>
-<li>获得融资</li>
-</ul>
-
-<hr>
-
-<h2 id="phase5">Phase 5：V3.0+（持续迭代）</h2>
-
-<h3>方向</h3>
-<ul>
-<li>跨境数据交易（对接香港、东南亚数据交易市场，合规出境）</li>
-<li>健康数据生态扩展（医疗AI训练数据市场、药物研发数据服务）</li>
-<li>与保险/药企深度合作（精准保险定价、临床试验数据供给）</li>
-<li>数据资产指数（发布健康数据资产价格指数）</li>
-<li>个人数据银行（用户全生命周期健康数据资产管理）</li>
-<li>学术合作（与医学院/研究机构数据合作）</li>
-</ul>
-
-<hr>
-
-<h2 id="milestones">里程碑一览</h2>
-
-<table>
-<thead>
-<tr>
-<th>里程碑</th>
-<th>时间</th>
-<th>标志性事件</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>交易所对接完成</td>
-<td>第2周</td>
-<td>贵阳大数据交易所沙箱环境联调通过</td>
-</tr>
-<tr>
-<td>MVP上线</td>
-<td>第10周</td>
-<td>核心闭环跑通，首批数据资产登记交易所</td>
-</tr>
-<tr>
-<td>首笔链上交易</td>
-<td>第12周</td>
-<td>第一笔真实数据资产交易完成并上链</td>
-</tr>
-<tr>
-<td>首次周结算</td>
-<td>第13周</td>
-<td>与交易所完成首次收益结算</td>
-</tr>
-<tr>
-<td>V1.0</td>
-<td>第22周</td>
-<td>区块链全流程上线，收益分配体系完整</td>
-</tr>
-<tr>
-<td>千人用户</td>
-<td>第25周</td>
-<td>注册数据贡献者破千</td>
-</tr>
-<tr>
-<td>V1.5</td>
-<td>第34周</td>
-<td>智能匹配上线，小程序上线</td>
-</tr>
-<tr>
-<td>月交易额20万</td>
-<td>第36周</td>
-<td>数据资产交易商业模式验证</td>
-</tr>
-<tr>
-<td>天使轮融资</td>
-<td>第38周</td>
-<td>基于验证数据融资（"全国首个C端数据资产交易平台"）</td>
-</tr>
-<tr>
-<td>V2.0</td>
-<td>第50周</td>
-<td>多交易所 &amp; 企业服务 &amp; 数据资产融资</td>
-</tr>
-</tbody>
-</table>
-
-<!-- ==================== page-break ==================== -->
-<div class="page-break"></div>
-
-<h1 id="mvp-plan">MVP 详细开发计划（8周）</h1>
-
-<h2 id="sprint1">Sprint 1（第1-2周）：基础搭建 + 交易所API对接骨架</h2>
-
-<h3>后端</h3>
-<ul>
-<li>[ ] 项目初始化：FastAPI + SQLAlchemy + Alembic</li>
-<li>[ ] 数据库设计实现：<code>users</code>, <code>data_assets</code>, <code>transactions</code>, <code>exchange_records</code> 核心表</li>
-<li>[ ] 用户注册/登录 API（手机号 + 验证码）</li>
-<li>[ ] 实名认证接口（数据资产确权前置）</li>
-<li>[ ] JWT认证中间件</li>
-<li>[ ] 贵阳大数据交易所API对接骨架（封装SDK：认证、资产登记、交易、结算接口）</li>
-<li>[ ] 基础错误处理和日志</li>
-</ul>
-
-<h3>前端</h3>
-<ul>
-<li>[ ] Next.js 项目初始化</li>
-<li>[ ] 基础页面框架和路由</li>
-<li>[ ] 登录/注册页面</li>
-<li>[ ] 实名认证页面</li>
-<li>[ ] 基础UI组件库选择和主题配置</li>
-</ul>
-
-<h3>基础设施</h3>
-<ul>
-<li>[ ] 开发环境搭建（Docker Compose: PostgreSQL + Redis + ES）</li>
-<li>[ ] CI/CD 基础流水线</li>
-<li>[ ] 代码规范（linter、pre-commit hooks）</li>
-<li>[ ] 交易所沙箱环境联调账号配置</li>
-</ul>
-
-<h3>交付物</h3>
-<ul>
-<li>可注册登录的应用骨架（含实名认证流程）</li>
-<li>数据库已迁移</li>
-<li>交易所API SDK骨架（可调通沙箱认证接口）</li>
-<li>开发环境文档</li>
-</ul>
-
-<hr>
-
-<h2 id="sprint2">Sprint 2（第3-4周）：数据资产上传与资产化处理管线</h2>
-
-<h3>后端</h3>
-<ul>
-<li>[ ] 健康数据上传API（支持体检报告、慢病数据等模板）</li>
-<li>[ ] 结构化模板定义（JSON Schema，3-5种健康数据模板）</li>
-<li>[ ] 自动化脱敏引擎（正则匹配：姓名/身份证/手机号/地址/医院名等）</li>
-<li>[ ] 数据质量评分（完整度、规范度、时效性）</li>
-<li>[ ] 数据资产包生成（脱敏数据 + 元数据 + 质量报告 → 标准资产包格式）</li>
-<li>[ ] 资产状态机（<code>draft → desensitizing → packaged → pending_review → approved → registered → listed → sold</code>）</li>
-<li>[ ] 草稿保存机制</li>
-</ul>
-
-<h3>前端</h3>
-<ul>
-<li>[ ] 健康数据上传表单（基于模板的动态表单）</li>
-<li>[ ] 数据上传引导流程（上传 → 预览 → 确认脱敏 → 授权资产化）</li>
-<li>[ ] 草稿保存和续填</li>
-<li>[ ] 我的数据资产列表（含状态跟踪）</li>
-<li>[ ] 数据资产详情页（摘要预览/样本数据展示）</li>
-</ul>
-
-<h3>交付物</h3>
-<ul>
-<li>可以完整上传一份健康数据并生成资产包</li>
-<li>脱敏规则初步生效</li>
-<li>数据资产包格式符合交易所登记要求</li>
-</ul>
-
-<hr>
-
-<h2 id="sprint3">Sprint 3（第5-6周）：交易所登记 + 基础交易 + 区块链记录</h2>
-
-<h3>后端</h3>
-<ul>
-<li>[ ] 对接交易所资产登记接口（资产包 → 交易所审核 → 确权 → 上架）</li>
-<li>[ ] 对接交易所交易接口（挂牌 → 摘牌 → 成交确认）</li>
-<li>[ ] Elasticsearch 索引设计和数据同步</li>
-<li>[ ] 搜索 API（关键词 + 数据类型筛选 + 质量等级 + 分页）</li>
-<li>[ ] 微信支付集成（JSAPI/H5）</li>
-<li>[ ] 订单创建 → 支付 → 交易所成交确认 → 数据交付完整流程</li>
-<li>[ ] 区块链存证基础版（交易记录哈希上链）</li>
-<li>[ ] 购买后数据资产下载/访问授权逻辑</li>
-</ul>
-
-<h3>前端</h3>
-<ul>
-<li>[ ] 首页：数据资产市场 + 搜索框</li>
-<li>[ ] 搜索结果页（筛选条件侧栏：数据类型、质量等级、价格区间）</li>
-<li>[ ] 数据资产详情页（摘要、样本预览、质量评分、交易所登记状态）</li>
-<li>[ ] 支付流程页面</li>
-<li>[ ] 已购买数据资产列表 &amp; 下载</li>
-</ul>
-
-<h3>交付物</h3>
-<ul>
-<li>数据资产可登记到交易所并上架</li>
-<li>搜索可用</li>
-<li>支付 + 交易闭环跑通（沙箱环境）</li>
-<li>交易记录上链可查</li>
-</ul>
-
-<hr>
-
-<h2 id="sprint4">Sprint 4（第7-8周）：收益分配 + 管理后台 + 上线</h2>
-
-<h3>后端</h3>
-<ul>
-<li>[ ] 收益分配逻辑实现（数据提供者60% / 平台30% / 交易所10%）</li>
-<li>[ ] 每周与交易所结算对账模块</li>
-<li>[ ] 用户收益钱包 &amp; 提现申请</li>
-<li>[ ] 管理后台 API（数据资产审核、用户管理、交易管理）</li>
-<li>[ ] 交易所对账看板API</li>
-<li>[ ] 数据校验和安全加固</li>
-<li>[ ] 性能优化和压测</li>
-<li>[ ] 部署脚本和生产环境配置</li>
-</ul>
-
-<h3>前端</h3>
-<ul>
-<li>[ ] 管理后台：数据资产审核列表 + 审核操作</li>
-<li>[ ] 管理后台：用户列表 + 实名认证审核</li>
-<li>[ ] 管理后台：交易管理 + 交易所结算看板</li>
-<li>[ ] 用户端：我的收益页面（收益明细、提现、区块链存证查询）</li>
-<li>[ ] 全站联调和Bug修复</li>
-<li>[ ] 响应式适配（移动端基础可用）</li>
-</ul>
-
-<h3>运营准备</h3>
-<ul>
-<li>[ ] 种子用户邀请（目标50人数据提供者）</li>
-<li>[ ] 初始数据资产内容准备（运营准备标杆数据资产包）</li>
-<li>[ ] 与交易所确认正式上线流程 &amp; 合规审核</li>
-<li>[ ] 用户协议和隐私政策定稿（含数据资产授权协议）</li>
-<li>[ ] 数据资产交易免责声明定稿</li>
-</ul>
-
-<h3>交付物</h3>
-<ul>
-<li>MVP版本上线</li>
-<li>50+种子用户 + 100+数据资产包</li>
-<li>交易所正式登记 ≥ 50个资产</li>
-<li>收益分配 &amp; 周结算流程跑通</li>
-<li>基本运营支撑就绪</li>
-</ul>
-
-<hr>
-
-<h2 id="tech-debt">技术债务清单（MVP后优先处理）</h2>
-
-<ul>
-<li>[ ] 单元测试补全（MVP期间覆盖率目标 &gt; 60%）</li>
-<li>[ ] API文档完善</li>
-<li>[ ] 错误监控接入（Sentry）</li>
-<li>[ ] 性能基线建立</li>
-<li>[ ] 脱敏引擎升级（规则 → NER深度学习模型）</li>
-<li>[ ] 区块链模块完善（从存证 → 全生命周期上链）</li>
-<li>[ ] 交易所API异常处理和重试机制完善</li>
-<li>[ ] 代码review制度建立</li>
-</ul>
-
+    <section class="hero">
+        <div>
+            <span class="eyebrow">05 Roadmap</span>
+            <h1>迭代路线：先 MVP 闭环，再做复杂资产化</h1>
+            <p>第一阶段只验证一个问题：用户愿不愿意为可信的诊疗方案付款，老用户真实反馈能不能提高购买信任，订单拆账能不能形成可解释、可合规、可运营的长期返佣机制。</p>
+            <div class="quick-links">
+                <a class="btn" href="revenue-mechanism-thoughts-slides.html#/14">看行动计划 Slides</a>
+                <a class="btn secondary" href="06-合规与安全规范.html">下一章：合规安全</a>
+            </div>
+        </div>
+        <div>
+            <img class="doc-image" src="assets/revenue-mechanism/secondary-market.png" alt="分润权二级市场是后续版本">
+            <p class="image-note">分润权二级市场和区块链，是后续版本的第二个故事，不是 MVP。</p>
+        </div>
+    </section>
+
+    <h2>1. 阶段总览</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>阶段</th>
+                <th>目标</th>
+                <th>核心交付</th>
+                <th>判断标准</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>MVP 0.1</td>
+                <td>讲清楚商品和分润。</td>
+                <td>新版 PRD、故事版 Slides、关键规则确认、低保真原型。</td>
+                <td>总裁能判断比例、规则、结算周期。</td>
+            </tr>
+            <tr>
+                <td>MVP 1.0</td>
+                <td>跑通购买和分润闭环。</td>
+                <td>方案商城、订单支付、老用户反馈、分润台账、后台审核。</td>
+                <td>至少 3-5 个方案、真实订单、真实老用户池。</td>
+            </tr>
+            <tr>
+                <td>V1.1</td>
+                <td>增强运营效率。</td>
+                <td>B 端代理人、推荐人看板、客服工单、财务导出、异常冻结。</td>
+                <td>运营团队能低成本维护老用户和渠道。</td>
+            </tr>
+            <tr>
+                <td>V1.2</td>
+                <td>增强分润公平性。</td>
+                <td>老用户质量分、时间窗口、最近 N 名、方案分层费率。</td>
+                <td>老用户池不被无限稀释，作弊率可控。</td>
+            </tr>
+            <tr>
+                <td>V2.0</td>
+                <td>探索分润权资产化。</td>
+                <td>分润权转让、买断、收益预测、合规审计。</td>
+                <td>能明确法律属性和交易边界。</td>
+            </tr>
+            <tr>
+                <td>V3.0</td>
+                <td>探索数据资产能力。</td>
+                <td>脱敏数据集、授权管理、可信计算、数据交易所适配。</td>
+                <td>已完成专项合规论证和外部合作。</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. MVP 0.1：决策准备</h2>
+    <div class="grid">
+        <div class="card blue">
+            <h3>文档改写</h3>
+            <p>把“微生态健康数据资产交易平台”改成“疑难病诊疗方案商城”，统一对外口径。</p>
+        </div>
+        <div class="card teal">
+            <h3>规则确认</h3>
+            <p>确认 70/15/10/5 拆账比例、老用户池均分、T+7 结算和退款冻结。</p>
+        </div>
+        <div class="card amber">
+            <h3>原型验证</h3>
+            <p>画出用户买方案、看反馈、提交反馈、看收益的核心页面。</p>
+        </div>
+        <div class="card coral">
+            <h3>合规预审</h3>
+            <p>让法务先看“返佣、推荐、老用户池、代理人服务费”的边界。</p>
+        </div>
+    </div>
+
+    <h2>3. MVP 1.0：4-6 周开发计划</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>周次</th>
+                <th>产品与设计</th>
+                <th>研发</th>
+                <th>运营准备</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>第 1 周</td>
+                <td>确认 PRD、信息架构、关键页面原型。</td>
+                <td>搭建项目、用户体系、方案表、订单表。</td>
+                <td>确定首批方案运营方和方案清单。</td>
+            </tr>
+            <tr>
+                <td>第 2 周</td>
+                <td>方案详情页、购买页、老用户反馈页。</td>
+                <td>实现商城列表、方案详情、支付下单。</td>
+                <td>收集老用户反馈模板和审核规则。</td>
+            </tr>
+            <tr>
+                <td>第 3 周</td>
+                <td>收益看板、后台审核、订单状态设计。</td>
+                <td>实现反馈提交、审核后台、订单履约状态。</td>
+                <td>培训客服和医学审核人员。</td>
+            </tr>
+            <tr>
+                <td>第 4 周</td>
+                <td>分润账单解释、异常状态文案。</td>
+                <td>实现分润引擎、钱包流水、冻结和结算批次。</td>
+                <td>跑第一轮内部模拟订单。</td>
+            </tr>
+            <tr>
+                <td>第 5 周</td>
+                <td>根据试用反馈补交互和文案。</td>
+                <td>退款回滚、风控冻结、财务导出、日志。</td>
+                <td>组织小范围真实用户试点。</td>
+            </tr>
+            <tr>
+                <td>第 6 周</td>
+                <td>上线清单、帮助中心、用户协议。</td>
+                <td>修复问题、部署、监控、备份。</td>
+                <td>正式冷启动和数据复盘。</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>4. MVP 1.0 必须验收的闭环</h2>
+    <div class="flow">
+        <div class="flow-card">
+            <span class="step-num">1</span>
+            <h3>方案可售</h3>
+            <p>运营方能上架至少 3 个真实方案。</p>
+        </div>
+        <div class="flow-card">
+            <span class="step-num">2</span>
+            <h3>用户可买</h3>
+            <p>新用户能完成支付并看到订单状态。</p>
+        </div>
+        <div class="flow-card">
+            <span class="step-num">3</span>
+            <h3>反馈可审</h3>
+            <p>老用户能提交反馈，后台能审核入池。</p>
+        </div>
+        <div class="flow-card">
+            <span class="step-num">4</span>
+            <h3>分润可算</h3>
+            <p>完成订单能生成推荐人和老用户池收益。</p>
+        </div>
+        <div class="flow-card">
+            <span class="step-num">5</span>
+            <h3>账单可解释</h3>
+            <p>用户、运营、财务看到同一套流水。</p>
+        </div>
+    </div>
+
+    <h2>5. V1.1：运营增强</h2>
+    <ul class="checklist">
+        <li>B 端代理人工作台：代理绑定、代提交反馈、服务费台账。</li>
+        <li>推荐人工作台：链接、订单、佣金、退款冻结。</li>
+        <li>客服工单：订单争议、服务投诉、收益疑问、材料补充。</li>
+        <li>财务导出：批次报表、税务信息、付款状态、失败重试。</li>
+        <li>风控规则：同设备刷单、异常推荐、批量虚假反馈预警。</li>
+    </ul>
+
+    <h2>6. V1.2：分润规则增强</h2>
+    <p>当老用户池扩大后，均分可能导致单人收益过低，激励下降。V1.2 可以引入更细规则，但要保持可解释。</p>
+    <table>
+        <thead>
+            <tr>
+                <th>增强规则</th>
+                <th>解决的问题</th>
+                <th>注意事项</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>最近 N 名老用户</td>
+                <td>避免大池子无限稀释。</td>
+                <td>N 的取值要提前公示。</td>
+            </tr>
+            <tr>
+                <td>最近 N 月有效反馈</td>
+                <td>保证反馈新鲜度。</td>
+                <td>不能让早期贡献者突然失去预期。</td>
+            </tr>
+            <tr>
+                <td>质量阈值</td>
+                <td>提高反馈可信度。</td>
+                <td>审核标准必须透明。</td>
+            </tr>
+            <tr>
+                <td>方案分层费率</td>
+                <td>高客单、高履约成本方案需要不同拆账。</td>
+                <td>订单页必须明确显示规则。</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>7. V2/V3：后续探索</h2>
+    <div class="grid">
+        <div class="card purple">
+            <h3>分润权二级市场</h3>
+            <p>老用户可选择长期拿返佣，也可一次性把未来收益权转让给投资者或平台。</p>
+        </div>
+        <div class="card blue">
+            <h3>链上凭证和审计</h3>
+            <p>当收益权可转让时，链上记录才有更明确价值，用于权属、转让、审计。</p>
+        </div>
+        <div class="card teal">
+            <h3>医疗数据资产化</h3>
+            <p>在授权、脱敏、伦理审查、数据出境、交易规则全部清楚后，再启动专项模块。</p>
+        </div>
+    </div>
+
+    <div class="callout warning">
+        <strong>路线图原则：</strong>不要让 V2/V3 的故事绑架 MVP。先证明方案能卖、老用户反馈能提升转化、分润能被用户和财务理解。
+    </div>
+
+    <div class="pager">
+        <a class="btn secondary" href="04-功能模块设计.html">上一章：功能模块设计</a>
+        <a class="btn" href="06-合规与安全规范.html">下一章：合规与安全规范</a>
+    </div>
 </div>
 <a href="#" class="back-top" title="返回顶部">&uarr;</a>
 </body>

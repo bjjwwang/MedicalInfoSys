@@ -1,0 +1,1432 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>分润机制理解与思考 - HTTP Slides</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css" />
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --paper: #ffffff;
+      --ink: #1f2a37;
+      --muted: #667085;
+      --line: #d9dee8;
+      --blue: #315fbd;
+      --teal: #168f83;
+      --green: #357f4d;
+      --amber: #c98509;
+      --coral: #c2414e;
+      --purple: #6f5bd7;
+      --soft-blue: #e9f0ff;
+      --soft-teal: #e6f6f4;
+      --soft-green: #e9f7ef;
+      --soft-amber: #fff3d6;
+      --soft-coral: #ffe8eb;
+      --dark: #182230;
+      --shadow: 0 14px 34px rgba(31, 42, 55, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    .reveal {
+      color: var(--ink);
+      font-family: inherit;
+    }
+
+    .reveal .slides {
+      text-align: left;
+    }
+
+    .reveal section {
+      width: 100%;
+      height: 100%;
+      padding: 28px 38px;
+    }
+
+    .reveal h1,
+    .reveal h2,
+    .reveal h3,
+    .reveal p {
+      margin: 0;
+      color: inherit;
+      font-family: inherit;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .reveal h1 {
+      font-size: 54px;
+      line-height: 1.08;
+      font-weight: 880;
+    }
+
+    .reveal h2 {
+      font-size: 33px;
+      line-height: 1.16;
+      font-weight: 850;
+    }
+
+    .reveal h3 {
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 820;
+    }
+
+    .reveal p,
+    .reveal li,
+    .reveal td,
+    .reveal th {
+      font-size: 18px;
+      line-height: 1.48;
+    }
+
+    .reveal small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .slide-frame {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .slide-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .sub {
+      max-width: 950px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      padding: 0 10px;
+      color: #155b54;
+      background: var(--soft-teal);
+      border: 1px solid #b8ddd8;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 820;
+      white-space: nowrap;
+    }
+
+    .kicker svg,
+    .icon svg,
+    .pill svg,
+    .nav-hint svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 2;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      min-width: 0;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 26px rgba(31, 42, 55, 0.07);
+    }
+
+    .card.dark {
+      color: #fff;
+      background: var(--dark);
+      border-color: #26364d;
+    }
+
+    .card.accent {
+      border-left: 5px solid var(--teal);
+    }
+
+    .card.warn {
+      border-left: 5px solid var(--amber);
+      background: #fffaf0;
+    }
+
+    .card.bad {
+      border-left: 5px solid var(--coral);
+      background: #fff5f6;
+    }
+
+    .card h3 {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 8px;
+    }
+
+    .card p,
+    .card li {
+      color: #475467;
+      font-size: 16px;
+      line-height: 1.46;
+    }
+
+    .card.dark p,
+    .card.dark li {
+      color: #d0d5dd;
+    }
+
+    .card ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }
+
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      color: var(--teal);
+      background: var(--soft-teal);
+      border-radius: 8px;
+      flex: 0 0 auto;
+    }
+
+    .icon.blue { color: var(--blue); background: var(--soft-blue); }
+    .icon.green { color: var(--green); background: var(--soft-green); }
+    .icon.amber { color: var(--amber); background: var(--soft-amber); }
+    .icon.coral { color: var(--coral); background: var(--soft-coral); }
+    .icon.purple { color: var(--purple); background: #f1edff; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 0 10px;
+      color: #344054;
+      background: #f2f4f7;
+      border: 1px solid #e4e7ec;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 780;
+      white-space: nowrap;
+    }
+
+    .cover {
+      display: grid;
+      grid-template-columns: 0.88fr 1.12fr;
+      gap: 26px;
+      height: 100%;
+      align-items: center;
+    }
+
+    .cover-copy {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-img {
+      position: relative;
+      overflow: hidden;
+      min-height: 560px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      background: #fff;
+    }
+
+    .hero-img img,
+    .image-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-img img {
+      position: absolute;
+      inset: 0;
+    }
+
+    .image-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .visual-layout {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 16px;
+      height: 100%;
+      min-height: 0;
+      align-items: stretch;
+    }
+
+    .visual-layout.reverse {
+      grid-template-columns: 1.08fr 0.92fr;
+    }
+
+    .visual-stack {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .visual-stack .visual-panel {
+      min-height: 245px;
+    }
+
+    .visual-panel {
+      overflow: hidden;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .visual-panel img {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-ill {
+      width: 100%;
+      height: 88px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid #e4e7ec;
+      background: #f8fafc;
+    }
+
+    .card-ill img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mini-ill {
+      width: 100%;
+      height: 112px;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid #e4e7ec;
+      background: #f8fafc;
+    }
+
+    .mini-ill img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .table-visual {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .big-quote {
+      padding: 18px 20px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--teal);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      font-size: 24px;
+      line-height: 1.42;
+      font-weight: 820;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .compare.vertical {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .compare .side {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .compare .old {
+      border-left: 6px solid var(--coral);
+    }
+
+    .compare .new {
+      border-left: 6px solid var(--teal);
+    }
+
+    .arrow-mid {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      color: #fff;
+      background: var(--dark);
+      border: 4px solid var(--bg);
+      border-radius: 999px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+
+    .analogy-table,
+    .decision-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      font-size: 16px;
+    }
+
+    .analogy-table th,
+    .analogy-table td,
+    .decision-table th,
+    .decision-table td {
+      padding: 11px 13px;
+      border-bottom: 1px solid #edf0f5;
+      vertical-align: top;
+    }
+
+    .analogy-table th,
+    .decision-table th {
+      color: #344054;
+      background: #f8fafc;
+      font-size: 15px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .analogy-table tr:last-child td,
+    .decision-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .analogy-table td:first-child {
+      color: var(--teal);
+      font-weight: 840;
+      white-space: nowrap;
+    }
+
+    .story-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .story-strip.compact {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .story-step {
+      position: relative;
+      min-height: 180px;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 26px rgba(31, 42, 55, 0.07);
+    }
+
+    .story-strip.compact .story-step {
+      min-height: 0;
+    }
+
+    .story-step .num,
+    .flow-node .num,
+    .scope-step .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin-bottom: 10px;
+      color: #0f3d39;
+      background: #b9f0e9;
+      border-radius: 8px;
+      font-weight: 880;
+    }
+
+    .story-step b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .story-step span {
+      display: block;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.42;
+    }
+
+    .equation {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 18px;
+      height: 100%;
+      min-height: 430px;
+    }
+
+    .price-card {
+      display: grid;
+      gap: 12px;
+      align-content: center;
+      padding: 22px;
+      color: #fff;
+      background: var(--dark);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .price-card .amount {
+      font-size: 58px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .chart-box {
+      height: 430px;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .flywheel {
+      position: relative;
+      height: 430px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .wheel-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      width: 168px;
+      height: 168px;
+      color: #fff;
+      background: var(--dark);
+      border-radius: 999px;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 21px;
+      line-height: 1.26;
+      font-weight: 850;
+      box-shadow: 0 18px 48px rgba(31, 42, 55, 0.24);
+      z-index: 2;
+    }
+
+    .wheel-node {
+      position: absolute;
+      display: grid;
+      gap: 4px;
+      width: 198px;
+      min-height: 88px;
+      padding: 13px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 26px rgba(31, 42, 55, 0.08);
+    }
+
+    .wheel-node b {
+      font-size: 17px;
+    }
+
+    .wheel-node span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .wheel-node.n1 { left: 52px; top: 44px; border-left: 5px solid var(--blue); }
+    .wheel-node.n2 { right: 52px; top: 44px; border-left: 5px solid var(--green); }
+    .wheel-node.n3 { right: 52px; bottom: 44px; border-left: 5px solid var(--amber); }
+    .wheel-node.n4 { left: 52px; bottom: 44px; border-left: 5px solid var(--purple); }
+
+    .wheel-line {
+      position: absolute;
+      inset: 72px 270px;
+      border: 7px solid rgba(22, 143, 131, 0.18);
+      border-radius: 999px;
+    }
+
+    .flow-map {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .flow-node {
+      position: relative;
+      min-height: 158px;
+      padding: 13px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(31, 42, 55, 0.06);
+    }
+
+    .flow-node:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      width: 10px;
+      height: 2px;
+      background: var(--teal);
+    }
+
+    .flow-map.no-arrows .flow-node::after {
+      display: none;
+    }
+
+    .flow-node b {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .flow-node span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.34;
+    }
+
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .check-list,
+    .no-list {
+      display: grid;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .check-list h3,
+    .no-list h3 {
+      margin-bottom: 4px;
+    }
+
+    .scope-step {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      min-height: 42px;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .scope-step .num {
+      width: 28px;
+      height: 28px;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .scope-step.no .num {
+      color: #7a271a;
+      background: #ffd7d6;
+    }
+
+    .object-model {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .object {
+      min-height: 155px;
+      padding: 13px;
+      color: #fff;
+      background: var(--dark);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .object b {
+      display: block;
+      margin-bottom: 8px;
+      color: #fff;
+      font-size: 17px;
+    }
+
+    .object span {
+      display: block;
+      color: #d0d5dd;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .object:nth-child(2) { background: #224c72; }
+    .object:nth-child(3) { background: #11605a; }
+    .object:nth-child(4) { background: #7a4d00; }
+    .object:nth-child(5) { background: #5d4a99; }
+
+    .risk-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .risk {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 245px;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--coral);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(31, 42, 55, 0.07);
+    }
+
+    .risk:nth-child(2) { border-top-color: var(--amber); }
+    .risk:nth-child(3) { border-top-color: var(--purple); }
+    .risk:nth-child(4) { border-top-color: var(--blue); }
+
+    .risk p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .risk .answer {
+      margin-top: 12px;
+      padding: 8px 10px;
+      color: #155b54;
+      background: var(--soft-teal);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .final-loop {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .loop-panel {
+      position: relative;
+      min-height: 420px;
+      padding: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .loop-steps {
+      display: grid;
+      gap: 10px;
+    }
+
+    .loop-step {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 12px;
+      border: 1px solid #edf0f5;
+      border-radius: 8px;
+      background: #f9fafb;
+    }
+
+    .loop-step .dot {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      color: #fff;
+      background: var(--teal);
+      border-radius: 999px;
+      font-weight: 850;
+    }
+
+    .loop-step b {
+      display: block;
+      font-size: 17px;
+    }
+
+    .loop-step span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-hint {
+      position: fixed;
+      right: 18px;
+      bottom: 15px;
+      z-index: 30;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 10px;
+      color: #405069;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      backdrop-filter: blur(12px);
+    }
+
+    .reveal .controls { color: var(--blue); }
+    .reveal .progress { color: var(--teal); }
+  </style>
+</head>
+<body>
+  <div class="nav-hint"><i data-lucide="keyboard"></i>方向键 / 空格翻页</div>
+
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <div class="cover">
+          <div class="cover-copy">
+            <div class="kicker"><i data-lucide="presentation"></i>分润机制理解与思考</div>
+            <h1>从“数据交易”改写成“诊疗方案商城”</h1>
+            <p class="sub">把复杂问题重新定义：我们卖的不是数据，而是疑难病诊疗方案；数据是方案的高质量好评；分润是新买家给老买家的长期返佣。</p>
+            <div class="big-quote">这次 slides 的目的：让业务团队先理解故事，再讨论比例和开发范围。</div>
+          </div>
+          <div class="hero-img">
+            <img src="assets/revenue-mechanism/marketplace-flywheel.png" alt="诊疗方案商城与分润飞轮故事图">
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>这次真正的变化：不是方案更复杂，而是问题被改写了</h2>
+              <p class="sub">之前的设计越做越重，是因为我们把它当成“数据资产交易系统”。现在先把它讲成用户能理解的健康商城。</p>
+            </div>
+            <div class="kicker"><i data-lucide="refresh-cw"></i>问题重构</div>
+          </div>
+          <div class="visual-layout">
+            <div class="visual-panel">
+              <img src="assets/revenue-mechanism/problem-reframe.png" alt="从复杂数据交易问题重构成诊疗方案商城">
+            </div>
+            <div class="compare vertical">
+              <div class="side old">
+                <h3>旧问题</h3>
+                <p>如何把患者数据确权、脱敏、交易、上链，并按贡献权重给多方分钱？</p>
+                <div class="pill-row">
+                  <span class="pill">贡献权重表</span>
+                  <span class="pill">区块链确权</span>
+                  <span class="pill">数据交易所</span>
+                  <span class="pill">隐私计算</span>
+                </div>
+              </div>
+              <div class="side new">
+                <h3>新问题</h3>
+                <p>如何让一个卖诊疗方案的健康商城跑起来，并让真实用过方案的人持续获得返佣？</p>
+                <div class="pill-row">
+                  <span class="pill">方案商城</span>
+                  <span class="pill">真实好评</span>
+                  <span class="pill">订单分润</span>
+                  <span class="pill">周清算</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="footer"><span>关键判断：复杂度来自错误问题，而不是来自业务本身</span><span>01</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>三个实体，用电商语言就能讲清楚</h2>
+              <p class="sub">不用先讲“数据资产”“三权分置”“区块链”。先让人知道平台里到底谁卖、谁买、谁分润。</p>
+            </div>
+            <div class="kicker"><i data-lucide="shopping-bag"></i>电商类比</div>
+          </div>
+          <div class="table-visual">
+            <table class="analogy-table">
+              <thead>
+                <tr><th>平台元素</th><th>电商类比</th><th>真实含义</th><th>分润关系</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>商城</td><td>淘宝 / 京东</td><td>上架的是疑难病诊疗方案</td><td>平台提供交易和结算基础设施</td></tr>
+                <tr><td>方案运营方</td><td>商家</td><td>医院、医生、机构负责履约</td><td>拿订单主收入，例如 70%</td></tr>
+                <tr><td>老用户</td><td>高质量好评者</td><td>用过方案并留下疗效数据</td><td>后续新订单给他们返佣</td></tr>
+                <tr><td>现在用户</td><td>新买家</td><td>浏览方案、看疗效、下单购买</td><td>付款触发本次分润</td></tr>
+              </tbody>
+            </table>
+            <div class="visual-stack">
+              <div class="visual-panel"><img src="assets/revenue-mechanism/ecommerce-roles.png" alt="诊疗方案商城的电商角色"></div>
+              <div class="big-quote">一句话：卖的是方案，数据是好评，分润是长期返佣。</div>
+            </div>
+          </div>
+          <div class="footer"><span>这句话能消除前面 80% 的技术和合规焦虑</span><span>02</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>故事怎么发生：王先生不是来买数据，他是来买方案</h2>
+              <p class="sub">这页把用户旅程拆开。新用户看到老用户的疗效数据，就像看商品评价，最终购买的是方案本身。</p>
+            </div>
+            <div class="kicker"><i data-lucide="route"></i>用户故事</div>
+          </div>
+          <div class="visual-layout reverse">
+            <div class="visual-stack">
+              <div class="story-strip compact">
+                <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="浏览商城" style="object-position: 0% 0%"></div><div class="num">1</div><b>浏览商城</b><span>王先生进入平台，按病种、阶段、预算筛选诊疗方案。</span></div>
+                <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="查看疗效背书" style="object-position: 100% 0%"></div><div class="num">2</div><b>查看疗效背书</b><span>他看到老用户的指标变化、治疗经历、匿名反馈。</span></div>
+                <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="付款买方案" style="object-position: 0% 100%"></div><div class="num">3</div><b>付款买方案</b><span>订单的主收入给医生/机构，分润池从订单里单独划出。</span></div>
+                <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="治疗后入池" style="object-position: 100% 100%"></div><div class="num">4</div><b>治疗后入池</b><span>王先生完成治疗并上传反馈，也成为该方案的老用户。</span></div>
+              </div>
+            </div>
+            <div class="visual-panel"><img src="assets/revenue-mechanism/user-journey.png" alt="王先生购买诊疗方案的完整故事"></div>
+          </div>
+          <div class="footer"><span>交易物：诊疗方案。展示物：疗效好评。分润对象：用过该方案的老用户，不是卖个人数据。</span><span>03</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>MVP 分润公式：先极简，先跑起来</h2>
+              <p class="sub">这不是最终比例，而是能让业务团队马上讨论的基准模型。</p>
+            </div>
+            <div class="kicker"><i data-lucide="calculator"></i>100 元订单</div>
+          </div>
+          <div class="equation">
+            <div class="price-card">
+              <div class="kicker" style="width:max-content;background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">肝癌方案 X</div>
+              <div class="amount">¥100</div>
+              <p>新用户付款买方案。订单完成后，系统拆账，不需要追踪他付款前看过哪些具体好评。</p>
+              <div class="pill-row">
+                <span class="pill">¥70 方案运营方</span>
+                <span class="pill">¥30 分润池</span>
+              </div>
+              <div class="mini-ill"><img src="assets/revenue-mechanism/ecommerce-roles.png" alt="订单拆账示意"></div>
+            </div>
+            <div id="splitChart" class="chart-box"></div>
+          </div>
+          <div class="footer"><span>初始建议：推荐人 15%，老用户池 10%，平台 5%，合计 30%</span><span>04</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>飞轮闭环：一个用户走完流程，就新增一个好评数据点</h2>
+              <p class="sub">这套机制不是一次性返利，而是让真实疗效沉淀成后续销售的信任资产。</p>
+            </div>
+            <div class="kicker"><i data-lucide="repeat-2"></i>增长机制</div>
+          </div>
+          <div class="visual-layout reverse">
+            <div class="flywheel">
+              <div class="wheel-line"></div>
+              <div class="wheel-core">诊疗方案<br>信任飞轮</div>
+              <div class="wheel-node n1"><b>现在用户付款</b><span>真实订单触发收入，而不是投资入金。</span></div>
+              <div class="wheel-node n2"><b>完成治疗</b><span>方案运营方交付医疗或健康服务。</span></div>
+              <div class="wheel-node n3"><b>成为老用户</b><span>上传疗效反馈，进入该方案用户池。</span></div>
+              <div class="wheel-node n4"><b>获得后续分润</b><span>新订单越多，老用户越有动力推荐。</span></div>
+            </div>
+            <div class="visual-panel"><img src="assets/revenue-mechanism/marketplace-flywheel.png" alt="诊疗方案飞轮插图"></div>
+          </div>
+          <div class="footer"><span>数据池越大，方案越可信；方案越可信，订单越多；订单越多，老用户越愿意参与。</span><span>05</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>判断谁分润，只需要一个最小规则</h2>
+              <p class="sub">MVP 不要做贡献者权重表。先用最容易解释的规则：是否真实用过方案 X。</p>
+            </div>
+            <div class="kicker"><i data-lucide="toggle-right"></i>极简规则</div>
+          </div>
+          <div class="visual-layout">
+            <div class="visual-panel"><img src="assets/revenue-mechanism/risk-guardrails.png" alt="老用户池准入与风控"></div>
+            <div class="visual-stack">
+              <div class="grid-2">
+                <div class="card accent">
+                  <h3><span class="icon"><i data-lucide="check"></i></span>进入老用户池</h3>
+                  <p>用户在平台买过方案 X，完成方案服务，并通过基础审核上传疗效反馈。</p>
+                  <div class="pill-row">
+                    <span class="pill">真实订单</span>
+                    <span class="pill">完成履约</span>
+                    <span class="pill">有效反馈</span>
+                  </div>
+                </div>
+                <div class="card bad">
+                  <h3><span class="icon coral"><i data-lucide="x"></i></span>不进入老用户池</h3>
+                  <p>没有真实订单、只注册未消费、上传材料无法验证，或者方案不是 X。</p>
+                  <div class="pill-row">
+                    <span class="pill">空挂身份</span>
+                    <span class="pill">跨方案蹭池</span>
+                    <span class="pill">刷好评</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card warn">
+                <h3><span class="icon amber"><i data-lucide="scissors"></i></span>MVP 阶段先砍掉</h3>
+                <p>贡献者权重表、浏览路径追溯、数据脱敏交易、区块链、TEE、数据交易所对接。它们不是没有价值，而是不属于第一版闭环。</p>
+              </div>
+            </div>
+          </div>
+          <div class="footer"><span>最小可解释原则：用过方案 X，就参与方案 X 的老用户池。</span><span>06</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>角色地图：每个角色拿什么钱，要分清楚</h2>
+              <p class="sub">分润机制混乱，往往是因为把商家收入、推荐佣金、老用户返佣、平台抽成混成了一池钱。</p>
+            </div>
+            <div class="kicker"><i data-lucide="users-round"></i>参与方</div>
+          </div>
+          <div class="grid-3">
+            <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/ecommerce-roles.png" alt="现在用户" style="object-position: 100% 50%"></div><h3><span class="icon blue"><i data-lucide="user-round"></i></span>现在用户</h3><p>普通买家。付款购买方案，触发一次订单分账。</p></div>
+            <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/ecommerce-roles.png" alt="老用户" style="object-position: 40% 90%"></div><h3><span class="icon green"><i data-lucide="badge-check"></i></span>老用户</h3><p>好评者。用过该方案，后续新订单从老用户池拿收益。</p></div>
+            <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/ecommerce-roles.png" alt="方案运营方" style="object-position: 75% 25%"></div><h3><span class="icon"><i data-lucide="hospital"></i></span>方案运营方</h3><p>商家。负责方案上架、履约、售后，拿订单主收入。</p></div>
+            <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/b-agent-support.png" alt="B端代理人" style="object-position: 35% 35%"></div><h3><span class="icon purple"><i data-lucide="handshake"></i></span>B 端代理人</h3><p>帮老人、农村患者管理身份和钱包，按协议抽代理服务费。</p></div>
+            <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/marketplace-flywheel.png" alt="推荐人" style="object-position: 74% 75%"></div><h3><span class="icon amber"><i data-lucide="megaphone"></i></span>推荐人 R</h3><p>带来新客户，拿一层推荐佣金，不做多级返佣。</p></div>
+            <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/mvp-system.png" alt="平台" style="object-position: 50% 50%"></div><h3><span class="icon coral"><i data-lucide="store"></i></span>平台</h3><p>提供商城、订单、风控、结算、客服和规则治理。</p></div>
+          </div>
+          <div class="footer"><span>建议口径：R 拿销售佣金，老用户拿好评返佣，运营方拿方案收入。</span><span>07</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>B 端代理人：不是卖货商家之外的附属角色</h2>
+              <p class="sub">很多患者不会使用 APP、不会上传材料、不会提现。机构代理人可以成为真实的服务入口。</p>
+            </div>
+            <div class="kicker"><i data-lucide="hand-heart"></i>代理场景</div>
+          </div>
+          <div class="grid-2" style="height:100%">
+            <div class="image-card"><img src="assets/revenue-mechanism/b-agent-support.png" alt="B端医疗机构帮助老人管理分润身份"></div>
+            <div class="cards" style="display:grid;gap:12px">
+              <div class="card accent"><h3>他们帮患者做什么</h3><p>注册、确认方案历史、上传疗效材料、维护老用户身份、查看收益、协助提现。</p></div>
+              <div class="card warn"><h3>他们怎么赚钱</h3><p>不是从所有新订单抽层级佣金，而是从被代理患者的收益中按协议抽服务费，例如代理收益的 10%。</p></div>
+              <div class="card"><h3>为什么重要</h3><p>它把低数字化能力患者纳入系统，同时给线下医疗机构一个可执行的业务角色。</p></div>
+            </div>
+          </div>
+          <div class="footer"><span>B 端代理人的价值是履约和代管，不是发展下线。</span><span>08</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>MVP 数据对象：不要为 V3 的叙事建第一版系统</h2>
+              <p class="sub">第一版只需要支持“方案、订单、老用户池、推荐关系、结算记录”。</p>
+            </div>
+            <div class="kicker"><i data-lucide="database"></i>开发落点</div>
+          </div>
+          <div class="visual-layout reverse">
+            <div class="visual-stack">
+              <div class="object-model">
+                <div class="object"><b>Plan</b><span>方案名称、病种、运营方、价格、上架状态、分润规则版本。</span></div>
+                <div class="object"><b>Order</b><span>买家、方案、金额、支付状态、履约状态、退款状态。</span></div>
+                <div class="object"><b>PlanUser</b><span>谁用过哪个方案，是否完成服务，是否进入老用户池。</span></div>
+                <div class="object"><b>Referral</b><span>推荐人、推荐码、归因订单、佣金状态。</span></div>
+                <div class="object"><b>Settlement</b><span>每周清算批次、订单拆账、钱包入账、提现记录。</span></div>
+              </div>
+              <div class="flow-map">
+                <div class="flow-node"><div class="num">1</div><b>方案上架</b><span>运营方配置价格和分润比例。</span></div>
+                <div class="flow-node"><div class="num">2</div><b>用户下单</b><span>支付成功后产生待清算记录。</span></div>
+                <div class="flow-node"><div class="num">3</div><b>服务完成</b><span>确认履约，处理退款窗口。</span></div>
+                <div class="flow-node"><div class="num">4</div><b>计算池子</b><span>按方案找到老用户池。</span></div>
+                <div class="flow-node"><div class="num">5</div><b>周清算</b><span>生成钱包入账和平台账单。</span></div>
+                <div class="flow-node"><div class="num">6</div><b>可提现</b><span>用户或代理机构发起提现。</span></div>
+              </div>
+            </div>
+            <div class="visual-panel"><img src="assets/revenue-mechanism/mvp-system.png" alt="MVP 系统界面和后台对象"></div>
+          </div>
+          <div class="footer"><span>开发重点：可解释、可回滚、可审计，不追求第一版金融化。</span><span>09</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>MVP 范围：4 到 6 周版本应该尽量小</h2>
+              <p class="sub">这页是给开发排期用的边界。第一版要证明飞轮能不能跑，而不是证明所有愿景都能落地。</p>
+            </div>
+            <div class="kicker"><i data-lucide="list-checks"></i>范围控制</div>
+          </div>
+          <div class="scope-grid">
+            <div class="check-list">
+              <div class="card-ill"><img src="assets/revenue-mechanism/mvp-system.png" alt="MVP 必做范围"></div>
+              <h3>必须做</h3>
+              <div class="scope-step"><div class="num">1</div><div>手机号登录，浏览方案商城和方案详情</div></div>
+              <div class="scope-step"><div class="num">2</div><div>老用户好评区，上传疗效反馈</div></div>
+              <div class="scope-step"><div class="num">3</div><div>下单支付、我的订单、退款和履约状态</div></div>
+              <div class="scope-step"><div class="num">4</div><div>推荐链接 / 推荐码，一层推荐佣金</div></div>
+              <div class="scope-step"><div class="num">5</div><div>钱包、周清算、提现记录</div></div>
+              <div class="scope-step"><div class="num">6</div><div>后台：方案、商家、订单、分润、用户管理</div></div>
+            </div>
+            <div class="no-list">
+              <div class="card-ill"><img src="assets/revenue-mechanism/problem-reframe.png" alt="MVP 不做复杂叙事" style="object-position: 12% 50%"></div>
+              <h3>第一版不做</h3>
+              <div class="scope-step no"><div class="num">×</div><div>实名公安系统对接</div></div>
+              <div class="scope-step no"><div class="num">×</div><div>OCR 医疗报告识别</div></div>
+              <div class="scope-step no"><div class="num">×</div><div>区块链和数据交易所对接</div></div>
+              <div class="scope-step no"><div class="num">×</div><div>隐私计算 / TEE</div></div>
+              <div class="scope-step no"><div class="num">×</div><div>在线问诊和互联网医院能力</div></div>
+              <div class="scope-step no"><div class="num">×</div><div>复杂贡献权重算法</div></div>
+            </div>
+          </div>
+          <div class="footer"><span>不要用“完整性”诱惑 MVP，把 V2/V3 留给验证之后。</span><span>10</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>区块链是第二个故事：分润权二级市场</h2>
+              <p class="sub">它不是 MVP 的交易核心，而是未来把长期返佣收益权金融化的叙事和工具。</p>
+            </div>
+            <div class="kicker"><i data-lucide="blocks"></i>V2 / V3</div>
+          </div>
+          <div class="visual-layout">
+            <div class="visual-panel"><img src="assets/revenue-mechanism/secondary-market.png" alt="分润权二级市场和区块链转让"></div>
+            <div class="visual-stack">
+              <div class="grid-2">
+                <div class="card accent">
+                  <h3><span class="icon"><i data-lucide="wallet-cards"></i></span>普通患者视角</h3>
+                  <p>老用户 A 慢慢收方案 X 的后续返佣。如果他不想等，可以把未来分润收益权一次性卖给投资者 B。</p>
+                </div>
+                <div class="card warn">
+                  <h3><span class="icon amber"><i data-lucide="shield-check"></i></span>区块链真正有用处</h3>
+                  <p>证明这份未来收益权现在归 B，不归 A；后续新订单结算时自动打到 B 的钱包，避免双花和篡改。</p>
+                </div>
+              </div>
+              <div class="flow-map no-arrows" style="grid-template-columns:repeat(5,minmax(0,1fr));margin-top:0">
+                <div class="flow-node"><div class="num">1</div><b>A 收分润</b><span>A 是方案 X 的老用户。</span></div>
+                <div class="flow-node"><div class="num">2</div><b>A 想套现</b><span>不想等未来长尾收益。</span></div>
+                <div class="flow-node"><div class="num">3</div><b>B 买断</b><span>双方协商一次性价格。</span></div>
+                <div class="flow-node"><div class="num">4</div><b>权属上链</b><span>证明未来收益权转移。</span></div>
+                <div class="flow-node"><div class="num">5</div><b>后续结算</b><span>新订单分润进入 B 钱包。</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="footer"><span>对 CEO 和资本市场可以讲，但不要让它拖慢 MVP。</span><span>11</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>还需要 CEO / 业务团队拍板的 3 个问题</h2>
+              <p class="sub">技术可以先准备，但这三个参数必须先有业务共识。</p>
+            </div>
+            <div class="kicker"><i data-lucide="circle-help"></i>待拍板</div>
+          </div>
+          <div class="table-visual">
+            <table class="decision-table">
+              <thead>
+                <tr><th>问题</th><th>推荐答案</th><th>为什么</th><th>如果要改，改什么</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Q1 分润比例</td><td>R 15% + 老用户池 10% + 平台 5%</td><td>给销售、用户、平台都有动力，且总分润池不超过 30%</td><td>调整 15/10/5 的相对比例</td></tr>
+                <tr><td>Q2 老用户池怎么分</td><td>MVP 先均分</td><td>最简单、最可解释、最容易上线</td><td>后续加时间衰减、质量阈值、最近 N 人窗口</td></tr>
+                <tr><td>Q3 结算周期</td><td>T+7 周清算</td><td>比实时安全，比 T+30 有感知，也方便处理退款</td><td>按病种或订单类型设不同清算期</td></tr>
+              </tbody>
+            </table>
+            <div class="visual-stack">
+              <div class="visual-panel"><img src="assets/revenue-mechanism/mvp-system.png" alt="CEO 需要拍板的产品参数"></div>
+              <div class="card warn"><h3>拍板后才进需求</h3><p>比例、均分规则、结算周期会直接决定页面字段、后台账单和钱包展示方式。</p></div>
+            </div>
+          </div>
+          <div class="footer"><span>这三个问题拍板后，才能写 MVP 需求说明书 V2.0。</span><span>12</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>风险不是没有，但风险点已经变得更清楚</h2>
+              <p class="sub">从“数据交易是否合法”转成“健康服务电商加返佣如何合规”。问题变窄，才有办法处理。</p>
+            </div>
+            <div class="kicker"><i data-lucide="triangle-alert"></i>风险边界</div>
+          </div>
+          <div class="visual-layout reverse">
+            <div class="risk-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+              <div class="risk"><h3>老用户池稀释</h3><p>人数过多后，每个老用户只能分到几毛钱。</p><div class="answer">先均分验证，后续加最近 N 人或质量阈值。</div></div>
+              <div class="risk"><h3>刷好评作弊</h3><p>商家可能制造虚假老用户。</p><div class="answer">老用户身份必须来自真实订单和可验证疗效材料。</div></div>
+              <div class="risk"><h3>法律定性</h3><p>新用户付款给老用户，可能被质疑为返利或集资。</p><div class="answer">每笔分润对应真实方案交付，且无多层级。</div></div>
+              <div class="risk"><h3>推荐人边界</h3><p>R 15% 如果给个人，涉及税务和分销边界。</p><div class="answer">实名签约、税务申报、不做推荐人的推荐人。</div></div>
+            </div>
+            <div class="visual-panel"><img src="assets/revenue-mechanism/risk-guardrails.png" alt="分润风险控制与合规护栏"></div>
+          </div>
+          <div class="footer"><span>法务仍然要问，但问题已经具体到比例、层级和订单真实性。</span><span>13</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>下一步：把这套故事变成需求和原型</h2>
+              <p class="sub">不是继续讨论概念，而是把拍板结果落到页面、字段、流程、结算规则。</p>
+            </div>
+            <div class="kicker"><i data-lucide="milestone"></i>行动计划</div>
+          </div>
+          <div class="visual-layout">
+            <div class="visual-panel"><img src="assets/revenue-mechanism/mvp-system.png" alt="从故事到需求和原型"></div>
+            <div class="visual-stack">
+              <div class="flow-map no-arrows" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+                <div class="flow-node"><div class="num">1</div><b>发给张总</b><span>先对齐新故事是否成立。</span></div>
+                <div class="flow-node"><div class="num">2</div><b>拍板三问</b><span>比例、池子算法、结算周期。</span></div>
+                <div class="flow-node"><div class="num">3</div><b>重写 V2.0</b><span>替代旧版数据资产平台需求。</span></div>
+                <div class="flow-node"><div class="num">4</div><b>生成原型</b><span>方案详情、好评区、钱包、后台分润。</span></div>
+                <div class="flow-node"><div class="num">5</div><b>业务评审</b><span>跑 1 到 2 轮页面和规则修改。</span></div>
+                <div class="flow-node"><div class="num">6</div><b>开发 MVP</b><span>基于定稿原型和 V2.0 开发。</span></div>
+              </div>
+              <div class="card accent">
+                <h3><span class="icon"><i data-lucide="file-pen-line"></i></span>旧需求文档要改名</h3>
+                <p>建议从《微生态健康数据资产交易平台 APP 开发需求说明书》改成《疑难病诊疗方案商城 APP 开发需求说明书》，避免一上来就落入数据交易叙事。</p>
+              </div>
+            </div>
+          </div>
+          <div class="footer"><span>产出物：MVP 需求说明书 V2.0 + 前端原型 + 分润规则表。</span><span>14</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>最后用一张图收束：推荐的闭环</h2>
+              <p class="sub">这张图是对外讲故事时最应该保留的版本。</p>
+            </div>
+            <div class="kicker"><i data-lucide="circle-dot-dashed"></i>最终模型</div>
+          </div>
+          <div class="final-loop">
+            <div class="loop-panel">
+              <div class="loop-steps">
+                <div class="loop-step"><div class="dot">1</div><div><b>现在用户买诊疗方案</b><span>真实订单产生收入，方案运营方负责履约。</span></div></div>
+                <div class="loop-step"><div class="dot">2</div><div><b>老用户疗效作为好评展示</b><span>数据不是被单独出售，而是增强方案可信度。</span></div></div>
+                <div class="loop-step"><div class="dot">3</div><div><b>订单拆出分润池</b><span>推荐人、老用户池、平台分别拿不同的钱。</span></div></div>
+                <div class="loop-step"><div class="dot">4</div><div><b>新用户治疗后变成老用户</b><span>上传反馈后进入同方案用户池。</span></div></div>
+                <div class="loop-step"><div class="dot">5</div><div><b>飞轮继续转</b><span>更多真实好评带来更多订单，更多订单带来更多返佣。</span></div></div>
+              </div>
+            </div>
+            <div class="loop-panel" style="display:grid;grid-template-rows:1fr auto auto;gap:12px">
+              <div class="visual-panel"><img src="assets/revenue-mechanism/marketplace-flywheel.png" alt="最终闭环飞轮故事"></div>
+              <div class="big-quote">推荐表达：这是一个“带长期返佣机制的诊疗方案商城”，不是一个第一天就要上链的数据交易所。</div>
+              <div class="card warn"><h3>给团队的提醒</h3><p>不要急着证明愿景很大。先证明一个用户愿意买方案、一个老用户愿意上传好评、一次周清算能准确到账。</p></div>
+            </div>
+          </div>
+          <div class="footer"><span>最小闭环跑通后，再谈加权算法、二级市场、区块链和数据交易所。</span><span>15</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const deck = new Reveal({
+      hash: true,
+      width: 1280,
+      height: 720,
+      margin: 0.02,
+      transition: "slide",
+      backgroundTransition: "fade",
+      controlsTutorial: false
+    });
+
+    deck.initialize().then(() => {
+      if (window.lucide) lucide.createIcons();
+      initCharts();
+      animateCurrentSlide();
+    });
+
+    deck.on("slidechanged", () => {
+      if (window.lucide) lucide.createIcons();
+      initCharts();
+      animateCurrentSlide();
+    });
+
+    function animateCurrentSlide() {
+      const current = deck.getCurrentSlide();
+      if (!window.gsap || !current) return;
+      const items = current.querySelectorAll(".card, .story-step, .flow-node, .risk, .object, .loop-step");
+      gsap.fromTo(items, { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.04, ease: "power2.out" });
+    }
+
+    let splitChart;
+    function initCharts() {
+      const el = document.getElementById("splitChart");
+      if (!el || !window.echarts) return;
+      splitChart = splitChart || echarts.init(el);
+      splitChart.setOption({
+        animationDuration: 700,
+        tooltip: { trigger: "item", formatter: "{b}: ¥{c} ({d}%)" },
+        legend: {
+          orient: "vertical",
+          right: 20,
+          top: "middle",
+          itemWidth: 14,
+          itemHeight: 14,
+          formatter: function (name) {
+            const values = { "方案运营方": 70, "推荐人 R": 15, "老用户池": 10, "平台": 5 };
+            return name + "  ¥" + values[name];
+          },
+          textStyle: { color: "#344054", fontSize: 14, fontWeight: 700 }
+        },
+        graphic: [
+          {
+            type: "text",
+            left: 152,
+            top: 188,
+            style: {
+              text: "订单\n¥100",
+              textAlign: "center",
+              fill: "#1f2a37",
+              fontSize: 22,
+              fontWeight: 850,
+              lineHeight: 30
+            }
+          }
+        ],
+        series: [
+          {
+            name: "订单拆账",
+            type: "pie",
+            radius: ["48%", "72%"],
+            center: ["27%", "50%"],
+            avoidLabelOverlap: true,
+            label: {
+              show: false
+            },
+            labelLine: { length: 15, length2: 10, lineStyle: { color: "#98a2b3" } },
+            itemStyle: { borderColor: "#fff", borderWidth: 4 },
+            data: [
+              { name: "方案运营方", value: 70, itemStyle: { color: "#315fbd" } },
+              { name: "推荐人 R", value: 15, itemStyle: { color: "#c98509" } },
+              { name: "老用户池", value: 10, itemStyle: { color: "#357f4d" } },
+              { name: "平台", value: 5, itemStyle: { color: "#6f5bd7" } }
+            ]
+          }
+        ]
+      });
+      splitChart.resize();
+    }
+
+    window.addEventListener("resize", () => {
+      if (splitChart) splitChart.resize();
+    });
+  </script>
+</body>
+</html>
