@@ -1,727 +1,399 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>最小MVP报价方案 - 微生态健康数据资产交易平台</title>
+<title>新版 Lean MVP 方案 - 疑难病诊疗方案商城</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { box-sizing: border-box; }
+:root {
+    --bg: #f4f6f8;
+    --paper: #ffffff;
+    --ink: #1f2937;
+    --muted: #617083;
+    --line: #d9e1ea;
+    --blue: #2c6fad;
+    --teal: #168f83;
+    --green: #357f4d;
+    --amber: #b7791f;
+    --coral: #c2414e;
+    --purple: #6b46c1;
+    --soft-blue: #edf4ff;
+    --soft-teal: #e6f6f4;
+    --soft-green: #e9f7ef;
+    --soft-amber: #fff4dd;
+    --soft-coral: #ffecef;
+}
 body {
-    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
-    font-size: 14px; line-height: 1.7; color: #2d3748; background: #f0f4f8;
+    margin: 0;
     padding: 20px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
 }
-.container { max-width: 900px; margin: 0 auto; }
-
-/* Header */
-.quote-header {
-    background: linear-gradient(135deg, #22543d 0%, #2f855a 100%);
-    color: #fff; border-radius: 16px; padding: 40px 44px; margin-bottom: 24px;
-    position: relative; overflow: hidden;
+a { color: inherit; text-decoration: none; }
+.container {
+    max-width: 1080px;
+    width: 100%;
+    margin: 0 auto;
+    min-width: 0;
 }
-.quote-header::after {
-    content: ''; position: absolute; right: -40px; top: -40px;
-    width: 200px; height: 200px; border-radius: 50%;
-    background: rgba(255,255,255,0.05);
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
 }
-.quote-header .tag {
-    display: inline-block; background: rgba(255,255,255,0.2);
-    padding: 4px 14px; border-radius: 20px; font-size: 12px;
-    font-weight: 600; margin-bottom: 12px;
+.nav a {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-weight: 800;
+    color: #344054;
+    max-width: 100%;
 }
-.quote-header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-.quote-header .subtitle { font-size: 15px; color: rgba(255,255,255,0.8); margin-bottom: 20px; }
-.quote-header .meta { display: flex; flex-wrap: wrap; gap: 24px; font-size: 13px; color: rgba(255,255,255,0.7); }
-.quote-header .meta span { display: inline-flex; align-items: center; gap: 6px; }
-
-/* Section */
-.section {
-    background: #fff; border-radius: 14px; padding: 28px 32px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05); margin-bottom: 20px;
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+    gap: 18px;
+    align-items: stretch;
+    margin-bottom: 18px;
 }
-.section-title {
-    font-size: 18px; font-weight: 700; color: #22543d;
-    padding-bottom: 10px; border-bottom: 2px solid #e6ffed; margin-bottom: 18px;
-    display: flex; align-items: center; gap: 8px;
+.panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+    box-shadow: 0 12px 28px rgba(31, 41, 55, .08);
+    min-width: 0;
 }
-
-/* Table */
-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
-thead { background: #f7fafc; }
-th { padding: 10px 14px; text-align: left; font-weight: 600; color: #4a5568; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
-td { padding: 10px 14px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
-tbody tr:hover { background: #fafcff; }
-.text-right { text-align: right; }
-.text-center { text-align: center; }
-.price { font-weight: 700; color: #2f855a; }
-.subtotal-row td { font-weight: 600; background: #f7fafc; border-top: 2px solid #e2e8f0; }
-.total-row td { font-weight: 700; font-size: 16px; background: #e6ffed; color: #22543d; border-top: 3px solid #38a169; }
-
-/* Highlight */
-.highlight {
-    border-radius: 10px; padding: 18px 22px; margin: 16px 0; font-size: 13px;
+.kicker {
+    color: var(--teal);
+    font-weight: 900;
+    margin-bottom: 8px;
 }
-.highlight-green { background: #f0fff4; border-left: 4px solid #38a169; }
-.highlight-blue { background: #ebf4ff; border-left: 4px solid #3182ce; }
-.highlight-orange { background: #fffaf0; border-left: 4px solid #dd6b20; }
-.highlight-gray { background: #f7fafc; border-left: 4px solid #718096; }
-.highlight strong { color: #22543d; }
-
-/* Comparison */
-.compare-table th { background: #f0fff4; color: #22543d; }
-.compare-table .col-mvp { background: #f0fff4; }
-.compare-table .col-full { background: #fff; }
-.check-yes { color: #38a169; font-weight: 700; }
-.check-no { color: #cbd5e0; }
-.check-partial { color: #dd6b20; font-weight: 600; }
-
-/* Pricing comparison grid */
-.pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
-.pricing-card {
-    border-radius: 12px; padding: 20px; text-align: center;
-    border: 2px solid transparent;
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3, p, li, th, td, .quote-card, .step {
+    overflow-wrap: anywhere;
 }
-.pricing-card.mvp {
-    background: #f0fff4; border-color: #38a169;
-    position: relative;
+h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 12px;
 }
-.pricing-card.mvp::before {
-    content: '本方案'; position: absolute; top: -10px; left: 50%;
-    transform: translateX(-50%); background: #38a169; color: #fff;
-    padding: 2px 12px; border-radius: 12px; font-size: 11px; font-weight: 600;
+h2 {
+    font-size: 20px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 16px;
 }
-.pricing-card.v1 { background: #ebf4ff; border-color: #bee3f8; }
-.pricing-card.v15 { background: #faf5ff; border-color: #d6bcfa; }
-.pricing-card .p-label { font-size: 12px; color: #718096; margin-bottom: 6px; }
-.pricing-card .p-name { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
-.pricing-card .p-price { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
-.pricing-card.mvp .p-price { color: #2f855a; }
-.pricing-card.v1 .p-price { color: #2b6cb0; }
-.pricing-card.v15 .p-price { color: #6b46c1; }
-.pricing-card .p-duration { font-size: 12px; color: #718096; margin-bottom: 10px; }
-.pricing-card .p-desc { font-size: 11px; color: #4a5568; line-height: 1.5; }
-
-/* Feature list */
-.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.feat-box { border-radius: 10px; padding: 18px; }
-.feat-box.kept { background: #f0fff4; border-left: 4px solid #38a169; }
-.feat-box.cut { background: #f7fafc; border-left: 4px solid #cbd5e0; }
-.feat-box h4 { font-size: 14px; margin-bottom: 10px; }
-.feat-box.kept h4 { color: #22543d; }
-.feat-box.cut h4 { color: #4a5568; }
-.feat-list { list-style: none; padding: 0; }
-.feat-list li { padding: 4px 0; font-size: 13px; display: flex; align-items: flex-start; gap: 8px; }
-.feat-list.kept li::before { content: '\2705'; flex-shrink: 0; }
-.feat-list.cut li::before { content: '\274C'; flex-shrink: 0; opacity: 0.5; }
-.feat-list.cut li { color: #718096; }
-
-/* Timeline */
-.timeline { position: relative; padding-left: 28px; margin: 16px 0; }
-.timeline::before { content:''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
-.tl-item { position: relative; margin-bottom: 18px; }
-.tl-item::before {
-    content: ''; position: absolute; left: -22px; top: 4px;
-    width: 12px; height: 12px; border-radius: 50%;
-    background: #38a169; border: 2px solid #fff; box-shadow: 0 0 0 2px #38a169;
+h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
 }
-.tl-item .tl-title { font-weight: 600; color: #22543d; font-size: 14px; }
-.tl-item .tl-desc { font-size: 13px; color: #718096; margin-top: 2px; }
-.tl-item .tl-time {
-    display: inline-block; background: #edf2f7; color: #4a5568;
-    padding: 1px 10px; border-radius: 4px; font-size: 12px; margin-top: 4px;
+.muted { color: var(--muted); }
+.quote {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
 }
-
-/* Validation metrics */
-.metrics-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 16px 0; }
-.metric-card {
-    background: #f7fafc; border-radius: 10px; padding: 18px; text-align: center;
+.quote-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    background: #fff;
 }
-.metric-card .m-icon { font-size: 28px; margin-bottom: 8px; }
-.metric-card .m-label { font-size: 12px; color: #718096; margin-bottom: 4px; }
-.metric-card .m-target { font-size: 16px; font-weight: 700; color: #22543d; }
-
-/* Upgrade path */
-.upgrade-step {
-    background: #f7fafc; border-radius: 10px; padding: 14px 18px;
-    margin-bottom: 10px; display: flex; align-items: center; gap: 16px;
+.quote-card b {
+    display: block;
+    font-size: 26px;
+    line-height: 1.1;
 }
-.upgrade-step .step-num {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: #38a169; color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; flex-shrink: 0;
+.quote-card span {
+    color: var(--muted);
+    font-size: 12px;
 }
-.upgrade-step .step-body { flex: 1; }
-.upgrade-step .step-title { font-weight: 600; color: #22543d; font-size: 14px; }
-.upgrade-step .step-desc { font-size: 12px; color: #718096; margin-top: 2px; }
-.upgrade-step .step-price { font-size: 14px; font-weight: 700; color: #2f855a; flex-shrink: 0; }
-
-/* Demo links */
-.demo-link {
-    display: inline-flex; align-items: center; gap: 3px;
-    background: #e6ffed; color: #22543d; padding: 1px 8px; border-radius: 4px;
-    font-size: 12px; text-decoration: none; transition: all 0.2s;
+.hero-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 18px;
+}
+.card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+}
+.card.blue { background: var(--soft-blue); }
+.card.teal { background: var(--soft-teal); }
+.card.green { background: var(--soft-green); }
+.card.amber { background: var(--soft-amber); }
+.card.coral { background: var(--soft-coral); }
+ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+}
+li { margin: 5px 0; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+    font-size: 13px;
+}
+th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+}
+th {
+    background: #203246;
+    color: #fff;
+}
+.price {
+    font-weight: 900;
+    color: var(--green);
     white-space: nowrap;
 }
-.demo-link:hover { background: #38a169; color: #fff; text-decoration: none; }
-.demo-link::before { content: '\25B6'; font-size: 9px; }
-.demo-links { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-
-/* Print */
-@media print {
-    body { background: #fff; padding: 0; font-size: 12px; }
-    .section { box-shadow: none; border: 1px solid #eee; page-break-inside: avoid; }
-    .quote-header { border-radius: 0; }
-    .no-print { display: none; }
+.total td {
+    background: var(--soft-green);
+    font-weight: 900;
+    color: #203246;
 }
-@media (max-width: 768px) {
+.timeline {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+.step {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px;
+}
+.num {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #203246;
+    color: #fff;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+.callout {
+    border-left: 4px solid var(--amber);
+    background: var(--soft-amber);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+    margin: 18px 0;
+}
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+.btn {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 8px;
+    padding: 9px 14px;
+    background: #203246;
+    color: #fff;
+    font-weight: 900;
+}
+.btn.secondary {
+    background: #e9eef4;
+    color: #203246;
+}
+@media (max-width: 820px) {
     body { padding: 10px; }
-    .quote-header { padding: 24px; }
-    .section { padding: 20px; }
-    .pricing-grid, .feat-grid, .metrics-grid { grid-template-columns: 1fr; }
-    th, td { padding: 8px 10px; }
-}
-
-a.nav-link {
-    display: inline-flex; align-items: center; gap: 6px;
-    color: #718096; font-size: 13px; text-decoration: none; margin-right: 16px;
-}
-a.nav-link:hover { color: #38a169; }
-
-.btn-print {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: #2f855a; color: #fff; padding: 8px 20px; border-radius: 8px;
-    font-size: 13px; border: none; cursor: pointer; text-decoration: none;
-}
-.btn-print:hover { background: #22543d; }
-.btn-print.secondary { background: #718096; }
-.btn-print.secondary:hover { background: #4a5568; }
-
-.nav-bar {
-    background: #fff; border-radius: 10px; padding: 12px 20px;
-    margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    .container {
+        max-width: 370px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .hero, .grid, .timeline { grid-template-columns: 1fr; }
+    .quote { grid-template-columns: 1fr; }
+    .nav a {
+        min-width: 0;
+    }
+    h1 { font-size: 25px; }
+    .panel { padding: 16px; }
 }
 </style>
 </head>
 <body>
 <div class="container">
+    <nav class="nav">
+        <a href="index.html"><i data-lucide="home"></i>文档首页</a>
+        <a href="demo.html"><i data-lucide="monitor"></i>新版 Demo</a>
+        <a href="revenue-mechanism-thoughts-slides.html"><i data-lucide="presentation"></i>分润 Slides</a>
+        <a href="05-开发迭代路线图.html"><i data-lucide="route"></i>迭代路线</a>
+    </nav>
 
-<div class="nav-bar no-print">
-    <a href="index.html" class="nav-link">&larr; 文档首页</a>
-    <a href="quotation.html" class="nav-link">完整方案报价 (¥58,000)</a>
-    <a href="demo.html" class="nav-link">交互原型</a>
-</div>
-
-<!-- ==================== Header ==================== -->
-<div class="quote-header">
-    <span class="tag">&#9889; 最小可用版本</span>
-    <h1>最小MVP报价方案</h1>
-    <div class="subtitle">微生态健康数据资产交易平台 · 验证型版本</div>
-    <div class="meta">
-        <span>&#128197; 报价日期: 2026年4月20日</span>
-        <span>&#9202; 有效期: 30天</span>
-        <span>&#128196; 版本: MVP V0.3 · Lean</span>
-    </div>
-</div>
-
-<!-- ==================== 核心定位 ==================== -->
-<div class="section">
-    <div class="section-title">&#127919; 这个版本是做什么的</div>
-
-    <div class="highlight highlight-green">
-        <strong>一句话：</strong>用 3 周、约 1.5 万，跑通"用户上传数据 &rarr; 别人用代币解锁下载 &rarr; 卖家获得代币收益"的完整闭环，验证产品流程与用户价值。
-        <strong>支付先用代币模拟</strong>，等真的验证出付费意愿再按阶梯升级到真实支付。
-    </div>
-
-    <h4 style="margin:16px 0 10px;color:#22543d;font-size:14px;">核心要验证的问题</h4>
-    <div class="metrics-grid">
-        <div class="metric-card">
-            <div class="m-icon">&#128276;</div>
-            <div class="m-label">供给侧</div>
-            <div class="m-target">用户愿意上传吗？</div>
+    <section class="hero">
+        <div class="panel">
+            <div class="kicker">Lean MVP 0.1</div>
+            <h1>疑难病诊疗方案商城最小版本</h1>
+            <p class="muted">这一版只做“方案可售、订单可买、反馈可审、分润可算、账单可解释”。不做数据交易所、区块链、互联网医院和复杂权重算法。</p>
+            <div class="quote">
+                <div class="quote-card"><b>4 周</b><span>建议交付周期</span></div>
+                <div class="quote-card"><b>24 人天</b><span>产品、前端、后台、测试</span></div>
+                <div class="quote-card"><b>¥24,800</b><span>讨论版估算，不含第三方通道费</span></div>
+            </div>
+            <div class="actions">
+                <a class="btn" href="demo.html"><i data-lucide="mouse-pointer-click"></i>查看新版 Demo</a>
+                <a class="btn secondary" href="02-商业模式与团队规划.html"><i data-lucide="split"></i>查看分润规则</a>
+            </div>
         </div>
-        <div class="metric-card">
-            <div class="m-icon">&#128101;</div>
-            <div class="m-label">需求侧</div>
-            <div class="m-target">有人愿意"花"吗？</div>
+        <div class="panel">
+            <img class="hero-img" src="assets/revenue-mechanism/mvp-system.png" alt="新版 Lean MVP 系统范围">
         </div>
-        <div class="metric-card">
-            <div class="m-icon">&#128200;</div>
-            <div class="m-label">流程</div>
-            <div class="m-target">UX 走得通吗？</div>
-        </div>
-    </div>
+    </section>
 
-    <div class="highlight highlight-orange">
-        <strong>&#9888; 这个版本明确<u>不</u>解决的问题</strong><br>
-        真实付费意愿验证（用代币，非真钱）、合规背书（暂不接交易所）、纠纷存证（无区块链）、规模化搜索、收益自动分配、AI脱敏。
-        <br><br>
-        <strong>代币的含义：</strong>用户和平台方在 MVP 期约定代币兑换规则（比如 admin 手动充值代币 / 新用户赠送），验证的是"愿意花"而非"愿意付真金白银"。真实付费验证要加<strong>支付升级包 P1</strong>（+¥800，下方有详细说明）。
-        <br><br>
-        如果当前诉求是"融资/招投标需要完整合规演示"，请看完整版 <a href="quotation.html" style="color:#2f855a;">¥40,000 / ¥58,000 方案</a>。
-    </div>
-</div>
-
-<!-- ==================== 方案对比 ==================== -->
-<div class="section">
-    <div class="section-title">&#128200; 三个方案对比</div>
-    <div class="pricing-grid">
-        <div class="pricing-card mvp">
-            <div class="p-label">Lean MVP</div>
-            <div class="p-name">最小MVP</div>
-            <div class="p-price">&yen;15,400</div>
-            <div class="p-duration">约 3 周</div>
-            <div class="p-desc">代币模拟支付<br>跑通核心流程</div>
-        </div>
-        <div class="pricing-card v1">
-            <div class="p-label">运营型</div>
-            <div class="p-name">完整 V1.0</div>
-            <div class="p-price">&yen;40,000</div>
-            <div class="p-duration">约 8 周</div>
-            <div class="p-desc">含交易所对接<br>+区块链确权</div>
-        </div>
-        <div class="pricing-card v15">
-            <div class="p-label">增长型</div>
-            <div class="p-name">V1.0 + V1.5</div>
-            <div class="p-price">&yen;58,000</div>
-            <div class="p-duration">约 11 周</div>
-            <div class="p-desc">含智能搜索<br>+小程序+安全</div>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== 功能清单 ==================== -->
-<div class="section">
-    <div class="section-title">&#128203; 功能范围（保留 vs 砍掉）</div>
-    <div class="feat-grid">
-        <div class="feat-box kept">
-            <h4>&#9989; 保留（核心闭环必须）</h4>
-            <ul class="feat-list kept">
-                <li>用户注册登录（手机号+短信）</li>
-                <li>数据上传（结构化模板，5种常见类型）</li>
-                <li>规则引擎脱敏（身份证/手机/姓名/地址）</li>
-                <li>基础质量评分（完整性+时效性）</li>
-                <li>数据市场浏览（列表+详情）</li>
-                <li>关键词搜索（SQL LIKE，够用）</li>
-                <li><strong>代币余额 + 下单消费代币</strong></li>
-                <li><strong>购买前样本预览 / 购买后解锁下载</strong></li>
-                <li>卖家代币收益 + 后台可查</li>
-                <li><strong>站内信通知</strong>（审核结果、购买成功、代币到账、系统公告）</li>
-                <li>管理后台：数据审核、用户管理、代币充值</li>
-                <li>响应式 Web（PC + 手机浏览器）</li>
+    <section class="grid">
+        <div class="card green">
+            <h3>本版必须包含</h3>
+            <ul>
+                <li>C 端方案商城和方案详情页。</li>
+                <li>老用户反馈展示、提交和后台审核。</li>
+                <li>订单状态、支付占位、退款状态和履约节点。</li>
+                <li>70/15/10/5 分润计算、钱包流水和结算批次。</li>
+                <li>运营后台：方案审核、反馈审核、异常订单、财务导出。</li>
             </ul>
         </div>
-        <div class="feat-box cut">
-            <h4>&#10060; 砍掉（非必须/后续再补）</h4>
-            <ul class="feat-list cut">
-                <li>微信支付 / 支付宝真实支付</li>
-                <li>贵阳大数据交易所API对接</li>
-                <li>区块链节点部署 + 智能合约</li>
-                <li>区块链溯源可视化</li>
-                <li>AI脱敏引擎（医疗BERT NER）</li>
-                <li>Elasticsearch 语义搜索</li>
-                <li>收益分红 / 自动分账引擎</li>
-                <li>代币 &rarr; 真钱提现</li>
-                <li>小程序端 / Android 原生 App</li>
-                <li>等保适配 / 渗透测试</li>
-                <li>交易所对接仪表盘、结算管理</li>
+        <div class="card coral">
+            <h3>本版明确不做</h3>
+            <ul>
+                <li>医疗数据资产挂牌交易。</li>
+                <li>区块链确权、链上凭证、分润权二级市场。</li>
+                <li>病历 OCR、可信计算、数据交易所对接。</li>
+                <li>互联网医院问诊、处方、诊断闭环。</li>
+                <li>多层级返佣、复杂贡献权重和浏览路径追踪。</li>
             </ul>
         </div>
-    </div>
-    <div class="highlight highlight-gray" style="margin-top:16px;">
-        <strong>砍掉的逻辑：</strong>在商业假设未验证之前，这些功能都属于<strong>"假设验证后才值得投入"</strong>的范畴。
-        比如区块链存证——如果根本没几个用户、没几笔交易，上链没意义；再比如交易所对接——如果数据没人买，再合规也是空的。
-        所以先把钱花在"证明有人要"上。
-    </div>
-</div>
+    </section>
 
-<!-- ==================== 报价明细 ==================== -->
-<div class="section">
-    <div class="section-title">&#128176; 报价明细</div>
-    <table>
-        <thead>
-            <tr><th>模块</th><th>内容</th><th>工作量</th><th class="text-right">报价</th></tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="font-weight:600;">后端基础架构</td>
-                <td>FastAPI + JWT认证 + PostgreSQL + 基础API框架
-                    <div class="demo-links"><a href="demos/demo-user-auth.html" class="demo-link">用户认证</a></div>
-                </td>
-                <td class="text-center">2.5天</td>
-                <td class="text-right price">&yen;2,000</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">数据资产模块</td>
-                <td>结构化模板上传、规则引擎脱敏、简化质量评分
-                    <div class="demo-links"><a href="demos/demo-data-upload.html" class="demo-link">数据上传</a><a href="demos/demo-desensitize.html" class="demo-link">规则脱敏</a><a href="demos/demo-quality-score.html" class="demo-link">质量评分</a></div>
-                </td>
-                <td class="text-center">3天</td>
-                <td class="text-right price">&yen;2,500</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">前端 Web</td>
-                <td>登录注册、市场、资产详情、上传向导、个人中心 · 响应式（PC+手机浏览器）
-                    <div class="demo-links"><a href="demos/demo-market.html" class="demo-link">数据市场</a><a href="demos/demo-asset-detail.html" class="demo-link">资产详情</a><a href="demos/demo-upload-wizard.html" class="demo-link">上传向导</a><a href="demos/demo-my-assets.html" class="demo-link">个人中心</a></div>
-                </td>
-                <td class="text-center">4天</td>
-                <td class="text-right price">&yen;3,500</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">搜索功能</td>
-                <td>SQL LIKE 查询 + 分类筛选 + 排序（不上 ES、不做全文检索）
-                    <div class="demo-links"><a href="demos/demo-search.html" class="demo-link">搜索筛选</a></div>
-                </td>
-                <td class="text-center">0.5天</td>
-                <td class="text-right price">&yen;400</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">代币与交易</td>
-                <td>代币账户（balance）+ admin充值/发放、订单、消费扣币、卖家代币收益、<strong>样本预览 + 购买后解锁下载</strong>
-                    <div class="demo-links"><a href="demos/demo-orders.html" class="demo-link">订单</a><a href="demos/demo-wallet.html" class="demo-link">代币账户</a></div>
-                </td>
-                <td class="text-center">3天</td>
-                <td class="text-right price">&yen;2,500</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">管理后台</td>
-                <td>总览Dashboard、数据审核、用户管理、代币发放与流水、订单管理 · 用 FastAPI Admin 现成方案
-                    <div class="demo-links"><a href="demos/demo-admin-dashboard.html" class="demo-link">总览</a><a href="demos/demo-admin-review.html" class="demo-link">资产审核</a><a href="demos/demo-admin-users.html" class="demo-link">用户管理</a><a href="demos/demo-admin-tokens.html" class="demo-link">代币管理</a><a href="demos/demo-admin-orders.html" class="demo-link">订单管理</a></div>
-                </td>
-                <td class="text-center">1.5天</td>
-                <td class="text-right price">&yen;1,000</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">站内信通知</td>
-                <td>notifications 表 + 未读数 API + 前端铃铛/未读badge/消息列表；关键事件自动触发 + 后台主动发系统公告
-                    <div class="demo-links"><a href="demos/demo-notifications.html" class="demo-link">用户消息中心</a><a href="demos/demo-admin-broadcast.html" class="demo-link">后台发公告</a></div>
-                </td>
-                <td class="text-center">1.5天</td>
-                <td class="text-right price">&yen;1,000</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">UI/UX</td>
-                <td>Ant Design / Tailwind 组件库直接用，不做定制设计稿</td>
-                <td class="text-center">1.5天</td>
-                <td class="text-right price">&yen;1,000</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">部署 & 测试</td>
-                <td>Docker Compose 单机部署、域名 SSL、功能测试</td>
-                <td class="text-center">1.5天</td>
-                <td class="text-right price">&yen;1,000</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">项目管理</td>
-                <td>需求对齐、周同步、验收、文档交付</td>
-                <td class="text-center">持续</td>
-                <td class="text-right price">&yen;500</td>
-            </tr>
-            <tr class="total-row">
-                <td colspan="3">Lean MVP 合计（约 19 人天，3 周交付）</td>
-                <td class="text-right" style="font-size:20px;">&yen;15,400</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="highlight highlight-green" style="margin-top:16px;">
-        <strong>&#128073; 相比完整V1.0方案（&yen;40,000）节省 &yen;24,600（62%）</strong><br>
-        省在：代币替代真实支付、UI 不做定制、管理后台用现成方案、搜索降到 SQL LIKE、不接交易所/区块链/AI脱敏。
-    </div>
-    <div class="highlight highlight-blue" style="margin-top:10px;">
-        <strong>交付物：响应式 Web 应用</strong>（PC 浏览器 + 手机浏览器通用）。本报价<strong>默认不含</strong>原生 App 和小程序。<br>
-        <strong>Android / iOS 原生 App 可讨论追加</strong>，跨平台方案（React Native / Flutter / UniApp）一套代码打两个端比较经济，开发工期约 +6-8 天 / +¥5,000-6,000。但要注意：
-        <ul style="margin:6px 0 0 20px;">
-            <li><strong>上架审核时间不可控</strong>——iOS App Store 审核 1-3 天（拒了改完再提），Android 国内各应用商店 1-7 天</li>
-            <li>医疗/健康类 App 审核更严格，可能要提供《医疗器械经营许可证》或《互联网医疗信息服务许可证》等资质</li>
-            <li>实际工期 = 开发工期 + 2-4 周审核缓冲，不适合紧凑的 MVP 节奏</li>
-        </ul>
-        所以建议：MVP 先 Web，验证通过后再讨论要不要做原生 App。如果当下就确定要，请单独沟通，我们另行给详细方案和排期。
-    </div>
-    <div class="highlight highlight-orange" style="margin-top:10px;">
-        <strong>&#9888; 重要说明：以上 &yen;14,400 是<u>开发人力费用</u>，不含运行成本。</strong><br>
-        系统上线和持续运行需要额外承担<strong>云服务与第三方服务费用</strong>，由甲方直接向服务商付费（我们协助选型、配置、接入）：
-        <table style="margin-top:10px;background:#fff;font-size:12px;">
+    <section class="panel">
+        <h2>模块估算</h2>
+        <table>
             <thead>
-                <tr><th>项目</th><th>用途</th><th>费用（起步）</th></tr>
+                <tr>
+                    <th>模块</th>
+                    <th>交付内容</th>
+                    <th>人天</th>
+                    <th>估算</th>
+                </tr>
             </thead>
             <tbody>
-                <tr><td>云服务器 ECS</td><td>应用主机（2核4G 够用）</td><td>&yen;200-400 / 月</td></tr>
-                <tr><td>云数据库 RDS</td><td>PostgreSQL（1核2G）</td><td>&yen;200-400 / 月</td></tr>
-                <tr><td>对象存储 OSS</td><td>上传的数据文件存储</td><td>&yen;50-100 / 月</td></tr>
-                <tr><td>CDN / 带宽</td><td>下载加速、流量</td><td>&yen;50-200 / 月</td></tr>
-                <tr><td>短信验证码</td><td>注册登录发送</td><td>约 &yen;0.04 / 条</td></tr>
-                <tr><td>域名 + SSL</td><td>.com 域名 + 免费证书</td><td>&yen;60-100 / 年</td></tr>
-                <tr style="background:#fff5eb;"><td colspan="2" style="font-weight:600;">MVP 期预估月运营成本</td><td style="font-weight:700;color:#dd6b20;">约 &yen;500-1,500 / 月</td></tr>
+                <tr>
+                    <td>产品梳理与原型</td>
+                    <td>新版 PRD、关键流程、页面信息结构、规则口径。</td>
+                    <td>3</td>
+                    <td class="price">¥3,000</td>
+                </tr>
+                <tr>
+                    <td>C 端商城</td>
+                    <td>方案列表、筛选、详情、老用户背书、购买确认。</td>
+                    <td>5</td>
+                    <td class="price">¥5,200</td>
+                </tr>
+                <tr>
+                    <td>订单与履约</td>
+                    <td>订单创建、状态流转、履约节点、退款状态。</td>
+                    <td>4</td>
+                    <td class="price">¥4,000</td>
+                </tr>
+                <tr>
+                    <td>老用户反馈</td>
+                    <td>反馈提交、材料记录、审核状态、入池资格。</td>
+                    <td>4</td>
+                    <td class="price">¥4,000</td>
+                </tr>
+                <tr>
+                    <td>分润与钱包</td>
+                    <td>70/15/10/5 拆账、冻结期、钱包流水、结算批次。</td>
+                    <td>5</td>
+                    <td class="price">¥5,200</td>
+                </tr>
+                <tr>
+                    <td>运营后台与测试部署</td>
+                    <td>方案审核、反馈审核、异常冻结、财务导出、上线检查。</td>
+                    <td>3</td>
+                    <td class="price">¥3,400</td>
+                </tr>
+                <tr class="total">
+                    <td colspan="2">Lean MVP 合计</td>
+                    <td>24</td>
+                    <td>¥24,800</td>
+                </tr>
             </tbody>
         </table>
-        初期用户量少时按下限估；数据量或流量上来后按上限，甚至更高。也可以选择更便宜的方案（比如轻量应用服务器），但运维复杂度会上升。
-    </div>
-</div>
-
-<!-- ==================== 时间表 ==================== -->
-<div class="section">
-    <div class="section-title">&#128197; 时间表（3 周 · 21 天）</div>
-    <p style="color:#718096;font-size:13px;margin-bottom:14px;">前后端部分并行开发，19 人天工作量压进 15 个工作日。</p>
-
-    <div class="timeline">
-        <div class="tl-item">
-            <div class="tl-title">第 1 周 · 骨架搭建（Day 1-7）</div>
-            <div class="tl-desc">Day 1-2: 需求对齐 + 数据库设计 + UI kit 选型<br>
-            Day 3-5: 后端脚手架 + JWT 认证 + 上传脱敏 API<br>
-            Day 5-7: 前端项目 + 登录注册 + 主框架（与后端并行）</div>
-            <span class="tl-time">里程碑 M1: 后端API可调用，前端能跑</span>
+        <div class="callout">
+            <strong>报价口径：</strong>这是新版故事下的第一版讨论稿，用于替换旧“数据资产交易平台 Lean MVP”。正式报价需在支付通道、实名/提现、服务器、短信、法务文案、图片素材和第三方服务费用确认后再锁定。
         </div>
-        <div class="tl-item">
-            <div class="tl-title">第 2 周 · 核心业务打通（Day 8-14）</div>
-            <div class="tl-desc">Day 8-10: 数据市场 + 资产详情 + 上传向导<br>
-            Day 11-12: 代币账户 + 订单 + 付费解锁 + 下载<br>
-            Day 13-14: 搜索筛选 + 个人中心 + 站内信 + 首轮联调</div>
-            <span class="tl-time">里程碑 M2: 核心闭环可演示（上传→浏览→花代币→解锁下载）</span>
+    </section>
+
+    <section class="panel">
+        <h2>4 周交付节奏</h2>
+        <div class="timeline">
+            <div class="step"><span class="num">1</span><h3>第 1 周</h3><p class="muted">确认规则、原型和数据结构，搭建项目与基础页面。</p></div>
+            <div class="step"><span class="num">2</span><h3>第 2 周</h3><p class="muted">完成商城、方案详情、订单和履约状态。</p></div>
+            <div class="step"><span class="num">3</span><h3>第 3 周</h3><p class="muted">完成反馈审核、老用户池、分润计算和钱包流水。</p></div>
+            <div class="step"><span class="num">4</span><h3>第 4 周</h3><p class="muted">完成后台、财务导出、异常状态、测试和部署。</p></div>
         </div>
-        <div class="tl-item">
-            <div class="tl-title">第 3 周 · 收尾交付（Day 15-21）</div>
-            <div class="tl-desc">Day 15-16: 管理后台（审核+用户+代币发放）<br>
-            Day 17-18: UI 打磨 + 移动端适配 + 完整测试<br>
-            Day 19-20: 部署上线 + 域名 SSL<br>
-            Day 21: 验收 + 文档 + 运营培训</div>
-            <span class="tl-time">里程碑 M3: 上线交付</span>
-        </div>
-    </div>
+    </section>
 
-    <div class="highlight highlight-orange" style="margin-top:14px;">
-        <strong>&#9888; 3 周是<u>紧凑节奏</u></strong>，能压下来的前提：需求变更不多、UI 接受直接用组件库风格、每周验收会按时开。
-        如果中途需求反复或要做大量 UI 定制，工期会到 4 周。
-    </div>
-</div>
-
-<!-- ==================== 验证指标 ==================== -->
-<div class="section">
-    <div class="section-title">&#127919; 怎么算"验证成功"</div>
-    <p style="color:#718096;margin-bottom:14px;">上线后 1-2 个月内，建议看以下几个核心指标决定下一步是升级到完整版还是调整方向。</p>
-
-    <table>
-        <thead>
-            <tr>
-                <th>维度</th>
-                <th>关键指标</th>
-                <th>&#127942; 强信号（升级V1.0）</th>
-                <th>&#9888; 弱信号（需要调整）</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="font-weight:600;">供给</td>
-                <td>上传用户数 / 活跃上传率</td>
-                <td>&ge; 100 用户上传，周活 20%+</td>
-                <td>&lt; 20 用户，活跃几乎为零</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">需求</td>
-                <td>代币消费笔数 / 询单转化</td>
-                <td>&ge; 20 笔代币消费 + 访谈时 &ge; 50% 用户说"如果是真钱也愿意花"</td>
-                <td>代币免费送也没人花</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">定价</td>
-                <td>代币价格分布</td>
-                <td>不同数据代币定价有明显分层</td>
-                <td>所有数据都压在最低档代币</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">客诉</td>
-                <td>纠纷率 / 数据质量投诉</td>
-                <td>&lt; 5%，用户愿意复购</td>
-                <td>&gt; 20%，质疑数据真实性</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">合规</td>
-                <td>监管/采购方要求</td>
-                <td>开始有机构询问交易所资质</td>
-                <td>完全是C端零散交易</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="highlight highlight-blue" style="margin-top:14px;">
-        <strong>验证路径建议：</strong>
-        <ol style="margin:8px 0 0 20px;">
-            <li>MVP 上线后 1-2 个月，跑代币模式 + 用户访谈，验证"愿不愿意花"</li>
-            <li>如果信号积极 &rarr; 加<strong>支付升级包 P1（人工收款，+¥800）</strong>，真金白银验证</li>
-            <li>真实付费跑通 &rarr; 按需加 P2/P3（聚合支付/官方 API）</li>
-            <li>出现机构询问资质 &rarr; 加升级包 A（交易所对接）</li>
-            <li>出现纠纷存证需求 &rarr; 加升级包 B（区块链）</li>
-        </ol>
-    </div>
-</div>
-
-<!-- ==================== 升级路径 ==================== -->
-<div class="section">
-    <div class="section-title">&#128640; 后续升级路径（按需追加）</div>
-    <p style="color:#718096;margin-bottom:14px;">MVP验证通过后按需加功能，<strong>已付 &yen;15,400 全额计入总价</strong>。支付部分按成熟度阶梯拆成 P1→P2→P3，业务功能拆成 A/B/C/D。</p>
-
-    <h4 style="font-size:14px;color:#22543d;margin:14px 0 10px;">&#128176; 支付升级阶梯（按需要的"钱流真实度"逐档上）</h4>
-
-    <div class="upgrade-step">
-        <div class="step-num">P1</div>
-        <div class="step-body">
-            <div class="step-title">人工收款接入（+ &yen;800 · 1 天）</div>
-            <div class="step-desc">下单后弹出个人微信/支付宝收款码，用户截图付款，客服在后台点"确认收款"→ 系统自动充代币/解锁数据。<strong>验证真金白银意愿的最轻方案</strong>，无需商户号。</div>
-        </div>
-        <div class="step-price">+ &yen;800</div>
-    </div>
-    <div class="upgrade-step">
-        <div class="step-num">P2</div>
-        <div class="step-body">
-            <div class="step-title">聚合支付接入（+ &yen;2,000 · 2 天）</div>
-            <div class="step-desc">接入"收钱吧 / 微信小商店 / 微信支付分"等聚合平台，自动回调对账，不用客服人工操作。费率 0.6-1%。适合月订单 &gt; 50 笔时。</div>
-        </div>
-        <div class="step-price">+ &yen;2,000</div>
-    </div>
-    <div class="upgrade-step">
-        <div class="step-num">P3</div>
-        <div class="step-body">
-            <div class="step-title">官方支付 API（+ &yen;3,000 · 2-3 天）</div>
-            <div class="step-desc">微信支付 + 支付宝官方商户版对接（下单、回调、退款、分账、对账）。费率最低（0.3%）、功能最全。适合月交易额 &gt; 10 万、需要自动分账/退款时。</div>
-        </div>
-        <div class="step-price">+ &yen;3,000</div>
-    </div>
-
-    <h4 style="font-size:14px;color:#22543d;margin:20px 0 10px;">&#127963; 业务功能升级包（按业务信号触发）</h4>
-
-    <div class="upgrade-step">
-        <div class="step-num">A</div>
-        <div class="step-body">
-            <div class="step-title">交易所对接（+ &yen;5,000 · 5 天）</div>
-            <div class="step-desc">贵阳大数据交易所API 全流程（资产登记、确权、上架、周结算、对账）。触发条件：机构来询合规资质。</div>
-        </div>
-        <div class="step-price">+ &yen;5,000</div>
-    </div>
-    <div class="upgrade-step">
-        <div class="step-num">B</div>
-        <div class="step-body">
-            <div class="step-title">区块链存证（+ &yen;6,000 · 5 天）</div>
-            <div class="step-desc">长安链/FISCO BCOS 节点、智能合约（确权+访问记录+收益分配）、溯源可视化。触发条件：出现纠纷存证需求。</div>
-        </div>
-        <div class="step-price">+ &yen;6,000</div>
-    </div>
-    <div class="upgrade-step">
-        <div class="step-num">C</div>
-        <div class="step-body">
-            <div class="step-title">智能化增强（+ &yen;6,000 · 5 天）</div>
-            <div class="step-desc">AI脱敏（医疗NER）+ Elasticsearch 语义搜索 + 收益自动分红引擎。触发条件：数据量上来，搜索体验和脱敏质量成瓶颈。</div>
-        </div>
-        <div class="step-price">+ &yen;6,000</div>
-    </div>
-    <div class="upgrade-step">
-        <div class="step-num">D</div>
-        <div class="step-body">
-            <div class="step-title">小程序 + 安全加固（+ &yen;18,000 · 10 天）</div>
-            <div class="step-desc">UniApp 小程序端、等保适配、渗透测试、安全审计。触发条件：开始规模化上量、对接政府/国企采购。</div>
-        </div>
-        <div class="step-price">+ &yen;18,000</div>
-    </div>
-
-    <div class="highlight highlight-green" style="margin-top:14px;">
-        <strong>全部升级后 ≈ &yen;56,200</strong>（MVP ¥15,400 + 支付 ¥5,800 + 业务 ¥35,000）。<br>
-        比一次性签 V1.0+V1.5 <strong>¥58,000</strong> 略低 ¥1,800——因为 MVP 对 UI/管理后台/搜索等做了精简，升级时如果要补齐到完整版的精细度还会略加。但实际使用中按需追加就好，不用一次到位。
-    </div>
-</div>
-
-<!-- ==================== 付款方式 ==================== -->
-<div class="section">
-    <div class="section-title">&#128179; 付款方式</div>
-    <table>
-        <thead><tr><th>节点</th><th>金额</th><th>触发条件</th></tr></thead>
-        <tbody>
-            <tr><td>项目启动</td><td class="price">&yen;5,100 (33%)</td><td>合同签署，开始开发</td></tr>
-            <tr><td>核心闭环可演示</td><td class="price">&yen;5,100 (33%)</td><td>第 2 周末，M2 里程碑：上传→浏览→花代币→解锁下载可演示</td></tr>
-            <tr><td>上线验收</td><td class="price">&yen;5,200 (34%)</td><td>第 3 周末，部署上线 + 验收通过</td></tr>
-            <tr class="total-row"><td>合计</td><td colspan="2">&yen;15,400</td></tr>
-        </tbody>
-    </table>
-</div>
-
-<!-- ==================== 包含/不包含 ==================== -->
-<div class="section">
-    <div class="section-title">&#9989; 交付内容</div>
-    <div class="feat-grid">
-        <div>
-            <h4 style="color:#22543d;margin-bottom:10px;">报价包含</h4>
-            <ul class="feat-list kept">
-                <li>响应式 Web 应用（PC + 手机浏览器）</li>
-                <li>全部源代码（前端+后端）及 Git 仓库</li>
-                <li>数据库设计文档及 DDL 脚本</li>
-                <li>API 文档（OpenAPI/Swagger 自动生成）</li>
-                <li>Docker Compose 部署文档</li>
-                <li>交付后 30 天免费 Bug 修复</li>
-                <li>一次免费的需求范围内小调整</li>
+    <section class="grid">
+        <div class="card blue">
+            <h3>需要客户先确认</h3>
+            <ul>
+                <li>分润比例是否采用 70/15/10/5。</li>
+                <li>老用户池 MVP 是否先均分。</li>
+                <li>结算周期是否采用 T+7。</li>
+                <li>没有推荐人 R 时，15% 进入哪里。</li>
             </ul>
         </div>
-        <div>
-            <h4 style="color:#c53030;margin-bottom:10px;">报价不包含</h4>
-            <ul class="feat-list cut">
-                <li>Android / iOS 原生 App（默认不含，<strong>可讨论</strong>，但审核周期需 2-4 周缓冲）</li>
-                <li>微信小程序（在升级包 D 里）</li>
-                <li>真实支付（在支付升级包 P1/P2/P3 里）</li>
-                <li>云服务器费用（阿里云约 &yen;500-1,500/月起）</li>
-                <li>域名及 SSL 证书费用</li>
-                <li>法律文件起草（用户协议、隐私政策）</li>
-                <li>需求范围外的功能开发</li>
-                <li>后续运维（可选 &yen;2,000/月）</li>
+        <div class="card amber">
+            <h3>上线验收标准</h3>
+            <ul>
+                <li>至少 3 个方案可上架、可审核、可购买。</li>
+                <li>至少 1 笔测试订单可生成完整分润台账。</li>
+                <li>老用户反馈可提交、审核、展示和入池。</li>
+                <li>运营、财务、用户看到的收益口径一致。</li>
             </ul>
         </div>
-    </div>
+    </section>
 </div>
-
-<!-- ==================== 该选哪个 ==================== -->
-<div class="section">
-    <div class="section-title">&#129504; 该选哪个方案</div>
-    <table>
-        <thead>
-            <tr><th>你的情况</th><th>建议</th></tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="font-weight:600;">"还不确定产品形态 / 想先跑通流程"</td>
-                <td><strong style="color:#2f855a;">&rarr; 本方案 Lean MVP &yen;15,400</strong></td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">"想验证真金白银付费意愿（不止代币）"</td>
-                <td><strong style="color:#2f855a;">&rarr; Lean MVP + 支付升级 P1 = &yen;16,200</strong></td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">"需要给投资人/合作方演示完整能力"</td>
-                <td>&rarr; <a href="quotation.html">完整V1.0 &yen;40,000</a></td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">"已经有明确的机构采购方，需要合规背书"</td>
-                <td>&rarr; <a href="quotation.html">完整V1.0 &yen;40,000</a> 必须</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">"要参与招投标 / 政府项目"</td>
-                <td>&rarr; <a href="quotation.html">V1.0+V1.5 &yen;58,000</a>（含安全合规）</td>
-            </tr>
-            <tr>
-                <td style="font-weight:600;">"预算很紧，但要能验证商业模式"</td>
-                <td><strong style="color:#2f855a;">&rarr; 本方案 Lean MVP &yen;15,400</strong></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<!-- ==================== Print ==================== -->
-<div class="no-print" style="text-align:center;margin:20px 0;">
-    <button class="btn-print" onclick="window.print()">&#128424; 打印/导出PDF</button>
-    <a href="quotation.html" class="btn-print secondary" style="margin-left:8px;">查看完整方案</a>
-    <a href="index.html" class="btn-print secondary" style="margin-left:8px;">返回文档首页</a>
-</div>
-
-<div style="text-align:center;padding:24px;font-size:12px;color:#a0aec0;">
-    本报价方案由 健数通 项目团队提供 | 报价有效期30天 | 最终价格以签署合同为准
-</div>
-
-</div>
+<script>lucide.createIcons();</script>
 </body>
 </html>

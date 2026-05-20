@@ -237,8 +237,8 @@ blockquote,
     border: 1px solid var(--line);
     background: #fff;
     display: block;
-    object-fit: cover;
-    max-height: 330px;
+    height: auto;
+    object-fit: contain;
 }
 
 .image-note {
@@ -520,10 +520,6 @@ blockquote,
 
     .split-bar {
         grid-template-columns: 1fr;
-    }
-
-    .doc-image {
-        max-height: none;
     }
 
     .back-top {
