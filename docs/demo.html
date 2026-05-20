@@ -295,8 +295,11 @@ button { font: inherit; }
 }
 .phone-content {
     flex: 1;
-    overflow: hidden;
+    overflow-y: auto;
     padding: 16px;
+}
+.phone-content::-webkit-scrollbar {
+    width: 0;
 }
 .mobile-title {
     font-size: 21px;
@@ -318,6 +321,110 @@ button { font: inherit; }
 .mobile-card.soft {
     background: var(--soft-teal);
     border-color: #cbece8;
+}
+.mobile-card.warn {
+    background: var(--soft-amber);
+    border-color: #f2d394;
+}
+.mini-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 950;
+    margin-bottom: 8px;
+}
+.tiny {
+    color: var(--muted);
+    font-size: 11px;
+}
+.check-list {
+    display: grid;
+    gap: 8px;
+}
+.check-line {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+}
+.check-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--soft-green);
+    color: var(--green);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 950;
+}
+.mini-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+.mini-box {
+    border: 1px solid #dfe6ef;
+    border-radius: 12px;
+    background: #fff;
+    padding: 10px;
+}
+.mini-box b {
+    display: block;
+    font-size: 14px;
+}
+.notice {
+    border-left: 4px solid var(--teal);
+    background: var(--soft-teal);
+    border-radius: 0 12px 12px 0;
+    padding: 10px 12px;
+    margin: 10px 0;
+}
+.segment {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    padding: 4px;
+    border-radius: 12px;
+    background: #e9eef5;
+    margin-bottom: 10px;
+}
+.segment span {
+    text-align: center;
+    border-radius: 9px;
+    padding: 7px 4px;
+    font-size: 12px;
+    font-weight: 900;
+    color: #667085;
+}
+.segment span.active {
+    background: #fff;
+    color: var(--dark);
+    box-shadow: 0 4px 10px rgba(31, 41, 55, .08);
+}
+.timeline-mini {
+    display: grid;
+    gap: 8px;
+}
+.timeline-mini .line {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 8px;
+}
+.line-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--soft-blue);
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 950;
 }
 .input-box {
     min-height: 48px;
@@ -513,7 +620,7 @@ button { font: inherit; }
     <section class="intro">
         <div>
             <h1>每次只看一个小动作</h1>
-            <p>右边是手机模拟器里的界面，左边是这一动作背后的数据库读写。这样能把“注册、上架方案、购买、反馈入池、分润结算”拆成可讨论的小点。</p>
+            <p>右边是手机模拟器里的界面，左边是这一动作背后的数据库读写。这里把“注册、机构入驻、方案上架、展示、购买、履约、反馈、授权、分润”拆成更细的小点，避免停留在概念层。</p>
         </div>
         <div class="step-actions">
             <button class="nav-btn" id="prevBtn"><i data-lucide="arrow-left"></i>上一小点</button>
@@ -552,7 +659,7 @@ button { font: inherit; }
 </main>
 
 <script>
-const steps = [
+const baseSteps = [
     {
         key: "register",
         icon: "user-plus",
@@ -833,6 +940,736 @@ const steps = [
                     <div class="phone-row"><span>平台</span><span>¥49.00</span></div>
                 </div>
             </div>
+        `
+    }
+];
+
+const steps = [
+    {
+        key: "user_identity",
+        icon: "user-check",
+        tab: "用户实名",
+        title: "01 用户实名：先把买家身份和授权做完整",
+        actor: "现在用户",
+        screen: "登录 + 实名 + 授权",
+        subtitle: "真实 App 不会只做手机号登录。健康服务、支付、反馈和分润都需要实名、协议版本、隐私授权和设备风控。",
+        explain: "注册只是入口，关键是把用户身份、协议、隐私授权、登录设备、风控状态都建好。此时仍然不产生任何分润。",
+        db: [
+            { table: "users", op: "INSERT", tone: "insert", rows: [
+                ["id", "U1001"],
+                ["phone", "138****0912"],
+                ["role", "buyer"],
+                ["real_name_status", "pending"],
+                ["risk_status", "normal"]
+            ]},
+            { table: "identity_profiles", op: "UPSERT", tone: "insert", rows: [
+                ["user_id", "U1001"],
+                ["name_masked", "王*生"],
+                ["id_card_masked", "1101********3319"],
+                ["verify_channel", "支付通道实名"],
+                ["verify_status", "pending"]
+            ]},
+            { table: "user_consents", op: "INSERT", tone: "insert", rows: [
+                ["service_terms", "v1.0 accepted"],
+                ["privacy_policy", "v1.0 accepted"],
+                ["health_info_notice", "separate accepted"],
+                ["marketing_push", "not_selected"]
+            ]},
+            { table: "login_sessions", op: "INSERT", tone: "insert", rows: [
+                ["device_id", "ios_8FA2"],
+                ["ip_region", "广东深圳"],
+                ["risk_score", "12 / low"],
+                ["expires_at", "2026-06-19"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">进入诊疗方案商城</h2>
+            <p class="mobile-sub">手机号只是第一步，健康服务要把实名、隐私和风险提示拆开确认。</p>
+            <div class="segment"><span class="active">登录</span><span>实名</span><span>授权</span></div>
+            <div class="mobile-card">
+                <div class="input-box">手机号 138 **** 0912</div>
+                <div class="input-box">验证码 826419</div>
+                <div class="check-list">
+                    <div class="check-line"><span class="check-dot">✓</span><span>同意服务协议与隐私政策</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>单独阅读健康信息处理提示</span></div>
+                    <div class="check-line"><span class="check-dot">·</span><span>暂不开启营销消息</span></div>
+                </div>
+                <button class="primary-btn"><i data-lucide="log-in"></i>登录并继续实名</button>
+            </div>
+            <div class="notice"><b>产品细节</b><br><span class="tiny">后续购买、反馈入池、提现都复用同一个用户身份。</span></div>
+        `
+    },
+    {
+        key: "org_onboarding",
+        icon: "building-2",
+        tab: "机构入驻",
+        title: "02 机构入驻：上架前先验证谁有资格卖",
+        actor: "方案运营方",
+        screen: "机构入驻资料",
+        subtitle: "中国医疗健康 App 里，机构不能直接上商品。要先提交营业执照、医疗/服务资质、结算账户、联系人和服务责任主体。",
+        explain: "上架方案之前，先确定谁是方案运营方、谁负责履约、钱结算给谁。否则后面订单、售后和分润都没有责任主体。",
+        db: [
+            { table: "operators", op: "INSERT", tone: "insert", rows: [
+                ["id", "ORG018"],
+                ["name", "省肿瘤专病团队"],
+                ["operator_type", "医院科室合作"],
+                ["status", "qualification_review"],
+                ["settlement_subject", "广东某健康管理有限公司"]
+            ]},
+            { table: "operator_licenses", op: "INSERT", tone: "insert", rows: [
+                ["business_license", "uploaded"],
+                ["medical_coop_letter", "uploaded"],
+                ["service_scope", "肿瘤术后管理 / 随访"],
+                ["expire_check", "2027-03-31"]
+            ]},
+            { table: "settlement_accounts", op: "INSERT", tone: "insert", rows: [
+                ["owner_id", "ORG018"],
+                ["account_type", "company_bank"],
+                ["kyc_status", "pending"],
+                ["invoice_type", "服务费发票"]
+            ]},
+            { table: "audit_tasks", op: "INSERT", tone: "insert", rows: [
+                ["task_type", "operator_qualification"],
+                ["target_id", "ORG018"],
+                ["assignee", "运营审核 + 法务"],
+                ["sla", "2 工作日"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">机构入驻</h2>
+            <p class="mobile-sub">先审核机构，再允许创建诊疗方案。</p>
+            <div class="mobile-card">
+                <div class="mini-title"><span>资质材料</span><span class="mobile-tag">4/6</span></div>
+                <div class="phone-row"><span>营业执照</span><span class="amount">已上传</span></div>
+                <div class="phone-row"><span>合作授权书</span><span class="amount">已上传</span></div>
+                <div class="phone-row"><span>服务责任人</span><span>待补充</span></div>
+                <div class="phone-row"><span>结算账户</span><span>待实名</span></div>
+            </div>
+            <div class="mobile-card warn">
+                <b>不能直接上架</b>
+                <p class="tiny" style="margin-top:6px;">机构资质未通过时，方案只能保存为草稿。</p>
+            </div>
+            <button class="primary-btn"><i data-lucide="send"></i>提交机构审核</button>
+        `
+    },
+    {
+        key: "doctor_qualification",
+        icon: "stethoscope",
+        tab: "医生资质",
+        title: "03 医生资质：方案背后要绑定医学负责人",
+        actor: "医学负责人",
+        screen: "医生 / 专家认证",
+        subtitle: "诊疗方案不是普通商品。要记录医学负责人、执业信息、擅长病种、审核权限和展示边界。",
+        explain: "这一步不是为了做在线问诊，而是让方案详情页能说明谁设计、谁审核、谁负责医学内容，避免平台变成无主体的健康建议。",
+        db: [
+            { table: "doctor_profiles", op: "INSERT", tone: "insert", rows: [
+                ["id", "D088"],
+                ["name_masked", "张** 主任医师"],
+                ["hospital", "省肿瘤医院"],
+                ["specialty", "肝胆肿瘤"],
+                ["display_status", "masked_display"]
+            ]},
+            { table: "doctor_certificates", op: "INSERT", tone: "insert", rows: [
+                ["doctor_id", "D088"],
+                ["license_no_masked", "1104********"],
+                ["title_certificate", "uploaded"],
+                ["verify_status", "pending_manual_review"]
+            ]},
+            { table: "operator_doctors", op: "INSERT", tone: "insert", rows: [
+                ["operator_id", "ORG018"],
+                ["doctor_id", "D088"],
+                ["role", "medical_owner"],
+                ["permission", "review_plan_content"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">绑定医学负责人</h2>
+            <p class="mobile-sub">方案可以由机构运营，但医学内容必须有人负责。</p>
+            <div class="mobile-card">
+                <div class="phone-row"><span>医生</span><b>张** 主任医师</b></div>
+                <div class="phone-row"><span>医院</span><span>省肿瘤医院</span></div>
+                <div class="phone-row"><span>擅长</span><span>肝胆肿瘤</span></div>
+                <div class="phone-row"><span>执业证</span><span class="amount">待审核</span></div>
+            </div>
+            <div class="mobile-card soft">
+                <b>展示规则</b>
+                <p class="tiny" style="margin-top:6px;">前台展示医生名称和资质摘要，敏感证件号只给后台审核。</p>
+            </div>
+        `
+    },
+    {
+        key: "plan_draft",
+        icon: "clipboard-pen",
+        tab: "方案草稿",
+        title: "04 方案草稿：基础信息不能只填标题和价格",
+        actor: "方案运营方",
+        screen: "方案基础信息",
+        subtitle: "方案上架要细到病种、阶段、适用条件、不适用条件、服务目标、风险提示和用户需要准备的材料。",
+        explain: "这是商品定义层。写得越细，用户越知道自己买什么，后续履约和退款争议也越少。",
+        db: [
+            { table: "medical_plans", op: "INSERT", tone: "insert", rows: [
+                ["id", "P3008"],
+                ["title", "肝癌术后管理方案 A"],
+                ["disease_tags", "肝癌 / 术后 / 随访"],
+                ["target_stage", "术后 1-12 月"],
+                ["status", "draft"]
+            ]},
+            { table: "plan_eligibility_rules", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["include", "已完成手术且需随访管理"],
+                ["exclude", "急性并发症 / 未线下就医"],
+                ["required_docs", "出院小结、最近一次复查"]
+            ]},
+            { table: "plan_risk_notices", op: "INSERT", tone: "insert", rows: [
+                ["risk_level", "medium"],
+                ["notice", "不替代线下诊断，不承诺疗效"],
+                ["must_confirm", "true"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">创建方案草稿</h2>
+            <p class="mobile-sub">真实上架要先把商品边界写清楚。</p>
+            <div class="mobile-card">
+                <div class="input-box">病种：肝癌</div>
+                <div class="input-box">阶段：术后 1-12 月</div>
+                <div class="input-box">适用：已线下就医并需要随访管理</div>
+                <div class="input-box">不适用：急性症状、未确诊、需急诊处理</div>
+            </div>
+            <div class="mobile-card warn">
+                <b>风险提示必填</b>
+                <p class="tiny" style="margin-top:6px;">不能写保证治愈、明显好转、替代医生诊断。</p>
+            </div>
+        `
+    },
+    {
+        key: "service_package",
+        icon: "list-checks",
+        tab: "服务包",
+        title: "05 服务包：把服务节点、价格和退款写死",
+        actor: "方案运营方",
+        screen: "服务包配置",
+        subtitle: "中国 App 的购买页会写得很细：服务几次、谁服务、多久响应、需要上传什么、什么情况退款、什么时候完成。",
+        explain: "这一小点会生成履约节点和价格快照。后续订单按这个版本履约，不受运营方之后改价影响。",
+        db: [
+            { table: "plan_service_items", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["item_1", "首次资料评估 / 48 小时"],
+                ["item_2", "复查提醒 / 3 次"],
+                ["item_3", "指标趋势整理 / 1 份"],
+                ["completion_rule", "3 个节点完成即完成服务"]
+            ]},
+            { table: "plan_prices", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["sale_price", "980.00"],
+                ["operator_share", "70%"],
+                ["refund_window", "支付后 7 天内未履约可退"]
+            ]},
+            { table: "plan_versions", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["version_no", "v1"],
+                ["snapshot", "基础信息 + 服务包 + 价格 + 退款"],
+                ["status", "waiting_review"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">配置服务包</h2>
+            <p class="mobile-sub">不是卖一段文字，而是卖可履约的服务包。</p>
+            <div class="mobile-card">
+                <div class="timeline-mini">
+                    <div class="line"><span class="line-num">1</span><div><b>资料评估</b><br><span class="tiny">48 小时内完成</span></div></div>
+                    <div class="line"><span class="line-num">2</span><div><b>复查提醒</b><br><span class="tiny">第 1/3/6 月提醒</span></div></div>
+                    <div class="line"><span class="line-num">3</span><div><b>指标整理</b><br><span class="tiny">生成趋势摘要</span></div></div>
+                </div>
+            </div>
+            <div class="mobile-card">
+                <div class="phone-row"><span>售价</span><span class="amount">¥980</span></div>
+                <div class="phone-row"><span>退款</span><span>未履约 7 天内可退</span></div>
+                <div class="phone-row"><span>完成条件</span><span>节点 3/3</span></div>
+            </div>
+        `
+    },
+    {
+        key: "review_publish",
+        icon: "shield-check",
+        tab: "审核发布",
+        title: "06 审核发布：医学、运营、法务都要留痕",
+        actor: "平台审核",
+        screen: "审核流",
+        subtitle: "方案发布前要经过医学内容、宣传合规、价格规则、履约能力、分润比例和素材检查。",
+        explain: "审核通过后方案才从草稿进入可售状态。每次发布都形成版本，方便订单快照和责任追踪。",
+        db: [
+            { table: "audit_tasks", op: "UPDATE", tone: "update", rows: [
+                ["plan_id", "P3008"],
+                ["medical_review", "approved"],
+                ["legal_review", "approved_with_notice"],
+                ["ops_review", "approved"],
+                ["final_status", "approved"]
+            ]},
+            { table: "medical_plans", op: "UPDATE", tone: "update", rows: [
+                ["id", "P3008"],
+                ["status", "online"],
+                ["published_at", "2026-05-20 18:00"],
+                ["current_version", "v1"]
+            ]},
+            { table: "audit_logs", op: "INSERT", tone: "insert", rows: [
+                ["action", "publish_plan"],
+                ["operator", "platform_admin"],
+                ["evidence", "审核记录、截图、风险提示版本"],
+                ["result", "online"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">发布前审核</h2>
+            <p class="mobile-sub">所有环节通过后，方案才进入商城。</p>
+            <div class="mobile-card">
+                <div class="check-list">
+                    <div class="check-line"><span class="check-dot">✓</span><span>医学内容：通过</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>宣传合规：补充风险提示后通过</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>价格与退款：通过</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>分润比例：70/15/10/5</span></div>
+                </div>
+                <button class="primary-btn"><i data-lucide="badge-check"></i>发布到商城</button>
+            </div>
+            <div class="notice"><b>版本 v1 已锁定</b><br><span class="tiny">后续订单按 v1 快照履约和结算。</span></div>
+        `
+    },
+    {
+        key: "discovery",
+        icon: "search",
+        tab: "首页筛选",
+        title: "07 首页筛选：展示不能只有一个商品卡",
+        actor: "现在用户",
+        screen: "首页 / 搜索 / 筛选",
+        subtitle: "真实 App 会让用户按病种、阶段、地区、预算、服务方式、评价数量、是否有老用户背书筛选。",
+        explain: "这一页主要读方案索引和聚合指标。浏览可以记录用于运营分析，但 MVP 不把浏览路径纳入分润。",
+        db: [
+            { table: "plan_search_index", op: "SELECT", tone: "select", rows: [
+                ["query", "肝癌 术后"],
+                ["filters", "阶段=术后; 预算<1000; 有老用户背书"],
+                ["sort", "综合排序 / 审核优先"],
+                ["return", "P3008, P3011, P3016"]
+            ]},
+            { table: "plan_metrics_daily", op: "SELECT", tone: "select", rows: [
+                ["plan_id", "P3008"],
+                ["old_user_count", "48"],
+                ["completion_rate", "82%"],
+                ["refund_rate", "4.1%"]
+            ]},
+            { table: "browse_events", op: "INSERT", tone: "insert", rows: [
+                ["user_id", "U1001"],
+                ["event", "search_plan"],
+                ["keyword", "肝癌 术后"],
+                ["not_for_revenue", "true"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">找诊疗方案</h2>
+            <p class="mobile-sub">按病种、阶段、预算和背书筛选。</p>
+            <div class="input-box">搜索：肝癌 术后管理</div>
+            <div class="mobile-tags">
+                <span class="mobile-tag">术后 1-12 月</span>
+                <span class="mobile-tag">¥1000 内</span>
+                <span class="mobile-tag">有老用户反馈</span>
+            </div>
+            <div class="mobile-card">
+                <div class="mini-title"><span>肝癌术后管理方案 A</span><span class="amount">¥980</span></div>
+                <p class="tiny">省肿瘤专病团队 · 老用户 48 · 完成率 82%</p>
+                <div class="mobile-tags">
+                    <span class="mobile-tag">服务包</span>
+                    <span class="mobile-tag">T+7</span>
+                    <span class="mobile-tag">风险提示完整</span>
+                </div>
+            </div>
+            <div class="mobile-card">
+                <div class="mini-title"><span>肝癌复查提醒方案 B</span><span>¥399</span></div>
+                <p class="tiny">基层随访团队 · 老用户 19 · 轻量服务</p>
+            </div>
+        `
+    },
+    {
+        key: "plan_detail",
+        icon: "file-search",
+        tab: "详情背书",
+        title: "08 方案详情：把用户最担心的问题逐项回答",
+        actor: "现在用户",
+        screen: "方案详情页",
+        subtitle: "详情页要展示商品边界、适用/不适用、服务节点、医生/机构、老用户背书、退款、风险提示和常见问题。",
+        explain: "这一步会读取很多表，但仍然只是购买决策，不产生分润。老用户背书是脱敏摘要，不是原始病历下载。",
+        db: [
+            { table: "medical_plans", op: "SELECT", tone: "select", rows: [
+                ["id", "P3008"],
+                ["fields", "标题、价格、适用条件、风险提示"],
+                ["version", "v1"],
+                ["status", "online"]
+            ]},
+            { table: "plan_service_items", op: "SELECT", tone: "select", rows: [
+                ["plan_id", "P3008"],
+                ["items", "资料评估、复查提醒、指标整理"],
+                ["completion_rule", "3/3 节点"]
+            ]},
+            { table: "review_evidence", op: "SELECT", tone: "select", rows: [
+                ["where", "approved and display_scope=masked"],
+                ["return", "年龄段、阶段、指标变化、体验摘要"],
+                ["raw_files", "not_exposed"]
+            ]},
+            { table: "doctor_profiles", op: "SELECT", tone: "select", rows: [
+                ["doctor_id", "D088"],
+                ["display", "张** 主任医师"],
+                ["certificate", "后台可查，前台脱敏"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">肝癌术后管理方案 A</h2>
+            <p class="mobile-sub">¥980 · 术后 1-12 月 · 服务节点 3 项</p>
+            <div class="segment"><span class="active">概览</span><span>背书</span><span>风险</span></div>
+            <div class="mobile-card">
+                <div class="mini-title"><span>适合谁</span><span class="mobile-tag">需自评</span></div>
+                <div class="check-list">
+                    <div class="check-line"><span class="check-dot">✓</span><span>已完成线下诊疗</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>需要复查提醒和指标记录</span></div>
+                    <div class="check-line"><span class="check-dot">!</span><span>急性症状不适用</span></div>
+                </div>
+            </div>
+            <div class="mobile-card soft">
+                <b>老用户背书</b>
+                <div class="phone-row"><span>48 人入池</span><span>脱敏展示</span></div>
+                <div class="phone-row"><span>复查节点完成率</span><span class="amount">82%</span></div>
+                <div class="phone-row"><span>退款率</span><span>4.1%</span></div>
+            </div>
+        `
+    },
+    {
+        key: "precheck",
+        icon: "clipboard-check",
+        tab: "购买确认",
+        title: "09 购买确认：适用性自评和知情告知必须前置",
+        actor: "现在用户",
+        screen: "购买前确认",
+        subtitle: "中国医疗健康类产品要做很多购买前确认：适用性自评、禁忌确认、风险告知、服务协议、退款规则和推荐来源。",
+        explain: "这一步会生成购买前问卷和告知确认。它降低误购、投诉和医疗承诺风险。",
+        db: [
+            { table: "purchase_prechecks", op: "INSERT", tone: "insert", rows: [
+                ["id", "PC5001"],
+                ["user_id", "U1001"],
+                ["plan_id", "P3008"],
+                ["answers", "已线下就医 / 非急症 / 已读禁忌"],
+                ["result", "eligible_to_buy"]
+            ]},
+            { table: "risk_confirmations", op: "INSERT", tone: "insert", rows: [
+                ["user_id", "U1001"],
+                ["plan_id", "P3008"],
+                ["risk_notice_version", "v1"],
+                ["refund_rule_version", "v1"],
+                ["confirmed_at", "2026-05-20 19:10"]
+            ]},
+            { table: "referral_locks", op: "UPSERT", tone: "update", rows: [
+                ["user_id", "U1001"],
+                ["plan_id", "P3008"],
+                ["referrer_id", "R2007"],
+                ["lock_until", "30 分钟"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">购买前确认</h2>
+            <p class="mobile-sub">先确认适合，再进入支付。</p>
+            <div class="mobile-card">
+                <div class="check-list">
+                    <div class="check-line"><span class="check-dot">✓</span><span>我已完成线下诊疗，非急症</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>我理解此服务不替代医生诊断</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>我已阅读退款规则</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>推荐来源：R2007</span></div>
+                </div>
+            </div>
+            <div class="mobile-card warn">
+                <b>不适用提醒</b>
+                <p class="tiny" style="margin-top:6px;">如出现发热、出血、急性疼痛等，应优先线下就医。</p>
+            </div>
+            <button class="primary-btn"><i data-lucide="check-circle"></i>确认并下单</button>
+        `
+    },
+    {
+        key: "payment",
+        icon: "credit-card",
+        tab: "支付下单",
+        title: "10 支付下单：锁定订单快照和分润规则",
+        actor: "现在用户",
+        screen: "订单支付页",
+        subtitle: "支付不是只生成 orders。必须锁定方案版本、价格、推荐人、退款规则、服务节点和分润比例。",
+        explain: "订单快照是后续所有争议和结算的依据。方案以后改价、改规则，不影响这笔订单。",
+        db: [
+            { table: "orders", op: "INSERT", tone: "insert", rows: [
+                ["id", "O9001"],
+                ["buyer_id", "U1001"],
+                ["plan_id", "P3008"],
+                ["amount", "980.00"],
+                ["status", "paid_waiting_service"]
+            ]},
+            { table: "order_snapshots", op: "INSERT", tone: "insert", rows: [
+                ["order_id", "O9001"],
+                ["plan_version", "v1"],
+                ["service_items", "资料评估 / 复查提醒 / 指标整理"],
+                ["split_rule", "operator70; R15; old10; platform5"],
+                ["refund_rule", "未履约 7 天内可退"]
+            ]},
+            { table: "payment_records", op: "INSERT", tone: "insert", rows: [
+                ["pay_no", "PAY20260520001"],
+                ["channel", "微信支付"],
+                ["amount", "980.00"],
+                ["status", "success"]
+            ]},
+            { table: "service_tasks", op: "INSERT", tone: "insert", rows: [
+                ["order_id", "O9001"],
+                ["task_count", "3"],
+                ["owner", "ORG018"],
+                ["status", "not_started"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">确认支付</h2>
+            <p class="mobile-sub">支付后锁定本次购买规则。</p>
+            <div class="mobile-card">
+                <div class="phone-row"><span>方案版本</span><b>v1</b></div>
+                <div class="phone-row"><span>服务节点</span><span>3 项</span></div>
+                <div class="phone-row"><span>退款规则</span><span>未履约 7 天内</span></div>
+                <div class="phone-row"><span>支付金额</span><span class="amount">¥980.00</span></div>
+            </div>
+            <div class="split-mini">
+                <div class="a">70</div><div class="b">15</div><div class="c">10</div><div class="d">5</div>
+            </div>
+            <button class="primary-btn"><i data-lucide="credit-card"></i>微信支付</button>
+        `
+    },
+    {
+        key: "fulfillment",
+        icon: "route",
+        tab: "履约跟踪",
+        title: "11 履约跟踪：完成节点后才允许反馈和结算",
+        actor: "方案运营方",
+        screen: "服务进度页",
+        subtitle: "购买后不是马上分钱。服务节点要被执行、记录、确认。只有达到完成条件，订单才进入可结算。",
+        explain: "履约节点是医疗健康服务 App 很容易漏掉但很关键的部分。它决定退款、反馈资格和结算资格。",
+        db: [
+            { table: "service_tasks", op: "UPDATE", tone: "update", rows: [
+                ["order_id", "O9001"],
+                ["task_1", "资料评估 completed"],
+                ["task_2", "复查提醒 completed"],
+                ["task_3", "指标整理 completed"],
+                ["complete_rate", "3/3"]
+            ]},
+            { table: "orders", op: "UPDATE", tone: "update", rows: [
+                ["id", "O9001"],
+                ["status", "service_completed"],
+                ["completed_at", "2026-06-18"],
+                ["settlement_eligible", "true"]
+            ]},
+            { table: "service_logs", op: "INSERT", tone: "insert", rows: [
+                ["order_id", "O9001"],
+                ["operator_id", "ORG018"],
+                ["log_type", "fulfillment_node"],
+                ["evidence", "节点截图 / 通知记录 / 用户确认"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">服务进度</h2>
+            <p class="mobile-sub">节点完成后，订单才进入待结算。</p>
+            <div class="mobile-card">
+                <div class="timeline-mini">
+                    <div class="line"><span class="line-num">1</span><div><b>资料评估</b><br><span class="tiny">已完成 · 05-22</span></div></div>
+                    <div class="line"><span class="line-num">2</span><div><b>复查提醒</b><br><span class="tiny">已完成 · 06-03</span></div></div>
+                    <div class="line"><span class="line-num">3</span><div><b>指标整理</b><br><span class="tiny">已完成 · 06-18</span></div></div>
+                </div>
+            </div>
+            <div class="notice"><b>下一步</b><br><span class="tiny">邀请用户提交反馈，审核后进入老用户池。</span></div>
+            <button class="secondary-btn"><i data-lucide="message-square-text"></i>提交服务评价</button>
+        `
+    },
+    {
+        key: "feedback_form",
+        icon: "form-input",
+        tab: "写反馈",
+        title: "12 写反馈：不能只给一个文本框",
+        actor: "老用户",
+        screen: "结构化反馈表",
+        subtitle: "反馈要拆成服务体验、治疗阶段、关键指标、复查时间、材料上传和主观感受。越结构化，后续越能审核和展示。",
+        explain: "这一步生成反馈材料，但仍处于待审核。用户不能写什么都直接上前台。",
+        db: [
+            { table: "review_evidence", op: "INSERT", tone: "insert", rows: [
+                ["id", "EV7011"],
+                ["order_id", "O9001"],
+                ["plan_id", "P3008"],
+                ["user_id", "U1001"],
+                ["audit_status", "draft"]
+            ]},
+            { table: "review_metrics", op: "INSERT", tone: "insert", rows: [
+                ["evidence_id", "EV7011"],
+                ["followup_month", "3"],
+                ["review_date", "2026-06-18"],
+                ["index_summary", "复查完成、指标稳定"],
+                ["service_score", "5"]
+            ]},
+            { table: "review_files", op: "INSERT", tone: "insert", rows: [
+                ["evidence_id", "EV7011"],
+                ["file_type", "复查报告"],
+                ["storage", "encrypted_private_bucket"],
+                ["display", "not_public"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">写治疗反馈</h2>
+            <p class="mobile-sub">按结构填写，避免只有一段随意评价。</p>
+            <div class="mobile-card">
+                <div class="input-box">阶段：术后第 3 个月</div>
+                <div class="input-box">复查：已完成，指标稳定</div>
+                <div class="input-box">服务体验：提醒及时，解释清楚</div>
+                <div class="input-box">上传材料：复查报告 1 份</div>
+            </div>
+            <div class="mini-grid">
+                <div class="mini-box"><b>5 分</b><span class="tiny">服务评分</span></div>
+                <div class="mini-box"><b>3 月</b><span class="tiny">随访节点</span></div>
+            </div>
+            <button class="primary-btn"><i data-lucide="save"></i>保存并预览脱敏版</button>
+        `
+    },
+    {
+        key: "deidentify",
+        icon: "scan-eye",
+        tab: "脱敏授权",
+        title: "13 脱敏授权：用户看到前台会展示什么",
+        actor: "老用户",
+        screen: "脱敏预览 + 授权",
+        subtitle: "中国用户会在意隐私。提交反馈前，要让他看到姓名、医院号、报告编号、联系方式是否被隐藏。",
+        explain: "这一步把原始材料和前台展示摘要分开。用户授权的是脱敏摘要参与展示和后续分润，不是公开原始病历。",
+        db: [
+            { table: "review_redactions", op: "INSERT", tone: "insert", rows: [
+                ["evidence_id", "EV7011"],
+                ["masked_fields", "姓名、手机号、身份证、报告编号"],
+                ["display_summary", "术后 3 月复查完成，指标稳定"],
+                ["redaction_status", "preview_generated"]
+            ]},
+            { table: "user_consents", op: "INSERT", tone: "insert", rows: [
+                ["user_id", "U1001"],
+                ["consent_type", "masked_feedback_display"],
+                ["revenue_participation", "accepted"],
+                ["can_revoke", "true"]
+            ]},
+            { table: "plan_user_pool", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["user_id", "U1001"],
+                ["evidence_id", "EV7011"],
+                ["share_status", "pending_audit"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">脱敏预览</h2>
+            <p class="mobile-sub">确认前台展示内容，再授权参与分润。</p>
+            <div class="mobile-card soft">
+                <b>前台展示摘要</b>
+                <p class="mobile-sub" style="margin-top:6px;">患者：男，50-60 岁；术后第 3 个月完成复查，指标稳定；认为复查提醒有帮助。</p>
+            </div>
+            <div class="mobile-card">
+                <div class="phone-row"><span>姓名</span><span>已隐藏</span></div>
+                <div class="phone-row"><span>手机号</span><span>已隐藏</span></div>
+                <div class="phone-row"><span>报告编号</span><span>已隐藏</span></div>
+                <div class="phone-row"><span>原始材料</span><span>不公开</span></div>
+            </div>
+            <button class="primary-btn"><i data-lucide="badge-check"></i>授权展示并参与分润</button>
+        `
+    },
+    {
+        key: "review_audit",
+        icon: "user-round-check",
+        tab: "审核入池",
+        title: "14 审核入池：平台决定是否成为有效老用户",
+        actor: "平台审核",
+        screen: "反馈审核结果",
+        subtitle: "反馈授权后仍要审核。审核通过才展示、才入池、才参与后续订单的老用户池。",
+        explain: "这是防刷、防托、防虚假疗效的关键环节。老用户池不是开放池，而是审核后的有效池。",
+        db: [
+            { table: "review_evidence", op: "UPDATE", tone: "update", rows: [
+                ["id", "EV7011"],
+                ["audit_status", "approved"],
+                ["quality_score", "82"],
+                ["display_status", "online"]
+            ]},
+            { table: "plan_user_pool", op: "UPDATE", tone: "update", rows: [
+                ["plan_id", "P3008"],
+                ["user_id", "U1001"],
+                ["share_status", "active"],
+                ["joined_at", "2026-06-19"]
+            ]},
+            { table: "audit_logs", op: "INSERT", tone: "insert", rows: [
+                ["action", "approve_review_evidence"],
+                ["auditor", "medical_ops_02"],
+                ["risk_flags", "none"],
+                ["next", "可参与后续订单分润"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">审核通过</h2>
+            <p class="mobile-sub">你已成为该方案的有效老用户。</p>
+            <div class="metric-row">
+                <div class="metric"><b>82</b><span>质量分</span></div>
+                <div class="metric"><b>active</b><span>分润资格</span></div>
+                <div class="metric"><b>48→49</b><span>池人数</span></div>
+            </div>
+            <div class="mobile-card">
+                <div class="phone-row"><span>展示状态</span><span class="amount">已上线</span></div>
+                <div class="phone-row"><span>分润状态</span><span class="amount">后续订单生效</span></div>
+                <div class="phone-row"><span>撤回授权</span><span>可申请</span></div>
+            </div>
+            <button class="secondary-btn"><i data-lucide="wallet"></i>查看收益规则</button>
+        `
+    },
+    {
+        key: "settlement",
+        icon: "split",
+        tab: "结算钱包",
+        title: "15 结算钱包：后续新订单才给老用户分钱",
+        actor: "平台结算",
+        screen: "收益钱包",
+        subtitle: "当另一位新用户购买同一方案并完成服务后，系统按订单快照拆账，老用户池按规则分配。",
+        explain: "这一步把核心商业逻辑落到台账：钱来自新订单，不是来自老用户卖数据；推荐人只有一级；老用户池是审核后的有效池。",
+        db: [
+            { table: "settlement_batches", op: "INSERT", tone: "insert", rows: [
+                ["id", "B20260701"],
+                ["period", "2026-06-24 ~ 2026-07-01"],
+                ["source_order", "O9188"],
+                ["status", "processing"]
+            ]},
+            { table: "settlement_items", op: "INSERT", tone: "insert", rows: [
+                ["order_amount", "980.00"],
+                ["operator_70", "686.00"],
+                ["referrer_15", "147.00"],
+                ["old_user_pool_10", "98.00"],
+                ["platform_5", "49.00"]
+            ]},
+            { table: "old_user_pool_shares", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["active_old_users", "49"],
+                ["per_user_amount", "2.00"],
+                ["rounding", "0.00"]
+            ]},
+            { table: "wallet_ledger", op: "INSERT", tone: "insert", rows: [
+                ["user_id", "U1001"],
+                ["entry_type", "old_user_pool_share"],
+                ["amount", "2.00"],
+                ["frozen_until", "T+7"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">收益钱包</h2>
+            <p class="mobile-sub">收益来自后续真实订单，先冻结，过退款期后可提现。</p>
+            <div class="mobile-card">
+                <b>订单 O9188 拆账</b>
+                <div class="split-mini">
+                    <div class="a">运营方</div><div class="b">推荐</div><div class="c">老用户</div><div class="d">平台</div>
+                </div>
+                <div class="phone-row"><span>老用户池总额</span><span class="amount">¥98.00</span></div>
+                <div class="phone-row"><span>有效老用户</span><span>49 人</span></div>
+                <div class="phone-row"><span>本次分到</span><span class="amount">¥2.00</span></div>
+                <div class="phone-row"><span>状态</span><span>冻结中 T+7</span></div>
+            </div>
+            <div class="notice"><b>账单解释</b><br><span class="tiny">不是卖你的数据；是你的脱敏反馈参与了方案背书，因此参与后续订单分润。</span></div>
         `
     }
 ];
