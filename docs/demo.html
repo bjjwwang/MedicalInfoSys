@@ -3,16 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>疑难病诊疗方案商城 - 新版 Demo</title>
+<title>疑难病诊疗方案商城 - 流程原型</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
 * { box-sizing: border-box; }
 :root {
-    --bg: #f3f6f8;
-    --panel: #ffffff;
+    --bg: #eef2f6;
+    --paper: #ffffff;
     --ink: #1f2937;
     --muted: #617083;
-    --line: #d9e1ea;
+    --line: #d8e0ea;
+    --dark: #203246;
     --blue: #2c6fad;
     --teal: #168f83;
     --green: #357f4d;
@@ -24,7 +25,7 @@
     --soft-green: #e9f7ef;
     --soft-amber: #fff4dd;
     --soft-coral: #ffecef;
-    --shadow: 0 12px 28px rgba(31, 41, 55, 0.08);
+    --shadow: 0 18px 42px rgba(31, 41, 55, 0.11);
 }
 body {
     margin: 0;
@@ -32,11 +33,11 @@ body {
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
     font-size: 14px;
-    line-height: 1.55;
+    line-height: 1.58;
     overflow-x: hidden;
 }
 a { color: inherit; text-decoration: none; }
-button, input, select { font: inherit; }
+button { font: inherit; }
 .topbar {
     position: sticky;
     top: 0;
@@ -46,7 +47,7 @@ button, input, select { font: inherit; }
     justify-content: space-between;
     gap: 14px;
     padding: 12px 22px;
-    background: rgba(255,255,255,.94);
+    background: rgba(255, 255, 255, .94);
     border-bottom: 1px solid var(--line);
     backdrop-filter: blur(14px);
 }
@@ -54,634 +55,853 @@ button, input, select { font: inherit; }
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: 800;
-    color: #203246;
+    font-weight: 900;
 }
-.brand-icon {
+.brand-mark {
     width: 34px;
     height: 34px;
-    border-radius: 8px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    border-radius: 9px;
     background: var(--soft-teal);
     color: var(--teal);
 }
-.nav-links {
+.top-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
-.nav-links a {
+.top-actions a {
     min-height: 34px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     padding: 7px 10px;
-    border: 1px solid var(--line);
     border-radius: 8px;
+    border: 1px solid var(--line);
     background: #fff;
     color: #344054;
-    font-weight: 700;
-    max-width: 100%;
+    font-weight: 800;
 }
-.layout {
-    display: grid;
-    grid-template-columns: 230px minmax(0, 1fr);
-    gap: 18px;
-    max-width: 1360px;
+.shell {
+    max-width: 1320px;
     margin: 0 auto;
     padding: 18px;
-    min-width: 0;
 }
-.sidebar {
-    position: sticky;
-    top: 74px;
-    height: calc(100vh - 92px);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: #203246;
-    color: #eef4f8;
-    padding: 14px;
-}
-.side-title {
-    font-size: 12px;
-    color: rgba(255,255,255,.6);
-    margin: 4px 6px 10px;
-}
-.side-link {
-    width: 100%;
-    border: 0;
-    background: transparent;
-    color: rgba(255,255,255,.78);
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    min-height: 38px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: left;
-    margin-bottom: 4px;
-}
-.side-link.active, .side-link:hover {
-    background: rgba(255,255,255,.12);
-    color: #fff;
-}
-.main {
-    min-width: 0;
-}
-.page {
-    display: none;
-}
-.page.active {
-    display: block;
-}
-.hero {
+.intro {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
-    gap: 18px;
-    margin-bottom: 18px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: end;
+    margin-bottom: 14px;
 }
-.panel {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    box-shadow: var(--shadow);
-    padding: 18px;
-}
-.panel h1, .panel h2, .panel h3, .panel p { margin: 0; }
-.panel h1, .panel h2, .panel h3, .panel p, .plan-card, .ledger-row, th, td {
-    overflow-wrap: anywhere;
-}
-.panel h1 {
+.intro h1, .intro p { margin: 0; }
+.intro h1 {
     font-size: 28px;
     line-height: 1.22;
-    margin-bottom: 10px;
 }
-.panel h2 {
-    font-size: 18px;
-    margin-bottom: 14px;
-}
-.panel h3 {
-    font-size: 15px;
-    margin-bottom: 8px;
-}
-.muted { color: var(--muted); }
-.hero-img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    display: block;
-}
-.stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 18px;
-}
-.stat {
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 14px;
-}
-.stat b {
-    display: block;
-    font-size: 22px;
-    line-height: 1.15;
-}
-.stat span {
+.intro p {
     color: var(--muted);
-    font-size: 12px;
+    margin-top: 8px;
+    max-width: 760px;
 }
-.toolbar {
+.step-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: 8px;
+    margin: 14px 0 18px;
 }
-.field {
-    min-height: 38px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: #fff;
-    padding: 0 12px;
-    min-width: 180px;
-}
-.plan-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-}
-.plan-card {
+.step-tab {
     border: 1px solid var(--line);
     background: #fff;
-    border-radius: 10px;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 0;
-}
-.plan-card.active {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(44,111,173,.12);
-}
-.tag-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-.tag {
-    display: inline-flex;
-    align-items: center;
-    min-height: 24px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: #eef2f6;
     color: #344054;
-    font-size: 12px;
-    font-weight: 700;
-}
-.tag.green { background: var(--soft-green); color: var(--green); }
-.tag.amber { background: var(--soft-amber); color: var(--amber); }
-.tag.teal { background: var(--soft-teal); color: var(--teal); }
-.tag.coral { background: var(--soft-coral); color: var(--coral); }
-.price {
-    font-size: 22px;
-    font-weight: 900;
-    color: #203246;
-}
-.btn {
     min-height: 38px;
-    border: 0;
+    padding: 8px 11px;
     border-radius: 8px;
-    padding: 8px 12px;
-    background: #203246;
-    color: #fff;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 7px;
-    font-weight: 800;
+    font-weight: 850;
     cursor: pointer;
 }
-.btn.secondary {
-    background: #e9eef4;
-    color: #203246;
-}
-.split {
-    display: grid;
-    grid-template-columns: 70fr 15fr 10fr 5fr;
-    overflow: hidden;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    margin: 12px 0;
-}
-.split div {
-    min-height: 54px;
-    padding: 8px;
+.step-tab.active {
+    background: var(--dark);
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-weight: 900;
+    border-color: var(--dark);
 }
-.split .a { background: var(--blue); }
-.split .b { background: var(--amber); }
-.split .c { background: var(--green); }
-.split .d { background: var(--purple); }
-.detail-grid {
+.workspace {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 14px;
-}
-.timeline {
-    display: grid;
-    gap: 10px;
-}
-.step {
-    display: grid;
-    grid-template-columns: 34px minmax(0, 1fr);
-    gap: 10px;
+    grid-template-columns: minmax(420px, 1fr) 430px;
+    gap: 18px;
     align-items: start;
 }
-.step-num {
-    width: 28px;
-    height: 28px;
+.panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    min-width: 0;
+}
+.db-panel {
+    padding: 18px;
+}
+.panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.panel-head h2, .panel-head p { margin: 0; }
+.panel-head h2 {
+    font-size: 21px;
+    line-height: 1.25;
+}
+.panel-head p {
+    color: var(--muted);
+    margin-top: 6px;
+}
+.badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 3px 9px;
     border-radius: 999px;
     background: var(--soft-blue);
     color: var(--blue);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 12px;
     font-weight: 900;
+    white-space: nowrap;
 }
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-}
-th, td {
-    text-align: left;
-    padding: 10px;
-    border-bottom: 1px solid var(--line);
-    vertical-align: top;
-}
-th { background: #f6f8fb; color: #344054; }
-.ledger {
+.db-flow {
     display: grid;
-    gap: 10px;
-}
-.ledger-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 10px;
-    align-items: center;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 10px;
-    background: #fff;
-}
-.amount { font-weight: 900; color: var(--green); }
-.risk-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
 }
-.risk {
+.db-card {
     border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 10px;
+    overflow: hidden;
     background: #fff;
 }
+.db-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #f6f8fb;
+    border-bottom: 1px solid var(--line);
+}
+.db-table {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-weight: 800;
+    color: #203246;
+}
+.db-op {
+    font-size: 11px;
+    font-weight: 900;
+    color: #fff;
+    border-radius: 999px;
+    padding: 3px 8px;
+    background: var(--blue);
+}
+.db-op.insert { background: var(--green); }
+.db-op.update { background: var(--amber); }
+.db-op.select { background: var(--purple); }
+.db-op.freeze { background: var(--coral); }
+.db-body {
+    padding: 12px;
+}
+.db-row {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px dashed #e4e9ef;
+}
+.db-row:last-child { border-bottom: 0; }
+.db-key {
+    color: var(--muted);
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12px;
+}
+.db-val {
+    overflow-wrap: anywhere;
+    font-weight: 720;
+}
+.explain {
+    margin-top: 14px;
+    padding: 13px 14px;
+    border-left: 4px solid var(--teal);
+    border-radius: 0 10px 10px 0;
+    background: var(--soft-teal);
+    color: #29465b;
+}
+.phone-area {
+    display: grid;
+    justify-content: center;
+    gap: 12px;
+}
+.phone-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    color: var(--muted);
+    font-weight: 800;
+}
+.phone {
+    width: 390px;
+    height: 780px;
+    border-radius: 38px;
+    background: #111827;
+    padding: 14px;
+    box-shadow: 0 24px 55px rgba(17, 24, 39, .28);
+    position: relative;
+}
+.phone::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 23px;
+    border-radius: 0 0 16px 16px;
+    background: #111827;
+    z-index: 2;
+}
+.screen {
+    height: 100%;
+    overflow: hidden;
+    border-radius: 28px;
+    background: #f7f9fc;
+    border: 1px solid rgba(255,255,255,.12);
+    display: flex;
+    flex-direction: column;
+}
+.phone-status {
+    height: 34px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    color: #203246;
+    font-size: 12px;
+    font-weight: 900;
+    background: #fff;
+}
+.phone-content {
+    flex: 1;
+    overflow: hidden;
+    padding: 16px;
+}
+.mobile-title {
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 950;
+    margin: 0 0 8px;
+}
+.mobile-sub {
+    margin: 0 0 14px;
+    color: var(--muted);
+}
+.mobile-card {
+    background: #fff;
+    border: 1px solid #dfe6ef;
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+.mobile-card.soft {
+    background: var(--soft-teal);
+    border-color: #cbece8;
+}
+.input-box {
+    min-height: 48px;
+    border-radius: 12px;
+    border: 1px solid #dbe3ec;
+    background: #fff;
+    padding: 12px;
+    margin: 9px 0;
+    color: #203246;
+    font-weight: 800;
+}
+.primary-btn {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 14px;
+    border: 0;
+    background: var(--dark);
+    color: #fff;
+    font-weight: 950;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+.secondary-btn {
+    width: 100%;
+    min-height: 42px;
+    border-radius: 12px;
+    border: 1px solid #dbe3ec;
+    background: #fff;
+    color: #203246;
+    font-weight: 850;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+.mobile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 10px;
+}
+.mobile-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    border-radius: 999px;
+    padding: 3px 8px;
+    background: #edf2f7;
+    color: #344054;
+    font-size: 12px;
+    font-weight: 850;
+}
+.metric-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+.metric {
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #dfe6ef;
+    padding: 10px;
+}
+.metric b {
+    display: block;
+    font-size: 18px;
+}
+.metric span {
+    color: var(--muted);
+    font-size: 11px;
+}
+.split-mini {
+    display: grid;
+    grid-template-columns: 70fr 15fr 10fr 5fr;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 10px 0;
+}
+.split-mini div {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    text-align: center;
+}
+.split-mini .a { background: var(--blue); }
+.split-mini .b { background: var(--amber); }
+.split-mini .c { background: var(--green); }
+.split-mini .d { background: var(--purple); }
+.phone-list {
+    display: grid;
+    gap: 8px;
+}
+.phone-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid #e5ebf1;
+}
+.phone-row:last-child { border-bottom: 0; }
+.amount {
+    font-weight: 950;
+    color: var(--green);
+}
+.step-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.nav-btn {
+    min-height: 38px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: #203246;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 850;
+    cursor: pointer;
+}
+.nav-btn.primary {
+    background: var(--dark);
+    border-color: var(--dark);
+    color: #fff;
+}
 @media (max-width: 980px) {
-    .layout { grid-template-columns: 1fr; }
-    .sidebar {
-        position: static;
-        height: auto;
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .top-actions {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 6px;
+        width: 100%;
     }
-    .side-title { grid-column: 1 / -1; }
-    .hero, .detail-grid { grid-template-columns: 1fr; }
-    .stats, .plan-grid, .risk-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 860px) {
-    .layout {
-        max-width: 370px;
-        margin-left: 0;
-        margin-right: 0;
-    }
-    .sidebar,
-    .stats,
-    .plan-grid,
-    .risk-list {
+    .workspace {
         grid-template-columns: 1fr;
+    }
+    .intro {
+        grid-template-columns: 1fr;
+    }
+    .phone {
+        width: min(390px, calc(100vw - 36px));
+        height: 760px;
     }
 }
 @media (max-width: 620px) {
-    .topbar { align-items: flex-start; flex-direction: column; }
-    .layout {
+    .shell { padding: 10px; }
+    .intro h1 { font-size: 23px; }
+    .step-tab { flex: 1 1 160px; }
+    .db-panel { padding: 14px; }
+    .panel-head {
+        flex-direction: column;
+    }
+    .db-row {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+    .phone {
+        height: 720px;
         padding: 10px;
-        max-width: 390px;
+        border-radius: 30px;
     }
-    .nav-links {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .nav-links a {
-        min-width: 0;
-    }
-    .panel { padding: 14px; }
-    .panel h1 { font-size: 23px; }
-    .stats, .plan-grid, .risk-list, .sidebar { grid-template-columns: 1fr; }
-    .split { grid-template-columns: 1fr; }
-    .field { width: 100%; min-width: 0; }
+    .screen { border-radius: 22px; }
 }
 </style>
 </head>
 <body>
 <header class="topbar">
     <a class="brand" href="index.html">
-        <span class="brand-icon"><i data-lucide="store"></i></span>
-        <span>疑难病诊疗方案商城 Demo</span>
+        <span class="brand-mark"><i data-lucide="panel-left"></i></span>
+        <span>流程原型：手机界面 + 数据库变化</span>
     </a>
-    <nav class="nav-links">
+    <nav class="top-actions">
         <a href="index.html"><i data-lucide="home"></i>文档首页</a>
-        <a href="revenue-mechanism-thoughts-slides.html"><i data-lucide="presentation"></i>分润 Slides</a>
         <a href="quotation-minimal.html"><i data-lucide="file-text"></i>Lean MVP</a>
+        <a href="revenue-mechanism-thoughts-slides.html"><i data-lucide="presentation"></i>分润 Slides</a>
     </nav>
 </header>
 
-<div class="layout">
-    <aside class="sidebar">
-        <div class="side-title">新版原型导航</div>
-        <button class="side-link active" data-page="market"><i data-lucide="shopping-bag"></i>方案商城</button>
-        <button class="side-link" data-page="order"><i data-lucide="receipt"></i>订单与分润</button>
-        <button class="side-link" data-page="pool"><i data-lucide="badge-check"></i>老用户池</button>
-        <button class="side-link" data-page="admin"><i data-lucide="shield-check"></i>运营后台</button>
-        <button class="side-link" data-page="wallet"><i data-lucide="wallet"></i>收益钱包</button>
-    </aside>
+<main class="shell">
+    <section class="intro">
+        <div>
+            <h1>每次只看一个小动作</h1>
+            <p>右边是手机模拟器里的界面，左边是这一动作背后的数据库读写。这样能把“注册、上架方案、购买、反馈入池、分润结算”拆成可讨论的小点。</p>
+        </div>
+        <div class="step-actions">
+            <button class="nav-btn" id="prevBtn"><i data-lucide="arrow-left"></i>上一小点</button>
+            <button class="nav-btn primary" id="nextBtn">下一小点<i data-lucide="arrow-right"></i></button>
+        </div>
+    </section>
 
-    <main class="main">
-        <section class="page active" id="page-market">
-            <div class="hero">
-                <div class="panel">
-                    <h1>用户买的是诊疗方案服务包</h1>
-                    <p class="muted">这个 Demo 用一个最小闭环展示新版产品：新用户浏览方案、查看老用户背书、付款购买服务；订单完成后，系统把订单利润分给方案运营方、推荐人、老用户池和平台。</p>
+    <nav class="step-nav" id="stepNav"></nav>
+
+    <section class="workspace">
+        <aside class="panel db-panel">
+            <div class="panel-head">
+                <div>
+                    <h2 id="dbTitle">数据库变化</h2>
+                    <p id="dbSubtitle"></p>
                 </div>
-                <div class="panel">
-                    <img class="hero-img" src="assets/revenue-mechanism/marketplace-flywheel.png" alt="诊疗方案商城闭环">
-                </div>
+                <span class="badge" id="actorBadge"></span>
             </div>
+            <div class="db-flow" id="dbFlow"></div>
+            <div class="explain" id="stepExplain"></div>
+        </aside>
 
-            <div class="stats">
-                <div class="stat"><b>12</b><span>已审核方案</span></div>
-                <div class="stat"><b>286</b><span>有效老用户反馈</span></div>
-                <div class="stat"><b>73%</b><span>订单完成率</span></div>
-                <div class="stat"><b>T+7</b><span>建议结算周期</span></div>
+        <aside class="phone-area">
+            <div class="phone-label">
+                <span id="phoneMode">手机界面</span>
+                <span id="screenName">Screen</span>
             </div>
-
-            <div class="panel">
-                <h2>方案商城</h2>
-                <div class="toolbar">
-                    <select class="field" id="diseaseFilter">
-                        <option value="all">全部病种</option>
-                        <option value="肝癌">肝癌</option>
-                        <option value="肠癌">肠癌</option>
-                        <option value="慢病">慢病</option>
-                    </select>
-                    <select class="field" id="stageFilter">
-                        <option value="all">全部阶段</option>
-                        <option value="初诊">初诊</option>
-                        <option value="治疗后管理">治疗后管理</option>
-                        <option value="康复随访">康复随访</option>
-                    </select>
-                    <input class="field" id="searchInput" placeholder="搜索方案、机构、标签">
-                </div>
-                <div class="plan-grid" id="planGrid"></div>
-            </div>
-        </section>
-
-        <section class="page" id="page-order">
-            <div class="detail-grid">
-                <div class="panel">
-                    <h2 id="detailTitle">方案详情</h2>
-                    <p class="muted" id="detailDesc"></p>
-                    <div class="tag-row" id="detailTags" style="margin:12px 0;"></div>
-                    <h3>用户购买流程</h3>
-                    <div class="timeline">
-                        <div class="step"><span class="step-num">1</span><div><b>看方案</b><br><span class="muted">确认适用人群、服务内容、风险提示。</span></div></div>
-                        <div class="step"><span class="step-num">2</span><div><b>看背书</b><br><span class="muted">查看脱敏后的老用户反馈和关键指标变化。</span></div></div>
-                        <div class="step"><span class="step-num">3</span><div><b>付款购买</b><br><span class="muted">订单绑定方案版本、推荐人和价格快照。</span></div></div>
-                        <div class="step"><span class="step-num">4</span><div><b>服务完成</b><br><span class="muted">达到结算条件后，生成分润明细。</span></div></div>
-                    </div>
-                </div>
-                <div class="panel">
-                    <h2>订单拆账模拟</h2>
-                    <label class="muted" for="amountInput">订单金额</label>
-                    <input class="field" id="amountInput" type="number" min="100" step="100" value="980" style="width:100%; margin:6px 0 10px;">
-                    <div class="split">
-                        <div class="a" id="splitA">70%</div>
-                        <div class="b" id="splitB">15%</div>
-                        <div class="c" id="splitC">10%</div>
-                        <div class="d" id="splitD">5%</div>
-                    </div>
-                    <table>
-                        <tbody id="splitTable"></tbody>
-                    </table>
+            <div class="phone">
+                <div class="screen">
+                    <div class="phone-status"><span>9:41</span><span>5G 100%</span></div>
+                    <div class="phone-content" id="phoneContent"></div>
                 </div>
             </div>
-        </section>
-
-        <section class="page" id="page-pool">
-            <div class="panel">
-                <h2>老用户池</h2>
-                <p class="muted">老用户不是数据卖家，而是高质量背书者。只有完成服务、提交有效反馈并通过审核，才进入对应方案的老用户池。</p>
-                <table style="margin-top:14px;">
-                    <thead>
-                        <tr><th>老用户</th><th>反馈类型</th><th>审核状态</th><th>分润资格</th><th>说明</th></tr>
-                    </thead>
-                    <tbody id="poolTable"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="page" id="page-admin">
-            <div class="panel">
-                <h2>运营后台</h2>
-                <div class="risk-list">
-                    <div class="risk"><h3>方案审核</h3><p class="muted">检查资质、适用范围、服务边界、风险提示和价格。</p><span class="tag green">3 条待审</span></div>
-                    <div class="risk"><h3>反馈审核</h3><p class="muted">检查反馈是否真实、完整、脱敏，是否有夸大疗效。</p><span class="tag amber">11 条待审</span></div>
-                    <div class="risk"><h3>异常订单</h3><p class="muted">监控退款、同设备刷单、异常推荐和收益套利。</p><span class="tag coral">2 条预警</span></div>
-                    <div class="risk"><h3>B 端代理人</h3><p class="muted">管理授权、代提交反馈、服务费台账和违规退出。</p><span class="tag teal">8 家合作中</span></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="page" id="page-wallet">
-            <div class="panel">
-                <h2>收益钱包</h2>
-                <p class="muted">账单必须能解释“这笔钱来自哪一个方案、哪一个订单、为什么给我”。</p>
-                <div class="ledger" id="ledgerList" style="margin-top:14px;"></div>
-            </div>
-        </section>
-    </main>
-</div>
+        </aside>
+    </section>
+</main>
 
 <script>
-const plans = [
+const steps = [
     {
-        id: 1,
-        name: "肝癌术后管理方案 A",
-        disease: "肝癌",
-        stage: "治疗后管理",
-        operator: "省肿瘤专病团队",
-        price: 980,
-        oldUsers: 48,
-        evidence: "随访指标、用药依从性、复诊记录",
-        desc: "面向肝癌术后患者的复诊节奏、指标跟踪和营养管理服务包。",
-        tags: ["专病团队", "T+7结算", "老用户池48人"]
+        key: "register",
+        icon: "user-plus",
+        tab: "注册登录",
+        title: "01 注册登录：先建立用户身份",
+        actor: "现在用户",
+        screen: "用户登录页",
+        subtitle: "用户用手机号进入系统，系统只建立基础身份和授权记录，不产生任何分润。",
+        explain: "这一小点的目标是让平台知道“谁在买方案”。注册本身不产生收益，也不会进入老用户池。",
+        db: [
+            { table: "users", op: "INSERT", tone: "insert", rows: [
+                ["id", "U1001"],
+                ["phone", "138****0912"],
+                ["role", "buyer"],
+                ["identity_status", "pending"],
+                ["created_at", "2026-05-20 16:10"]
+            ]},
+            { table: "user_consents", op: "INSERT", tone: "insert", rows: [
+                ["user_id", "U1001"],
+                ["consent_type", "service_terms"],
+                ["version", "v1.0"],
+                ["status", "accepted"]
+            ]},
+            { table: "login_sessions", op: "INSERT", tone: "insert", rows: [
+                ["user_id", "U1001"],
+                ["device", "iPhone"],
+                ["expires_at", "2026-06-19 16:10"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">登录诊疗方案商城</h2>
+            <p class="mobile-sub">购买方案、查看订单、提交反馈和查看收益，都从同一个身份开始。</p>
+            <div class="mobile-card">
+                <div class="input-box">手机号 138 **** 0912</div>
+                <div class="input-box">验证码 826419</div>
+                <button class="primary-btn"><i data-lucide="log-in"></i>登录 / 注册</button>
+                <button class="secondary-btn"><i data-lucide="file-check"></i>已阅读服务协议</button>
+            </div>
+            <div class="mobile-card soft">
+                <b>这里不会分润</b>
+                <p class="mobile-sub" style="margin-top:6px;">只是建立用户身份。后面真实订单完成后，才会生成分润流水。</p>
+            </div>
+        `
     },
     {
-        id: 2,
-        name: "肠癌康复随访方案 B",
-        disease: "肠癌",
-        stage: "康复随访",
-        operator: "消化肿瘤联合门诊",
-        price: 680,
-        oldUsers: 31,
-        evidence: "体重变化、复查节点、生活方式反馈",
-        desc: "围绕术后康复、复查提醒、饮食管理和症状记录的轻量服务包。",
-        tags: ["康复随访", "退款期冻结", "老用户池31人"]
+        key: "publish",
+        icon: "store",
+        tab: "上架方案",
+        title: "02 上架方案：商品是诊疗服务包",
+        actor: "方案运营方",
+        screen: "机构端上架页",
+        subtitle: "机构提交方案，平台保留版本快照。用户未来买的是这个方案服务包，不是患者原始数据。",
+        explain: "上架动作会写入方案和版本表。审核通过前，C 端用户看不到这个商品。",
+        db: [
+            { table: "medical_plans", op: "INSERT", tone: "insert", rows: [
+                ["id", "P3008"],
+                ["title", "肝癌术后管理方案 A"],
+                ["operator_id", "ORG018"],
+                ["price", "980.00"],
+                ["status", "pending_review"]
+            ]},
+            { table: "plan_versions", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["version_no", "v1"],
+                ["content_snapshot", "服务内容 + 风险提示 + 退款规则"],
+                ["approved_by", "null"]
+            ]},
+            { table: "audit_logs", op: "INSERT", tone: "insert", rows: [
+                ["actor_id", "ORG018_ADMIN"],
+                ["action", "submit_plan"],
+                ["target_id", "P3008"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">上架诊疗方案</h2>
+            <p class="mobile-sub">机构端提交。审核通过后，才进入商城。</p>
+            <div class="mobile-card">
+                <div class="input-box">方案名称：肝癌术后管理方案 A</div>
+                <div class="input-box">价格：¥980</div>
+                <div class="input-box">服务内容：复诊提醒、指标跟踪、随访管理</div>
+                <div class="input-box">风险提示：不承诺治愈，需线下医生判断</div>
+                <button class="primary-btn"><i data-lucide="send"></i>提交审核</button>
+            </div>
+            <div class="mobile-tags">
+                <span class="mobile-tag">pending_review</span>
+                <span class="mobile-tag">version v1</span>
+            </div>
+        `
     },
     {
-        id: 3,
-        name: "慢病综合管理方案 C",
-        disease: "慢病",
-        stage: "初诊",
-        operator: "基层慢病管理中心",
-        price: 360,
-        oldUsers: 126,
-        evidence: "血压血糖趋势、服药记录、随访反馈",
-        desc: "适合基层慢病用户的初诊评估、目标设定和连续随访服务。",
-        tags: ["基层服务", "代理人协助", "老用户池126人"]
+        key: "browse",
+        icon: "search",
+        tab: "看方案",
+        title: "03 看方案：读取商品和老用户背书",
+        actor: "现在用户",
+        screen: "方案详情页",
+        subtitle: "用户看的是方案内容、价格、适用人群和老用户脱敏反馈。浏览本身不参与分润计算。",
+        explain: "这一步主要是读取数据。为了避免变成复杂路径追踪，MVP 不按浏览路径分润。",
+        db: [
+            { table: "medical_plans", op: "SELECT", tone: "select", rows: [
+                ["where", "id = P3008"],
+                ["return", "title, price, operator, risk_notice"],
+                ["purpose", "展示方案详情"]
+            ]},
+            { table: "review_evidence", op: "SELECT", tone: "select", rows: [
+                ["where", "plan_id = P3008 and audit_status = approved"],
+                ["return", "脱敏摘要、指标变化、体验反馈"],
+                ["purpose", "展示老用户背书"]
+            ]},
+            { table: "plan_user_pool", op: "SELECT", tone: "select", rows: [
+                ["where", "plan_id = P3008 and share_status = active"],
+                ["return", "有效老用户数量 48"],
+                ["purpose", "显示可信度，不触发收益"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">肝癌术后管理方案 A</h2>
+            <p class="mobile-sub">省肿瘤专病团队 · 服务包 ¥980</p>
+            <div class="mobile-tags">
+                <span class="mobile-tag">治疗后管理</span>
+                <span class="mobile-tag">老用户 48 人</span>
+                <span class="mobile-tag">T+7 结算</span>
+            </div>
+            <div class="mobile-card">
+                <b>服务内容</b>
+                <p class="mobile-sub" style="margin-top:6px;">复诊提醒、指标跟踪、用药依从性记录、随访管理。</p>
+            </div>
+            <div class="mobile-card soft">
+                <b>老用户背书</b>
+                <div class="phone-row"><span>术后 3 月随访摘要</span><span class="amount">已审核</span></div>
+                <div class="phone-row"><span>复查节点完成率</span><span class="amount">82%</span></div>
+            </div>
+            <button class="primary-btn"><i data-lucide="shopping-bag"></i>购买方案</button>
+        `
+    },
+    {
+        key: "order",
+        icon: "receipt",
+        tab: "购买方案",
+        title: "04 购买方案：订单是分润的唯一触发源",
+        actor: "现在用户",
+        screen: "订单确认页",
+        subtitle: "支付成功后，系统锁定方案版本、价格快照和推荐人 R。没有真实订单，就没有任何收益分配。",
+        explain: "这是最关键的小点：分润不是凭空产生，也不是老用户直接卖数据，而是来自一笔真实方案订单。",
+        db: [
+            { table: "orders", op: "INSERT", tone: "insert", rows: [
+                ["id", "O9001"],
+                ["buyer_id", "U1001"],
+                ["plan_id", "P3008"],
+                ["amount", "980.00"],
+                ["status", "paid"]
+            ]},
+            { table: "order_snapshots", op: "INSERT", tone: "insert", rows: [
+                ["order_id", "O9001"],
+                ["plan_version", "P3008 / v1"],
+                ["split_rule", "70/15/10/5"],
+                ["refund_rule", "T+7 冻结期"]
+            ]},
+            { table: "referrals", op: "INSERT", tone: "insert", rows: [
+                ["order_id", "O9001"],
+                ["referrer_id", "R2007"],
+                ["level", "1"],
+                ["status", "locked"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">确认订单</h2>
+            <p class="mobile-sub">购买的是诊疗方案服务包，不是其他患者的原始数据。</p>
+            <div class="mobile-card">
+                <div class="phone-row"><span>方案</span><b>肝癌术后管理方案 A</b></div>
+                <div class="phone-row"><span>版本</span><b>v1</b></div>
+                <div class="phone-row"><span>推荐来源</span><b>R2007</b></div>
+                <div class="phone-row"><span>支付金额</span><span class="amount">¥980.00</span></div>
+            </div>
+            <div class="mobile-card soft">
+                <b>付款后会锁定规则</b>
+                <p class="mobile-sub" style="margin-top:6px;">后续结算按本订单的价格快照和分润规则计算。</p>
+            </div>
+            <button class="primary-btn"><i data-lucide="credit-card"></i>确认支付</button>
+        `
+    },
+    {
+        key: "feedback",
+        icon: "badge-check",
+        tab: "反馈入池",
+        title: "05 反馈入池：新用户完成服务后变成老用户",
+        actor: "老用户",
+        screen: "反馈提交页",
+        subtitle: "用户完成治疗或随访节点后，提交真实反馈。审核通过后，才进入该方案老用户池。",
+        explain: "这里要明确：不是注册了就能分钱，也不是随便写评价就能分钱。必须有订单、服务节点、反馈材料和授权。",
+        db: [
+            { table: "review_evidence", op: "INSERT", tone: "insert", rows: [
+                ["id", "EV7011"],
+                ["user_id", "U1001"],
+                ["plan_id", "P3008"],
+                ["audit_status", "pending"],
+                ["display_scope", "脱敏摘要"]
+            ]},
+            { table: "user_consents", op: "INSERT", tone: "insert", rows: [
+                ["user_id", "U1001"],
+                ["consent_type", "feedback_display_and_revenue"],
+                ["status", "accepted"],
+                ["can_revoke", "true"]
+            ]},
+            { table: "plan_user_pool", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["user_id", "U1001"],
+                ["evidence_status", "pending"],
+                ["share_status", "frozen_until_approved"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">提交治疗反馈</h2>
+            <p class="mobile-sub">审核通过后，你会成为这个方案的老用户。</p>
+            <div class="mobile-card">
+                <div class="input-box">服务节点：术后 3 月随访完成</div>
+                <div class="input-box">反馈摘要：按时复查，指标稳定</div>
+                <div class="input-box">材料：复诊记录 1 份</div>
+                <button class="secondary-btn"><i data-lucide="file-check"></i>授权脱敏展示和参与分润</button>
+                <button class="primary-btn"><i data-lucide="upload"></i>提交审核</button>
+            </div>
+            <div class="mobile-card soft">
+                <b>当前状态</b>
+                <p class="mobile-sub" style="margin-top:6px;">待审核。审核通过前不展示，也不参与分润。</p>
+            </div>
+        `
+    },
+    {
+        key: "settlement",
+        icon: "split",
+        tab: "分润结算",
+        title: "06 分润结算：一笔订单拆成四类台账",
+        actor: "平台结算",
+        screen: "收益钱包页",
+        subtitle: "订单完成且过退款期后，结算引擎生成方案运营方、推荐人、老用户池和平台的流水。",
+        explain: "这一步把商业规则落成数据库台账。所有收益都能回到订单 O9001，不做无限层级返佣。",
+        db: [
+            { table: "settlement_batches", op: "INSERT", tone: "insert", rows: [
+                ["id", "B20260520"],
+                ["period", "2026-05-13 ~ 2026-05-20"],
+                ["status", "processing"],
+                ["rule", "70/15/10/5"]
+            ]},
+            { table: "settlement_items", op: "INSERT", tone: "insert", rows: [
+                ["order_id", "O9001"],
+                ["operator", "¥686.00"],
+                ["referrer_R", "¥147.00"],
+                ["old_user_pool", "¥98.00"],
+                ["platform", "¥49.00"]
+            ]},
+            { table: "wallet_ledger", op: "INSERT", tone: "insert", rows: [
+                ["receiver", "ORG018 / R2007 / old_users / platform"],
+                ["entry_type", "revenue_share"],
+                ["frozen_until", "T+7"],
+                ["source_order", "O9001"]
+            ]}
+        ],
+        phone: `
+            <h2 class="mobile-title">收益钱包</h2>
+            <p class="mobile-sub">每一笔收益都能追溯到真实订单。</p>
+            <div class="metric-row">
+                <div class="metric"><b>¥98</b><span>老用户池</span></div>
+                <div class="metric"><b>48</b><span>池内人数</span></div>
+                <div class="metric"><b>T+7</b><span>冻结期</span></div>
+            </div>
+            <div class="mobile-card">
+                <b>订单 O9001 拆账</b>
+                <div class="split-mini">
+                    <div class="a">运营方</div>
+                    <div class="b">推荐</div>
+                    <div class="c">老用户</div>
+                    <div class="d">平台</div>
+                </div>
+                <div class="phone-list">
+                    <div class="phone-row"><span>方案运营方</span><span>¥686.00</span></div>
+                    <div class="phone-row"><span>推荐人 R</span><span>¥147.00</span></div>
+                    <div class="phone-row"><span>老用户池</span><span class="amount">¥98.00</span></div>
+                    <div class="phone-row"><span>平台</span><span>¥49.00</span></div>
+                </div>
+            </div>
+        `
     }
 ];
-let selectedPlan = plans[0];
 
-const poolRows = [
-    ["王女士", "术后 3 月随访摘要", "已通过", "有效", "可参与方案 A 后续订单老用户池"],
-    ["李先生", "复查指标趋势", "已通过", "有效", "材料已脱敏展示"],
-    ["周女士", "治疗体验反馈", "待补充", "冻结", "缺少复诊节点证明"],
-    ["赵先生", "B 端代理提交", "已通过", "有效", "代理服务费 10% 单独记账"]
-];
+let current = 0;
 
-const ledgerRows = [
-    ["肝癌术后管理方案 A", "老用户池分润", "+¥12.25", "冻结中，预计 T+7 可提现"],
-    ["肠癌康复随访方案 B", "推荐人 R 佣金", "+¥102.00", "订单已完成"],
-    ["慢病综合管理方案 C", "代理服务费", "+¥4.80", "来自被代理用户授权"],
-    ["肝癌术后管理方案 A", "退款回滚", "-¥8.40", "订单退款，原收益扣回"]
-];
-
-function money(v) {
-    return "¥" + Number(v).toFixed(2);
+function renderTabs() {
+    document.getElementById("stepNav").innerHTML = steps.map((s, i) => `
+        <button class="step-tab ${i === current ? "active" : ""}" data-index="${i}">
+            <i data-lucide="${s.icon}"></i>${s.tab}
+        </button>
+    `).join("");
+    document.querySelectorAll(".step-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+            current = Number(btn.dataset.index);
+            render();
+        });
+    });
 }
 
-function renderPlans() {
-    const disease = document.getElementById("diseaseFilter").value;
-    const stage = document.getElementById("stageFilter").value;
-    const q = document.getElementById("searchInput").value.trim();
-    const list = plans.filter(p => {
-        const hitDisease = disease === "all" || p.disease === disease;
-        const hitStage = stage === "all" || p.stage === stage;
-        const hitQuery = !q || [p.name, p.operator, p.disease, p.stage].join(" ").includes(q);
-        return hitDisease && hitStage && hitQuery;
-    });
-    document.getElementById("planGrid").innerHTML = list.map(p => `
-        <article class="plan-card ${p.id === selectedPlan.id ? "active" : ""}">
-            <div class="tag-row">
-                <span class="tag teal">${p.disease}</span>
-                <span class="tag amber">${p.stage}</span>
+function renderDb(step) {
+    document.getElementById("dbFlow").innerHTML = step.db.map(card => `
+        <article class="db-card">
+            <div class="db-card-head">
+                <span class="db-table">${card.table}</span>
+                <span class="db-op ${card.tone}">${card.op}</span>
             </div>
-            <h3>${p.name}</h3>
-            <p class="muted">${p.operator}</p>
-            <div class="price">${money(p.price)}</div>
-            <p class="muted">老用户背书：${p.oldUsers} 人 · ${p.evidence}</p>
-            <button class="btn secondary" onclick="selectPlan(${p.id})"><i data-lucide="mouse-pointer-click"></i>查看并模拟购买</button>
+            <div class="db-body">
+                ${card.rows.map(row => `
+                    <div class="db-row">
+                        <div class="db-key">${row[0]}</div>
+                        <div class="db-val">${row[1]}</div>
+                    </div>
+                `).join("")}
+            </div>
         </article>
     `).join("");
+}
+
+function render() {
+    const step = steps[current];
+    renderTabs();
+    document.getElementById("dbTitle").textContent = step.title;
+    document.getElementById("dbSubtitle").textContent = step.subtitle;
+    document.getElementById("actorBadge").textContent = step.actor;
+    document.getElementById("stepExplain").textContent = step.explain;
+    document.getElementById("phoneMode").textContent = step.actor + "视角";
+    document.getElementById("screenName").textContent = step.screen;
+    document.getElementById("phoneContent").innerHTML = step.phone;
+    renderDb(step);
+    document.getElementById("prevBtn").disabled = current === 0;
+    document.getElementById("nextBtn").disabled = current === steps.length - 1;
     lucide.createIcons();
 }
 
-function selectPlan(id) {
-    selectedPlan = plans.find(p => p.id === id);
-    document.getElementById("amountInput").value = selectedPlan.price;
-    renderPlans();
-    renderDetail();
-    switchPage("order");
-}
+document.getElementById("prevBtn").addEventListener("click", () => {
+    if (current > 0) {
+        current -= 1;
+        render();
+    }
+});
+document.getElementById("nextBtn").addEventListener("click", () => {
+    if (current < steps.length - 1) {
+        current += 1;
+        render();
+    }
+});
 
-function renderDetail() {
-    document.getElementById("detailTitle").textContent = selectedPlan.name;
-    document.getElementById("detailDesc").textContent = selectedPlan.desc;
-    document.getElementById("detailTags").innerHTML = selectedPlan.tags.map(t => `<span class="tag">${t}</span>`).join("");
-    renderSplit();
-}
-
-function renderSplit() {
-    const amount = Number(document.getElementById("amountInput").value || selectedPlan.price);
-    const rows = [
-        ["方案运营方", 0.70, "履约主收入"],
-        ["推荐人 R", 0.15, "一级推荐佣金"],
-        ["老用户池", 0.10, `${selectedPlan.oldUsers} 名有效老用户均分`],
-        ["平台", 0.05, "系统、风控、客服和结算"]
-    ];
-    document.getElementById("splitA").textContent = money(amount * 0.70);
-    document.getElementById("splitB").textContent = money(amount * 0.15);
-    document.getElementById("splitC").textContent = money(amount * 0.10);
-    document.getElementById("splitD").textContent = money(amount * 0.05);
-    document.getElementById("splitTable").innerHTML = rows.map(r => `
-        <tr><td>${r[0]}</td><td><b>${money(amount * r[1])}</b></td><td class="muted">${r[2]}</td></tr>
-    `).join("");
-}
-
-function renderPool() {
-    document.getElementById("poolTable").innerHTML = poolRows.map(r => `
-        <tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="muted">${r[4]}</td></tr>
-    `).join("");
-}
-
-function renderLedger() {
-    document.getElementById("ledgerList").innerHTML = ledgerRows.map(r => `
-        <div class="ledger-row">
-            <div><b>${r[0]}</b><br><span class="muted">${r[1]} · ${r[3]}</span></div>
-            <div class="amount">${r[2]}</div>
-        </div>
-    `).join("");
-}
-
-function switchPage(page) {
-    document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
-    document.getElementById("page-" + page).classList.add("active");
-    document.querySelectorAll(".side-link").forEach(el => el.classList.toggle("active", el.dataset.page === page));
-}
-
-document.querySelectorAll(".side-link").forEach(btn => btn.addEventListener("click", () => switchPage(btn.dataset.page)));
-["diseaseFilter", "stageFilter", "searchInput"].forEach(id => document.getElementById(id).addEventListener("input", renderPlans));
-document.getElementById("amountInput").addEventListener("input", renderSplit);
-
-renderPlans();
-renderDetail();
-renderPool();
-renderLedger();
-lucide.createIcons();
+render();
 </script>
 </body>
 </html>
