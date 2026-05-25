@@ -1090,6 +1090,92 @@
       white-space: nowrap;
     }
 
+    .message-system {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 14px;
+      min-height: 465px;
+    }
+
+    .message-flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      align-content: start;
+    }
+
+    .msg-node {
+      min-height: 122px;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--teal);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(31, 42, 55, 0.06);
+    }
+
+    .msg-node:nth-child(2) { border-left-color: var(--blue); }
+    .msg-node:nth-child(3) { border-left-color: var(--amber); }
+    .msg-node:nth-child(4) { border-left-color: var(--purple); }
+    .msg-node:nth-child(5) { border-left-color: var(--coral); }
+    .msg-node:nth-child(6) { border-left-color: var(--green); }
+
+    .msg-node b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .msg-node span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.32;
+    }
+
+    .channel-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .channel-card {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 112px;
+      gap: 12px;
+      align-items: center;
+      padding: 13px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(31, 42, 55, 0.06);
+    }
+
+    .channel-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      color: var(--teal);
+      background: var(--soft-teal);
+      border-radius: 10px;
+    }
+
+    .channel-card:nth-child(2) .channel-icon { color: var(--blue); background: var(--soft-blue); }
+    .channel-card:nth-child(3) .channel-icon { color: var(--amber); background: var(--soft-amber); }
+    .channel-card:nth-child(4) .channel-icon { color: var(--purple); background: #f1edff; }
+
+    .channel-card b {
+      display: block;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .channel-card span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
     .nav-hint {
       position: fixed;
       right: 18px;
@@ -1561,7 +1647,7 @@
               <div class="page-node blue"><b>方案详情</b><span>服务包、医生、机构、背书、风险。</span></div>
               <div class="page-node blue"><b>购物车 / 确认单</b><span>锁定 SKU、版本、分润规则和退款规则。</span></div>
               <div class="page-node blue"><b>支付 / 订单</b><span>微信支付、订单快照、履约任务。</span></div>
-              <div class="page-node blue"><b>客服 / 钱包</b><span>工单、退款、反馈认证、提现。</span></div>
+              <div class="page-node blue"><b>消息 / 客服 / 钱包</b><span>站内信、聊天、工单、反馈认证、提现。</span></div>
             </div>
             <div class="page-lane">
               <div class="lane-label">机构端<br>商家运营</div>
@@ -1571,7 +1657,7 @@
               <div class="page-node green"><b>服务包</b><span>节点、响应 SLA、材料要求、退款。</span></div>
               <div class="page-node green"><b>提交审核</b><span>版本快照，不通过要能重提。</span></div>
               <div class="page-node green"><b>履约工作台</b><span>资料评估、复查提醒、指标整理。</span></div>
-              <div class="page-node green"><b>售后协同</b><span>接客服工单、补材料、退款举证。</span></div>
+              <div class="page-node green"><b>消息与售后</b><span>收审核提醒、接客服工单、补材料、退款举证。</span></div>
             </div>
             <div class="page-lane">
               <div class="lane-label">审核员<br>运营后台</div>
@@ -1579,9 +1665,9 @@
               <div class="page-node amber"><b>医生审核</b><span>执业信息、身份证、展示边界。</span></div>
               <div class="page-node amber"><b>方案审核</b><span>医学、宣传、价格、分润、退款。</span></div>
               <div class="page-node amber"><b>反馈认证</b><span>订单、履约、材料、脱敏预览。</span></div>
-              <div class="page-node amber"><b>客服复核</b><span>投诉、退款、服务争议证据。</span></div>
+              <div class="page-node amber"><b>消息复核</b><span>审核提醒、客服聊天、投诉退款证据。</span></div>
               <div class="page-node amber"><b>风控标记</b><span>刷好评、异常推荐、重复材料。</span></div>
-              <div class="page-node amber"><b>审核日志</b><span>谁看过、谁改过、为什么过/不过。</span></div>
+              <div class="page-node amber"><b>消息与日志</b><span>谁收到提醒、谁已读、为什么过/不过。</span></div>
             </div>
             <div class="page-lane">
               <div class="lane-label">最高<br>Admin</div>
@@ -1591,7 +1677,7 @@
               <div class="page-node purple"><b>审核策略</b><span>队列、SLA、必审字段、拒绝原因。</span></div>
               <div class="page-node purple"><b>结算批次</b><span>冻结期、回滚、提现、对账。</span></div>
               <div class="page-node purple"><b>风控阈值</b><span>推荐异常、退款异常、材料重复。</span></div>
-              <div class="page-node purple"><b>审计导出</b><span>合规审计、财务导出、日志留存。</span></div>
+              <div class="page-node purple"><b>消息模板</b><span>站内信模板、客服话术、触达规则。</span></div>
             </div>
           </div>
           <div class="footer"><span>推断原则：前台每出现一个状态，后台必须有对应的任务、规则、日志和异常处理入口。</span><span>15</span></div>
@@ -1616,17 +1702,47 @@
               <div class="phone-page"><b>支付页</b><span>微信支付成功后生成订单和履约任务，不立刻分润。</span><div class="page-tag">orders / tasks</div></div>
               <div class="phone-page"><b>服务进度</b><span>未完成节点、上传复查报告、机构和医生电话。</span><div class="page-tag">service_tasks</div></div>
               <div class="phone-page"><b>联系客服</b><span>必须绑定订单，不做无上下文聊天；支持退款/催办/投诉。</span><div class="page-tag">support_tickets</div></div>
-              <div class="phone-page"><b>反馈认证 / 钱包</b><span>认证后成为老用户；收益冻结、明细、提现。</span><div class="page-tag">wallet_ledger</div></div>
+              <div class="phone-page"><b>消息 / 钱包</b><span>站内信收审核提醒；认证后看收益冻结、明细、提现。</span><div class="page-tag">inbox_messages</div></div>
             </div>
             <div class="evidence-stack">
               <div class="evidence-card"><b>页面证据</b><span>每个关键按钮都写入版本：协议版本、风险提示版本、方案版本、分润规则版本。</span><div class="status-pill">可追溯</div></div>
               <div class="evidence-card"><b>履约证据</b><span>服务进度不是“已完成”默认值，而是资料评估、复查提醒、报告上传、机构确认。</span><div class="status-pill warn">待补材料</div></div>
-              <div class="evidence-card"><b>客服证据</b><span>联系客服入口读取订单、服务任务、机构电话、医生电话；处理结果回写工单。</span><div class="status-pill">有上下文</div></div>
+              <div class="evidence-card"><b>消息证据</b><span>站内信记录审核结果、待补材料、提现结果；客服聊天记录回写工单。</span><div class="status-pill">已读留痕</div></div>
               <div class="evidence-card"><b>分润证据</b><span>订单完成并过冻结期后，才从结算批次生成推荐人、老用户池和平台流水。</span><div class="status-pill warn">T+7</div></div>
               <div class="evidence-card"><b>失败状态</b><span>实名失败、支付失败、服务未完成、反馈被拒、提现失败都要有用户可理解原因。</span><div class="status-pill bad">不能空白</div></div>
             </div>
           </div>
           <div class="footer"><span>主动推断：C 端必须把“购物车、客服、未完成履约、提现失败”这些非理想状态先画出来。</span><span>16</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>站内信 + 在线客服：一个消息总线，两个使用场景</h2>
+              <p class="sub">站内信不是客服聊天的替代品。站内信用来做系统提醒和审核留痕；在线客服用来处理订单上下文里的 B/C/平台沟通。</p>
+            </div>
+            <div class="kicker"><i data-lucide="messages-square"></i>消息体系</div>
+          </div>
+          <div class="message-system">
+            <div class="message-flow">
+              <div class="msg-node"><b>审核状态触发</b><span>机构、医生、方案、老用户认证一旦通过/不通过，自动生成站内信。</span><div class="page-tag">audit_tasks</div></div>
+              <div class="msg-node"><b>履约节点触发</b><span>待上传报告、机构超时、补材料、服务完成，提醒 C 端和 B 端。</span><div class="page-tag">service_tasks</div></div>
+              <div class="msg-node"><b>结算钱包触发</b><span>冻结、解冻、提现成功/失败、退款扣回，都进入钱包站内信。</span><div class="page-tag">wallet_ledger</div></div>
+              <div class="msg-node"><b>C 发起客服</b><span>从订单、服务进度、钱包明细进入客服，自动带上上下文。</span><div class="page-tag">chat_sessions</div></div>
+              <div class="msg-node"><b>平台拉 B 协同</b><span>客服可把机构运营拉进同一工单，但内部备注和用户可见消息要分开。</span><div class="page-tag">support_tickets</div></div>
+              <div class="msg-node"><b>沉淀为证据</b><span>聊天、站内信已读、工单结论都能被审核、风控、财务回查。</span><div class="page-tag">message_logs</div></div>
+            </div>
+            <div class="channel-stack">
+              <div class="channel-card"><div class="channel-icon"><i data-lucide="mail"></i></div><div><b>站内信 Inbox</b><span>系统发给用户、机构、审核员和财务；重点是提醒、已读、跳转和留痕。</span></div><div class="status-pill">异步</div></div>
+              <div class="channel-card"><div class="channel-icon"><i data-lucide="message-circle"></i></div><div><b>在线客服 Chat</b><span>用户问问题、催履约、申请退款；必须绑定订单/方案/服务任务。</span></div><div class="status-pill warn">实时</div></div>
+              <div class="channel-card"><div class="channel-icon"><i data-lucide="ticket"></i></div><div><b>工单 Ticket</b><span>客服聊天升级后形成工单，指派给平台、机构、财务或审核员处理。</span></div><div class="status-pill">可追责</div></div>
+              <div class="channel-card"><div class="channel-icon"><i data-lucide="layout-template"></i></div><div><b>消息模板</b><span>最高 Admin 管模板、触发规则、可见范围、敏感词和外部短信/微信服务通知开关。</span></div><div class="status-pill">可配置</div></div>
+              <div class="evidence-card"><b>关键边界</b><span>B/C 端不要私聊绕开平台。能电话沟通，但核心结论必须回写聊天或工单，否则售后、分润、退款无法查证。</span><div class="status-pill bad">防绕单</div></div>
+            </div>
+          </div>
+          <div class="footer"><span>产品结论：消息中心是业务状态机的一部分，不是单独的通知模块。</span><span>17</span></div>
         </div>
       </section>
 
@@ -1671,7 +1787,7 @@
               <span class="page-tag">risk_flags</span>
             </div>
           </div>
-          <div class="footer"><span>后台设计标准：每一个“不过”都要有可复用原因码，不能只写一句人工备注。</span><span>17</span></div>
+          <div class="footer"><span>后台设计标准：每一个“不过”都要有可复用原因码，不能只写一句人工备注。</span><span>18</span></div>
         </div>
       </section>
 
@@ -1711,12 +1827,12 @@
               <span class="page-tag">risk_rules</span>
             </div>
             <div class="admin-card">
-              <b>审计与导出</b>
-              <p>导出订单、分润、审核、提现、客服记录。任何导出都要记录用途和审批人。</p>
-              <span class="page-tag">audit_logs</span>
+              <b>消息模板与审计</b>
+              <p>管理站内信模板、客服话术、触达规则；导出订单、分润、审核、提现、客服记录。</p>
+              <span class="page-tag">message_templates / audit_logs</span>
             </div>
           </div>
-          <div class="footer"><span>推断结论：最高 admin 页面要少做“直接改业务数据”，多做“规则版本、审批、日志、回滚”。</span><span>18</span></div>
+          <div class="footer"><span>推断结论：最高 admin 页面要少做“直接改业务数据”，多做“规则版本、审批、日志、回滚”。</span><span>19</span></div>
         </div>
       </section>
 
@@ -1737,12 +1853,13 @@
               <tr><td>登录注册</td><td>微信登录、手机号、实名、协议授权</td><td>风控 / 用户运营</td><td>users, oauth_accounts, identity_profiles, user_consents</td><td>实名失败、微信未绑手机号、协议版本过期</td><td>提现、反馈认证、客服追责都依赖同一身份。</td></tr>
               <tr><td>商城与详情</td><td>病种筛选、方案详情、背书、风险 Tab</td><td>方案审核员 / 机构运营</td><td>medical_plans, plan_versions, review_evidence, doctor_profiles</td><td>方案下架、医生资质过期、背书被撤回</td><td>用户不是买数据，而是被可验证服务包和脱敏背书说服。</td></tr>
               <tr><td>购物车 / 下单</td><td>SKU、版本、价格、推荐来源、退款规则</td><td>交易系统 / 最高 Admin 配规则</td><td>orders, order_snapshots, referral_locks, split_rules</td><td>支付失败、价格变更、推荐来源失效</td><td>分润不能靠口头约定，必须靠订单快照锁定。</td></tr>
-              <tr><td>履约 / 客服</td><td>未完成节点、上传报告、电话、客服工单</td><td>机构运营 / 客服 / 争议复核</td><td>service_tasks, service_logs, uploaded_documents, support_tickets</td><td>报告未传、机构超时、用户申请退款</td><td>订单没完成就不能进入可结算状态。</td></tr>
+              <tr><td>履约 / 客服</td><td>未完成节点、上传报告、电话、客服工单、站内信提醒</td><td>机构运营 / 客服 / 争议复核</td><td>service_tasks, service_logs, uploaded_documents, support_tickets, chat_sessions</td><td>报告未传、机构超时、用户申请退款、聊天无订单上下文</td><td>订单没完成就不能进入可结算状态，客服结论也必须可追责。</td></tr>
+              <tr><td>站内信</td><td>审核结果、待补材料、履约提醒、提现结果</td><td>消息系统 / 最高 Admin 配模板</td><td>inbox_messages, notification_events, message_templates, message_logs</td><td>消息未读、模板错发、敏感内容外发、重复提醒</td><td>审核和履约状态要主动触达，不应只靠用户自己刷新页面。</td></tr>
               <tr><td>老用户认证</td><td>写反馈、脱敏预览、授权、认证结果</td><td>反馈审核员 / 风控</td><td>old_user_certifications, review_redactions, plan_user_pool</td><td>材料不足、疑似刷评、授权撤回</td><td>已购买不等于可分润，必须通过证据认证。</td></tr>
               <tr><td>钱包提现</td><td>可提现、冻结、明细、提现申请</td><td>财务 / 最高 Admin 双人复核</td><td>settlement_items, wallet_ledger, withdrawal_requests</td><td>退款扣回、提现失败、风控冻结</td><td>用户要能解释每一分钱来自哪个订单批次。</td></tr>
             </tbody>
           </table>
-          <div class="footer"><span>产品验收口径：一个前台状态，要能回查到一条订单、一条规则、一条审核或一条日志。</span><span>19</span></div>
+          <div class="footer"><span>产品验收口径：一个前台状态，要能回查到一条订单、一条规则、一条审核、一条消息或一条日志。</span><span>20</span></div>
         </div>
       </section>
 
@@ -1771,7 +1888,7 @@
               <div class="card warn"><h3>给团队的提醒</h3><p>不要急着证明愿景很大。先证明一个用户愿意买方案、一个老用户愿意上传好评、一次周清算能准确到账。</p></div>
             </div>
           </div>
-          <div class="footer"><span>最小闭环跑通后，再谈加权算法、二级市场、区块链和数据交易所。</span><span>20</span></div>
+          <div class="footer"><span>最小闭环跑通后，再谈加权算法、二级市场、区块链和数据交易所。</span><span>21</span></div>
         </div>
       </section>
     </div>
@@ -1803,7 +1920,7 @@
     function animateCurrentSlide() {
       const current = deck.getCurrentSlide();
       if (!window.gsap || !current) return;
-      const items = current.querySelectorAll(".card, .story-step, .flow-node, .risk, .object, .loop-step, .page-node, .phone-page, .evidence-card, .admin-card");
+      const items = current.querySelectorAll(".card, .story-step, .flow-node, .risk, .object, .loop-step, .page-node, .phone-page, .evidence-card, .admin-card, .msg-node, .channel-card");
       gsap.fromTo(items, { y: 10, opacity: 1 }, { y: 0, opacity: 1, duration: 0.24, stagger: 0.015, ease: "power2.out" });
     }
 
