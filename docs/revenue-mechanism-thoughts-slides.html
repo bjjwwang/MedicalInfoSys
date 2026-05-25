@@ -727,13 +727,13 @@
 
     .object-model {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 10px;
     }
 
     .object {
-      min-height: 155px;
-      padding: 13px;
+      min-height: 150px;
+      padding: 12px;
       color: #fff;
       background: var(--dark);
       border-radius: 8px;
@@ -744,13 +744,13 @@
       display: block;
       margin-bottom: 8px;
       color: #fff;
-      font-size: 17px;
+      font-size: 16px;
     }
 
     .object span {
       display: block;
       color: #d0d5dd;
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.35;
     }
 
@@ -758,6 +758,7 @@
     .object:nth-child(3) { background: #11605a; }
     .object:nth-child(4) { background: #7a4d00; }
     .object:nth-child(5) { background: #5d4a99; }
+    .object:nth-child(6) { background: #7a2630; }
 
     .risk-grid {
       display: grid;
@@ -1272,7 +1273,7 @@
                 <tr><th>平台元素</th><th>电商类比</th><th>真实含义</th><th>分润关系</th></tr>
               </thead>
               <tbody>
-                <tr><td>商城</td><td>淘宝 / 京东</td><td>上架的是疑难病诊疗方案</td><td>平台提供交易和结算基础设施</td></tr>
+                <tr><td>商城</td><td>淘宝 / 京东</td><td>上架的是疑难病诊疗方案</td><td>平台提供交易、审核、消息、客服和结算基础设施</td></tr>
                 <tr><td>方案运营方</td><td>商家</td><td>医院、医生、机构负责履约</td><td>拿订单主收入，例如 70%</td></tr>
                 <tr><td>老用户</td><td>高质量好评者</td><td>用过方案并留下疗效数据</td><td>后续新订单给他们返佣</td></tr>
                 <tr><td>现在用户</td><td>新买家</td><td>浏览方案、看疗效、下单购买</td><td>付款触发本次分润</td></tr>
@@ -1301,8 +1302,8 @@
               <div class="story-strip compact">
                 <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="浏览商城" style="object-position: 0% 0%"></div><div class="num">1</div><b>浏览商城</b><span>王先生进入平台，按病种、阶段、预算筛选诊疗方案。</span></div>
                 <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="查看疗效背书" style="object-position: 100% 0%"></div><div class="num">2</div><b>查看疗效背书</b><span>他看到老用户的指标变化、治疗经历、匿名反馈。</span></div>
-                <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="付款买方案" style="object-position: 0% 100%"></div><div class="num">3</div><b>付款买方案</b><span>订单的主收入给医生/机构，分润池从订单里单独划出。</span></div>
-                <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="治疗后入池" style="object-position: 100% 100%"></div><div class="num">4</div><b>治疗后入池</b><span>王先生完成治疗并上传反馈，也成为该方案的老用户。</span></div>
+                <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="付款买方案" style="object-position: 0% 100%"></div><div class="num">3</div><b>付款买方案</b><span>订单的主收入给医生/机构，站内信提醒履约和补材料。</span></div>
+                <div class="story-step"><div class="card-ill"><img src="assets/revenue-mechanism/user-journey.png" alt="治疗后入池" style="object-position: 100% 100%"></div><div class="num">4</div><b>治疗后入池</b><span>王先生完成治疗、上传反馈，审核结果通过站内信通知。</span></div>
               </div>
             </div>
             <div class="visual-panel"><img src="assets/revenue-mechanism/user-journey.png" alt="王先生购买诊疗方案的完整故事"></div>
@@ -1351,8 +1352,8 @@
               <div class="wheel-line"></div>
               <div class="wheel-core">诊疗方案<br>信任飞轮</div>
               <div class="wheel-node n1"><b>现在用户付款</b><span>真实订单触发收入，而不是投资入金。</span></div>
-              <div class="wheel-node n2"><b>完成治疗</b><span>方案运营方交付医疗或健康服务。</span></div>
-              <div class="wheel-node n3"><b>成为老用户</b><span>上传疗效反馈，进入该方案用户池。</span></div>
+              <div class="wheel-node n2"><b>完成治疗</b><span>方案运营方交付服务，消息中心提醒补材料。</span></div>
+              <div class="wheel-node n3"><b>成为老用户</b><span>上传疗效反馈，审核结果站内信留痕。</span></div>
               <div class="wheel-node n4"><b>获得后续分润</b><span>新订单越多，老用户越有动力推荐。</span></div>
             </div>
             <div class="visual-panel"><img src="assets/revenue-mechanism/marketplace-flywheel.png" alt="诊疗方案飞轮插图"></div>
@@ -1376,7 +1377,7 @@
               <div class="grid-2">
                 <div class="card accent">
                   <h3><span class="icon"><i data-lucide="check"></i></span>进入老用户池</h3>
-                  <p>用户在平台买过方案 X，完成方案服务，并通过基础审核上传疗效反馈。</p>
+                  <p>用户在平台买过方案 X，完成方案服务，并通过基础审核上传疗效反馈；认证结果进入站内信。</p>
                   <div class="pill-row">
                     <span class="pill">真实订单</span>
                     <span class="pill">完成履约</span>
@@ -1418,7 +1419,7 @@
             <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/ecommerce-roles.png" alt="方案运营方" style="object-position: 75% 25%"></div><h3><span class="icon"><i data-lucide="hospital"></i></span>方案运营方</h3><p>商家。负责方案上架、履约、售后，拿订单主收入。</p></div>
             <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/b-agent-support.png" alt="B端代理人" style="object-position: 35% 35%"></div><h3><span class="icon purple"><i data-lucide="handshake"></i></span>B 端代理人</h3><p>帮老人、农村患者管理身份和钱包，按协议抽代理服务费。</p></div>
             <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/marketplace-flywheel.png" alt="推荐人" style="object-position: 74% 75%"></div><h3><span class="icon amber"><i data-lucide="megaphone"></i></span>推荐人 R</h3><p>带来新客户，拿一层推荐佣金，不做多级返佣。</p></div>
-            <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/mvp-system.png" alt="平台" style="object-position: 50% 50%"></div><h3><span class="icon coral"><i data-lucide="store"></i></span>平台</h3><p>提供商城、订单、风控、结算、客服和规则治理。</p></div>
+            <div class="card"><div class="card-ill"><img src="assets/revenue-mechanism/mvp-system.png" alt="平台" style="object-position: 50% 50%"></div><h3><span class="icon coral"><i data-lucide="store"></i></span>平台</h3><p>提供商城、订单、消息、客服、风控、结算和规则治理。</p></div>
           </div>
           <div class="footer"><span>建议口径：R 拿销售佣金，老用户拿好评返佣，运营方拿方案收入。</span><span>07</span></div>
         </div>
@@ -1436,7 +1437,7 @@
           <div class="grid-2" style="height:100%">
             <div class="image-card"><img src="assets/revenue-mechanism/b-agent-support.png" alt="B端医疗机构帮助老人管理分润身份"></div>
             <div class="cards" style="display:grid;gap:12px">
-              <div class="card accent"><h3>他们帮患者做什么</h3><p>注册、确认方案历史、上传疗效材料、维护老用户身份、查看收益、协助提现。</p></div>
+              <div class="card accent"><h3>他们帮患者做什么</h3><p>注册、确认方案历史、查看站内信、上传疗效材料、维护老用户身份、查看收益、协助提现。</p></div>
               <div class="card warn"><h3>他们怎么赚钱</h3><p>不是从所有新订单抽层级佣金，而是从被代理患者的收益中按协议抽服务费，例如代理收益的 10%。</p></div>
               <div class="card"><h3>为什么重要</h3><p>它把低数字化能力患者纳入系统，同时给线下医疗机构一个可执行的业务角色。</p></div>
             </div>
@@ -1462,6 +1463,7 @@
                 <div class="object"><b>PlanUser</b><span>谁用过哪个方案，是否完成服务，是否进入老用户池。</span></div>
                 <div class="object"><b>Referral</b><span>推荐人、推荐码、归因订单、佣金状态。</span></div>
                 <div class="object"><b>Settlement</b><span>每周清算批次、订单拆账、钱包入账、提现记录。</span></div>
+                <div class="object"><b>Message</b><span>站内信、在线客服、工单、模板、已读和聊天留痕。</span></div>
               </div>
               <div class="flow-map">
                 <div class="flow-node"><div class="num">1</div><b>方案上架</b><span>运营方配置价格和分润比例。</span></div>
@@ -1495,8 +1497,8 @@
               <div class="scope-step"><div class="num">2</div><div>老用户好评区，上传疗效反馈</div></div>
               <div class="scope-step"><div class="num">3</div><div>下单支付、我的订单、退款和履约状态</div></div>
               <div class="scope-step"><div class="num">4</div><div>推荐链接 / 推荐码，一层推荐佣金</div></div>
-              <div class="scope-step"><div class="num">5</div><div>钱包、周清算、提现记录</div></div>
-              <div class="scope-step"><div class="num">6</div><div>后台：方案、商家、订单、分润、用户管理</div></div>
+              <div class="scope-step"><div class="num">5</div><div>钱包、周清算、提现记录和站内信结果通知</div></div>
+              <div class="scope-step"><div class="num">6</div><div>后台：方案、商家、订单、分润、用户、消息模板和客服工单</div></div>
             </div>
             <div class="no-list">
               <div class="card-ill"><img src="assets/revenue-mechanism/problem-reframe.png" alt="MVP 不做复杂叙事" style="object-position: 12% 50%"></div>
@@ -1615,7 +1617,7 @@
                 <div class="flow-node"><div class="num">1</div><b>发给张总</b><span>先对齐新故事是否成立。</span></div>
                 <div class="flow-node"><div class="num">2</div><b>拍板三问</b><span>比例、池子算法、结算周期。</span></div>
                 <div class="flow-node"><div class="num">3</div><b>重写 V2.0</b><span>替代旧版数据资产平台需求。</span></div>
-                <div class="flow-node"><div class="num">4</div><b>生成原型</b><span>方案详情、好评区、钱包、后台分润。</span></div>
+                <div class="flow-node"><div class="num">4</div><b>生成原型</b><span>方案详情、好评区、消息中心、客服、钱包、后台分润。</span></div>
                 <div class="flow-node"><div class="num">5</div><b>业务评审</b><span>跑 1 到 2 轮页面和规则修改。</span></div>
                 <div class="flow-node"><div class="num">6</div><b>开发 MVP</b><span>基于定稿原型和 V2.0 开发。</span></div>
               </div>
