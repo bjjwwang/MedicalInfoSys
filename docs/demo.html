@@ -326,6 +326,37 @@ button { font: inherit; }
     background: var(--soft-amber);
     border-color: #f2d394;
 }
+.mobile-card.danger {
+    background: var(--soft-coral);
+    border-color: #f3bec5;
+}
+.mobile-card.success {
+    background: var(--soft-green);
+    border-color: #bee7ca;
+}
+.status-note {
+    display: none;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    background: var(--soft-blue);
+    border: 1px solid #c8ddf8;
+    color: #25456a;
+    font-weight: 850;
+}
+.status-note.show {
+    display: block;
+}
+.status-note.danger {
+    background: var(--soft-coral);
+    border-color: #f3bec5;
+    color: #8f2430;
+}
+.status-note.success {
+    background: var(--soft-green);
+    border-color: #bee7ca;
+    color: #23613a;
+}
 .mini-title {
     display: flex;
     align-items: center;
@@ -399,6 +430,7 @@ button { font: inherit; }
     font-size: 12px;
     font-weight: 900;
     color: #667085;
+    cursor: pointer;
 }
 .segment span.active {
     background: #fff;
@@ -436,6 +468,12 @@ button { font: inherit; }
     color: #203246;
     font-weight: 800;
 }
+.input-box.small {
+    min-height: 38px;
+    padding: 9px 10px;
+    margin: 7px 0;
+    font-size: 12px;
+}
 .primary-btn {
     width: 100%;
     min-height: 48px;
@@ -449,6 +487,7 @@ button { font: inherit; }
     justify-content: center;
     gap: 8px;
     margin-top: 10px;
+    cursor: pointer;
 }
 .secondary-btn {
     width: 100%;
@@ -463,6 +502,28 @@ button { font: inherit; }
     justify-content: center;
     gap: 8px;
     margin-top: 8px;
+    cursor: pointer;
+}
+.phone-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+.phone-actions .primary-btn,
+.phone-actions .secondary-btn {
+    margin-top: 0;
+    min-height: 40px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+.link-button {
+    border: 0;
+    background: transparent;
+    color: var(--blue);
+    font-weight: 900;
+    padding: 0;
+    cursor: pointer;
 }
 .mobile-tags {
     display: flex;
@@ -481,6 +542,96 @@ button { font: inherit; }
     font-size: 12px;
     font-weight: 850;
 }
+.mobile-tag.blue { background: var(--soft-blue); color: var(--blue); }
+.mobile-tag.teal { background: var(--soft-teal); color: var(--teal); }
+.mobile-tag.green { background: var(--soft-green); color: var(--green); }
+.mobile-tag.amber { background: var(--soft-amber); color: var(--amber); }
+.mobile-tag.coral { background: var(--soft-coral); color: var(--coral); }
+.store-card {
+    background: #fff;
+    border: 1px solid #dfe6ef;
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+}
+.store-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 6px;
+}
+.store-card.blue::before { background: var(--blue); }
+.store-card.teal::before { background: var(--teal); }
+.store-card.amber::before { background: var(--amber); }
+.store-card.coral::before { background: var(--coral); }
+.store-card .store-inner { padding-left: 8px; }
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 10px 0;
+}
+.color-tile {
+    min-height: 56px;
+    border-radius: 14px;
+    padding: 10px;
+    color: #203246;
+    font-weight: 900;
+}
+.color-tile span {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 750;
+}
+.color-tile.blue { background: var(--soft-blue); }
+.color-tile.teal { background: var(--soft-teal); }
+.color-tile.amber { background: var(--soft-amber); }
+.color-tile.coral { background: var(--soft-coral); }
+.doc-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+.doc-chip {
+    border: 1px solid #dfe6ef;
+    border-radius: 999px;
+    background: #fff;
+    padding: 4px 8px;
+    color: #344054;
+    font-size: 11px;
+    font-weight: 850;
+}
+.custom-field {
+    display: grid;
+    gap: 7px;
+}
+.field-row {
+    border: 1px dashed #cdd7e3;
+    border-radius: 12px;
+    background: #fbfcfe;
+    padding: 9px 10px;
+    color: #203246;
+    font-size: 12px;
+    font-weight: 850;
+}
+.task-state {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    border-radius: 999px;
+    padding: 2px 7px;
+    background: #eef2f7;
+    color: #475467;
+    font-size: 11px;
+    font-weight: 900;
+}
+.task-state.done { background: var(--soft-green); color: var(--green); }
+.task-state.todo { background: var(--soft-amber); color: var(--amber); }
+.task-state.block { background: var(--soft-coral); color: var(--coral); }
 .metric-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -563,7 +714,7 @@ button { font: inherit; }
 }
 @media (max-width: 980px) {
     .topbar {
-        align-items: flex-start;
+        align-items: stretch;
         flex-direction: column;
     }
     .top-actions {
@@ -577,16 +728,55 @@ button { font: inherit; }
     .intro {
         grid-template-columns: 1fr;
     }
+    .step-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .nav-btn {
+        min-width: 0;
+        justify-content: center;
+    }
     .phone {
         width: min(390px, calc(100vw - 36px));
         height: 760px;
     }
 }
 @media (max-width: 620px) {
-    .shell { padding: 10px; }
+    .shell {
+        width: min(100vw, 390px);
+        margin-left: 0;
+        margin-right: 0;
+        padding: 10px;
+    }
+    .topbar {
+        width: min(100vw, 390px);
+    }
+    .topbar,
+    .shell,
+    .intro,
+    .step-nav,
+    .workspace {
+        max-width: 100vw;
+        min-width: 0;
+    }
     .intro h1 { font-size: 23px; }
-    .step-tab { flex: 1 1 160px; }
+    .top-actions {
+        grid-template-columns: 1fr;
+    }
+    .step-nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .step-tab {
+        min-width: 0;
+        width: 100%;
+        justify-content: flex-start;
+    }
     .db-panel { padding: 14px; }
+    .phone-area {
+        order: -1;
+    }
     .panel-head {
         flex-direction: column;
     }
@@ -595,6 +785,7 @@ button { font: inherit; }
         gap: 2px;
     }
     .phone {
+        width: min(360px, calc(100vw - 28px));
         height: 720px;
         padding: 10px;
         border-radius: 30px;
@@ -659,291 +850,6 @@ button { font: inherit; }
 </main>
 
 <script>
-const baseSteps = [
-    {
-        key: "register",
-        icon: "user-plus",
-        tab: "注册登录",
-        title: "01 注册登录：先建立用户身份",
-        actor: "现在用户",
-        screen: "用户登录页",
-        subtitle: "用户用手机号进入系统，系统只建立基础身份和授权记录，不产生任何分润。",
-        explain: "这一小点的目标是让平台知道“谁在买方案”。注册本身不产生收益，也不会进入老用户池。",
-        db: [
-            { table: "users", op: "INSERT", tone: "insert", rows: [
-                ["id", "U1001"],
-                ["phone", "138****0912"],
-                ["role", "buyer"],
-                ["identity_status", "pending"],
-                ["created_at", "2026-05-20 16:10"]
-            ]},
-            { table: "user_consents", op: "INSERT", tone: "insert", rows: [
-                ["user_id", "U1001"],
-                ["consent_type", "service_terms"],
-                ["version", "v1.0"],
-                ["status", "accepted"]
-            ]},
-            { table: "login_sessions", op: "INSERT", tone: "insert", rows: [
-                ["user_id", "U1001"],
-                ["device", "iPhone"],
-                ["expires_at", "2026-06-19 16:10"]
-            ]}
-        ],
-        phone: `
-            <h2 class="mobile-title">登录诊疗方案商城</h2>
-            <p class="mobile-sub">购买方案、查看订单、提交反馈和查看收益，都从同一个身份开始。</p>
-            <div class="mobile-card">
-                <div class="input-box">手机号 138 **** 0912</div>
-                <div class="input-box">验证码 826419</div>
-                <button class="primary-btn"><i data-lucide="log-in"></i>登录 / 注册</button>
-                <button class="secondary-btn"><i data-lucide="file-check"></i>已阅读服务协议</button>
-            </div>
-            <div class="mobile-card soft">
-                <b>这里不会分润</b>
-                <p class="mobile-sub" style="margin-top:6px;">只是建立用户身份。后面真实订单完成后，才会生成分润流水。</p>
-            </div>
-        `
-    },
-    {
-        key: "publish",
-        icon: "store",
-        tab: "上架方案",
-        title: "02 上架方案：商品是诊疗服务包",
-        actor: "方案运营方",
-        screen: "机构端上架页",
-        subtitle: "机构提交方案，平台保留版本快照。用户未来买的是这个方案服务包，不是患者原始数据。",
-        explain: "上架动作会写入方案和版本表。审核通过前，C 端用户看不到这个商品。",
-        db: [
-            { table: "medical_plans", op: "INSERT", tone: "insert", rows: [
-                ["id", "P3008"],
-                ["title", "肝癌术后管理方案 A"],
-                ["operator_id", "ORG018"],
-                ["price", "980.00"],
-                ["status", "pending_review"]
-            ]},
-            { table: "plan_versions", op: "INSERT", tone: "insert", rows: [
-                ["plan_id", "P3008"],
-                ["version_no", "v1"],
-                ["content_snapshot", "服务内容 + 风险提示 + 退款规则"],
-                ["approved_by", "null"]
-            ]},
-            { table: "audit_logs", op: "INSERT", tone: "insert", rows: [
-                ["actor_id", "ORG018_ADMIN"],
-                ["action", "submit_plan"],
-                ["target_id", "P3008"]
-            ]}
-        ],
-        phone: `
-            <h2 class="mobile-title">上架诊疗方案</h2>
-            <p class="mobile-sub">机构端提交。审核通过后，才进入商城。</p>
-            <div class="mobile-card">
-                <div class="input-box">方案名称：肝癌术后管理方案 A</div>
-                <div class="input-box">价格：¥980</div>
-                <div class="input-box">服务内容：复诊提醒、指标跟踪、随访管理</div>
-                <div class="input-box">风险提示：不承诺治愈，需线下医生判断</div>
-                <button class="primary-btn"><i data-lucide="send"></i>提交审核</button>
-            </div>
-            <div class="mobile-tags">
-                <span class="mobile-tag">pending_review</span>
-                <span class="mobile-tag">version v1</span>
-            </div>
-        `
-    },
-    {
-        key: "browse",
-        icon: "search",
-        tab: "看方案",
-        title: "03 看方案：读取商品和老用户背书",
-        actor: "现在用户",
-        screen: "方案详情页",
-        subtitle: "用户看的是方案内容、价格、适用人群和老用户脱敏反馈。浏览本身不参与分润计算。",
-        explain: "这一步主要是读取数据。为了避免变成复杂路径追踪，MVP 不按浏览路径分润。",
-        db: [
-            { table: "medical_plans", op: "SELECT", tone: "select", rows: [
-                ["where", "id = P3008"],
-                ["return", "title, price, operator, risk_notice"],
-                ["purpose", "展示方案详情"]
-            ]},
-            { table: "review_evidence", op: "SELECT", tone: "select", rows: [
-                ["where", "plan_id = P3008 and audit_status = approved"],
-                ["return", "脱敏摘要、指标变化、体验反馈"],
-                ["purpose", "展示老用户背书"]
-            ]},
-            { table: "plan_user_pool", op: "SELECT", tone: "select", rows: [
-                ["where", "plan_id = P3008 and share_status = active"],
-                ["return", "有效老用户数量 48"],
-                ["purpose", "显示可信度，不触发收益"]
-            ]}
-        ],
-        phone: `
-            <h2 class="mobile-title">肝癌术后管理方案 A</h2>
-            <p class="mobile-sub">省肿瘤专病团队 · 服务包 ¥980</p>
-            <div class="mobile-tags">
-                <span class="mobile-tag">治疗后管理</span>
-                <span class="mobile-tag">老用户 48 人</span>
-                <span class="mobile-tag">T+7 结算</span>
-            </div>
-            <div class="mobile-card">
-                <b>服务内容</b>
-                <p class="mobile-sub" style="margin-top:6px;">复诊提醒、指标跟踪、用药依从性记录、随访管理。</p>
-            </div>
-            <div class="mobile-card soft">
-                <b>老用户背书</b>
-                <div class="phone-row"><span>术后 3 月随访摘要</span><span class="amount">已审核</span></div>
-                <div class="phone-row"><span>复查节点完成率</span><span class="amount">82%</span></div>
-            </div>
-            <button class="primary-btn"><i data-lucide="shopping-bag"></i>购买方案</button>
-        `
-    },
-    {
-        key: "order",
-        icon: "receipt",
-        tab: "购买方案",
-        title: "04 购买方案：订单是分润的唯一触发源",
-        actor: "现在用户",
-        screen: "订单确认页",
-        subtitle: "支付成功后，系统锁定方案版本、价格快照和推荐人 R。没有真实订单，就没有任何收益分配。",
-        explain: "这是最关键的小点：分润不是凭空产生，也不是老用户直接卖数据，而是来自一笔真实方案订单。",
-        db: [
-            { table: "orders", op: "INSERT", tone: "insert", rows: [
-                ["id", "O9001"],
-                ["buyer_id", "U1001"],
-                ["plan_id", "P3008"],
-                ["amount", "980.00"],
-                ["status", "paid"]
-            ]},
-            { table: "order_snapshots", op: "INSERT", tone: "insert", rows: [
-                ["order_id", "O9001"],
-                ["plan_version", "P3008 / v1"],
-                ["split_rule", "70/15/10/5"],
-                ["refund_rule", "T+7 冻结期"]
-            ]},
-            { table: "referrals", op: "INSERT", tone: "insert", rows: [
-                ["order_id", "O9001"],
-                ["referrer_id", "R2007"],
-                ["level", "1"],
-                ["status", "locked"]
-            ]}
-        ],
-        phone: `
-            <h2 class="mobile-title">确认订单</h2>
-            <p class="mobile-sub">购买的是诊疗方案服务包，不是其他患者的原始数据。</p>
-            <div class="mobile-card">
-                <div class="phone-row"><span>方案</span><b>肝癌术后管理方案 A</b></div>
-                <div class="phone-row"><span>版本</span><b>v1</b></div>
-                <div class="phone-row"><span>推荐来源</span><b>R2007</b></div>
-                <div class="phone-row"><span>支付金额</span><span class="amount">¥980.00</span></div>
-            </div>
-            <div class="mobile-card soft">
-                <b>付款后会锁定规则</b>
-                <p class="mobile-sub" style="margin-top:6px;">后续结算按本订单的价格快照和分润规则计算。</p>
-            </div>
-            <button class="primary-btn"><i data-lucide="credit-card"></i>确认支付</button>
-        `
-    },
-    {
-        key: "feedback",
-        icon: "badge-check",
-        tab: "反馈入池",
-        title: "05 反馈入池：新用户完成服务后变成老用户",
-        actor: "老用户",
-        screen: "反馈提交页",
-        subtitle: "用户完成治疗或随访节点后，提交真实反馈。审核通过后，才进入该方案老用户池。",
-        explain: "这里要明确：不是注册了就能分钱，也不是随便写评价就能分钱。必须有订单、服务节点、反馈材料和授权。",
-        db: [
-            { table: "review_evidence", op: "INSERT", tone: "insert", rows: [
-                ["id", "EV7011"],
-                ["user_id", "U1001"],
-                ["plan_id", "P3008"],
-                ["audit_status", "pending"],
-                ["display_scope", "脱敏摘要"]
-            ]},
-            { table: "user_consents", op: "INSERT", tone: "insert", rows: [
-                ["user_id", "U1001"],
-                ["consent_type", "feedback_display_and_revenue"],
-                ["status", "accepted"],
-                ["can_revoke", "true"]
-            ]},
-            { table: "plan_user_pool", op: "INSERT", tone: "insert", rows: [
-                ["plan_id", "P3008"],
-                ["user_id", "U1001"],
-                ["evidence_status", "pending"],
-                ["share_status", "frozen_until_approved"]
-            ]}
-        ],
-        phone: `
-            <h2 class="mobile-title">提交治疗反馈</h2>
-            <p class="mobile-sub">审核通过后，你会成为这个方案的老用户。</p>
-            <div class="mobile-card">
-                <div class="input-box">服务节点：术后 3 月随访完成</div>
-                <div class="input-box">反馈摘要：按时复查，指标稳定</div>
-                <div class="input-box">材料：复诊记录 1 份</div>
-                <button class="secondary-btn"><i data-lucide="file-check"></i>授权脱敏展示和参与分润</button>
-                <button class="primary-btn"><i data-lucide="upload"></i>提交审核</button>
-            </div>
-            <div class="mobile-card soft">
-                <b>当前状态</b>
-                <p class="mobile-sub" style="margin-top:6px;">待审核。审核通过前不展示，也不参与分润。</p>
-            </div>
-        `
-    },
-    {
-        key: "settlement",
-        icon: "split",
-        tab: "分润结算",
-        title: "06 分润结算：一笔订单拆成四类台账",
-        actor: "平台结算",
-        screen: "收益钱包页",
-        subtitle: "订单完成且过退款期后，结算引擎生成方案运营方、推荐人、老用户池和平台的流水。",
-        explain: "这一步把商业规则落成数据库台账。所有收益都能回到订单 O9001，不做无限层级返佣。",
-        db: [
-            { table: "settlement_batches", op: "INSERT", tone: "insert", rows: [
-                ["id", "B20260520"],
-                ["period", "2026-05-13 ~ 2026-05-20"],
-                ["status", "processing"],
-                ["rule", "70/15/10/5"]
-            ]},
-            { table: "settlement_items", op: "INSERT", tone: "insert", rows: [
-                ["order_id", "O9001"],
-                ["operator", "¥686.00"],
-                ["referrer_R", "¥147.00"],
-                ["old_user_pool", "¥98.00"],
-                ["platform", "¥49.00"]
-            ]},
-            { table: "wallet_ledger", op: "INSERT", tone: "insert", rows: [
-                ["receiver", "ORG018 / R2007 / old_users / platform"],
-                ["entry_type", "revenue_share"],
-                ["frozen_until", "T+7"],
-                ["source_order", "O9001"]
-            ]}
-        ],
-        phone: `
-            <h2 class="mobile-title">收益钱包</h2>
-            <p class="mobile-sub">每一笔收益都能追溯到真实订单。</p>
-            <div class="metric-row">
-                <div class="metric"><b>¥98</b><span>老用户池</span></div>
-                <div class="metric"><b>48</b><span>池内人数</span></div>
-                <div class="metric"><b>T+7</b><span>冻结期</span></div>
-            </div>
-            <div class="mobile-card">
-                <b>订单 O9001 拆账</b>
-                <div class="split-mini">
-                    <div class="a">运营方</div>
-                    <div class="b">推荐</div>
-                    <div class="c">老用户</div>
-                    <div class="d">平台</div>
-                </div>
-                <div class="phone-list">
-                    <div class="phone-row"><span>方案运营方</span><span>¥686.00</span></div>
-                    <div class="phone-row"><span>推荐人 R</span><span>¥147.00</span></div>
-                    <div class="phone-row"><span>老用户池</span><span class="amount">¥98.00</span></div>
-                    <div class="phone-row"><span>平台</span><span>¥49.00</span></div>
-                </div>
-            </div>
-        `
-    }
-];
-
 const steps = [
     {
         key: "user_identity",
@@ -969,6 +875,13 @@ const steps = [
                 ["verify_channel", "支付通道实名"],
                 ["verify_status", "pending"]
             ]},
+            { table: "oauth_accounts", op: "UPSERT", tone: "insert", rows: [
+                ["provider", "wechat"],
+                ["openid_hash", "wx_8f3a9c****"],
+                ["unionid_hash", "union_19dd****"],
+                ["bind_user_id", "U1001"],
+                ["bind_phone", "required"]
+            ]},
             { table: "user_consents", op: "INSERT", tone: "insert", rows: [
                 ["service_terms", "v1.0 accepted"],
                 ["privacy_policy", "v1.0 accepted"],
@@ -987,8 +900,11 @@ const steps = [
             <p class="mobile-sub">手机号只是第一步，健康服务要把实名、隐私和风险提示拆开确认。</p>
             <div class="segment"><span class="active">登录</span><span>实名</span><span>授权</span></div>
             <div class="mobile-card">
-                <div class="input-box">手机号 138 **** 0912</div>
-                <div class="input-box">验证码 826419</div>
+                <button class="secondary-btn" data-action="wechat-login"><i data-lucide="message-circle"></i>微信一键登录</button>
+                <div id="wechatStatus" class="status-note">已从微信拿到 openid，仍需要绑定手机号和实名。</div>
+                <div class="input-box small">手机号 138 **** 0912</div>
+                <div class="input-box small">验证码 826419</div>
+                <div class="input-box small">实名：王*生 / 身份证 1101********3319</div>
                 <div class="check-list">
                     <div class="check-line"><span class="check-dot">✓</span><span>同意服务协议与隐私政策</span></div>
                     <div class="check-line"><span class="check-dot">✓</span><span>单独阅读健康信息处理提示</span></div>
@@ -996,7 +912,7 @@ const steps = [
                 </div>
                 <button class="primary-btn"><i data-lucide="log-in"></i>登录并继续实名</button>
             </div>
-            <div class="notice"><b>产品细节</b><br><span class="tiny">后续购买、反馈入池、提现都复用同一个用户身份。</span></div>
+            <div class="notice"><b>产品细节</b><br><span class="tiny">后续购买、老用户认证、提现都复用同一个用户身份。</span></div>
         `
     },
     {
@@ -1013,14 +929,22 @@ const steps = [
                 ["id", "ORG018"],
                 ["name", "省肿瘤专病团队"],
                 ["operator_type", "医院科室合作"],
+                ["contact_phone", "020-8***-9012"],
                 ["status", "qualification_review"],
                 ["settlement_subject", "广东某健康管理有限公司"]
             ]},
             { table: "operator_licenses", op: "INSERT", tone: "insert", rows: [
                 ["business_license", "uploaded"],
                 ["medical_coop_letter", "uploaded"],
+                ["legal_representative_id", "uploaded"],
                 ["service_scope", "肿瘤术后管理 / 随访"],
                 ["expire_check", "2027-03-31"]
+            ]},
+            { table: "operator_terms_acceptances", op: "INSERT", tone: "insert", rows: [
+                ["operator_id", "ORG018"],
+                ["terms", "服务责任承诺 / 数据合规 / 分润结算"],
+                ["version", "2026.05"],
+                ["accepted_by", "李** / 机构管理员"]
             ]},
             { table: "settlement_accounts", op: "INSERT", tone: "insert", rows: [
                 ["owner_id", "ORG018"],
@@ -1039,17 +963,30 @@ const steps = [
             <h2 class="mobile-title">机构入驻</h2>
             <p class="mobile-sub">先审核机构，再允许创建诊疗方案。</p>
             <div class="mobile-card">
-                <div class="mini-title"><span>资质材料</span><span class="mobile-tag">4/6</span></div>
+                <div class="mini-title"><span>基础字段</span><span class="mobile-tag amber">9/12</span></div>
+                <div class="input-box small">机构全称：广东某健康管理有限公司</div>
+                <div class="input-box small">客服电话：020-8***-9012</div>
+                <div class="input-box small">服务负责人：李** / 138****2201</div>
+                <div class="input-box small">结算主体：对公账户待打款验证</div>
+            </div>
+            <div class="mobile-card">
+                <div class="mini-title"><span>资质与法务</span><span class="mobile-tag">6/8</span></div>
                 <div class="phone-row"><span>营业执照</span><span class="amount">已上传</span></div>
                 <div class="phone-row"><span>合作授权书</span><span class="amount">已上传</span></div>
-                <div class="phone-row"><span>服务责任人</span><span>待补充</span></div>
+                <div class="phone-row"><span>法人身份证</span><span class="amount">已上传</span></div>
                 <div class="phone-row"><span>结算账户</span><span>待实名</span></div>
+                <div class="check-list">
+                    <div class="check-line"><span class="check-dot">✓</span><span>接受服务责任条款</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>接受数据合规与隐私条款</span></div>
+                    <div class="check-line"><span class="check-dot">✓</span><span>接受分润结算与退款扣回条款</span></div>
+                </div>
             </div>
             <div class="mobile-card warn">
                 <b>不能直接上架</b>
                 <p class="tiny" style="margin-top:6px;">机构资质未通过时，方案只能保存为草稿。</p>
             </div>
-            <button class="primary-btn"><i data-lucide="send"></i>提交机构审核</button>
+            <button class="primary-btn" data-action="submit-org"><i data-lucide="send"></i>提交机构审核</button>
+            <div id="orgSubmitStatus" class="status-note success">已提交，当前状态：审核中。预计 2 个工作日内由运营和法务处理。</div>
         `
     },
     {
@@ -1065,13 +1002,18 @@ const steps = [
             { table: "doctor_profiles", op: "INSERT", tone: "insert", rows: [
                 ["id", "D088"],
                 ["name_masked", "张** 主任医师"],
+                ["phone_masked", "139****7755"],
+                ["id_card_masked", "4401********1028"],
                 ["hospital", "省肿瘤医院"],
+                ["department", "肝胆外科"],
                 ["specialty", "肝胆肿瘤"],
                 ["display_status", "masked_display"]
             ]},
             { table: "doctor_certificates", op: "INSERT", tone: "insert", rows: [
                 ["doctor_id", "D088"],
                 ["license_no_masked", "1104********"],
+                ["id_card_front_back", "uploaded_private"],
+                ["phone_verified", "true"],
                 ["title_certificate", "uploaded"],
                 ["verify_status", "pending_manual_review"]
             ]},
@@ -1087,9 +1029,18 @@ const steps = [
             <p class="mobile-sub">方案可以由机构运营，但医学内容必须有人负责。</p>
             <div class="mobile-card">
                 <div class="phone-row"><span>医生</span><b>张** 主任医师</b></div>
+                <div class="phone-row"><span>手机号</span><span>139****7755</span></div>
+                <div class="phone-row"><span>身份证</span><span>4401********1028</span></div>
                 <div class="phone-row"><span>医院</span><span>省肿瘤医院</span></div>
+                <div class="phone-row"><span>科室/职称</span><span>肝胆外科 / 主任医师</span></div>
                 <div class="phone-row"><span>擅长</span><span>肝胆肿瘤</span></div>
                 <div class="phone-row"><span>执业证</span><span class="amount">待审核</span></div>
+            </div>
+            <div class="doc-grid">
+                <span class="doc-chip">身份证正反面</span>
+                <span class="doc-chip">医师执业证</span>
+                <span class="doc-chip">职称证明</span>
+                <span class="doc-chip">合作授权</span>
             </div>
             <div class="mobile-card soft">
                 <b>展示规则</b>
@@ -1124,16 +1075,31 @@ const steps = [
                 ["risk_level", "medium"],
                 ["notice", "不替代线下诊断，不承诺疗效"],
                 ["must_confirm", "true"]
+            ]},
+            { table: "plan_custom_fields", op: "INSERT", tone: "insert", rows: [
+                ["plan_id", "P3008"],
+                ["field_name", "肿瘤标志物关注项"],
+                ["field_type", "long_text"],
+                ["required", "false"],
+                ["operator_editable", "true"]
             ]}
         ],
         phone: `
             <h2 class="mobile-title">创建方案草稿</h2>
             <p class="mobile-sub">真实上架要先把商品边界写清楚。</p>
             <div class="mobile-card">
-                <div class="input-box">病种：肝癌</div>
-                <div class="input-box">阶段：术后 1-12 月</div>
-                <div class="input-box">适用：已线下就医并需要随访管理</div>
-                <div class="input-box">不适用：急性症状、未确诊、需急诊处理</div>
+                <div class="input-box small">病种：肝癌</div>
+                <div class="input-box small">阶段：术后 1-12 月</div>
+                <div class="input-box small">适用：已线下就医并需要随访管理</div>
+                <div class="input-box small">不适用：急性症状、未确诊、需急诊处理</div>
+                <div class="input-box small">用户需准备：出院小结、复查报告、用药清单</div>
+            </div>
+            <div class="mobile-card">
+                <div class="mini-title"><span>自定义条目</span><button class="link-button" data-action="add-custom-field">新增</button></div>
+                <div id="customFields" class="custom-field">
+                    <div class="field-row">肿瘤标志物关注项 · 长文本 · 非必填</div>
+                    <div class="field-row">用户上传病理摘要 · 文件 + 说明 · 必填</div>
+                </div>
             </div>
             <div class="mobile-card warn">
                 <b>风险提示必填</b>
@@ -1151,6 +1117,13 @@ const steps = [
         subtitle: "中国 App 的购买页会写得很细：服务几次、谁服务、多久响应、需要上传什么、什么情况退款、什么时候完成。",
         explain: "这一小点会生成履约节点和价格快照。后续订单按这个版本履约，不受运营方之后改价影响。",
         db: [
+            { table: "storefront_items", op: "INSERT", tone: "insert", rows: [
+                ["id", "SKU3008"],
+                ["plan_id", "P3008"],
+                ["display_title", "肝癌术后管理项目"],
+                ["entry_page", "商城项目卡"],
+                ["click_target", "service_package_v1"]
+            ]},
             { table: "plan_service_items", op: "INSERT", tone: "insert", rows: [
                 ["plan_id", "P3008"],
                 ["item_1", "首次资料评估 / 48 小时"],
@@ -1172,9 +1145,20 @@ const steps = [
             ]}
         ],
         phone: `
-            <h2 class="mobile-title">配置服务包</h2>
-            <p class="mobile-sub">不是卖一段文字，而是卖可履约的服务包。</p>
+            <h2 class="mobile-title">商城项目 → 服务包</h2>
+            <p class="mobile-sub">首页卖的是商城项目，点进去后才看到具体服务包。</p>
+            <div class="store-card teal">
+                <div class="store-inner">
+                    <div class="mini-title"><span>商城项目卡</span><span class="amount">¥980</span></div>
+                    <p class="tiny">肝癌术后管理项目 · 省肿瘤专病团队</p>
+                    <div class="mobile-tags">
+                        <span class="mobile-tag teal">术后随访</span>
+                        <span class="mobile-tag blue">专家背书</span>
+                    </div>
+                </div>
+            </div>
             <div class="mobile-card">
+                <div class="mini-title"><span>点进来：服务包 v1</span><span class="mobile-tag">可购买</span></div>
                 <div class="timeline-mini">
                     <div class="line"><span class="line-num">1</span><div><b>资料评估</b><br><span class="tiny">48 小时内完成</span></div></div>
                     <div class="line"><span class="line-num">2</span><div><b>复查提醒</b><br><span class="tiny">第 1/3/6 月提醒</span></div></div>
@@ -1192,9 +1176,9 @@ const steps = [
         key: "review_publish",
         icon: "shield-check",
         tab: "审核发布",
-        title: "06 审核发布：医学、运营、法务都要留痕",
-        actor: "平台审核",
-        screen: "审核流",
+        title: "06 审核发布：这是 Admin 端，不是用户端",
+        actor: "平台 Admin",
+        screen: "Admin 审核台",
         subtitle: "方案发布前要经过医学内容、宣传合规、价格规则、履约能力、分润比例和素材检查。",
         explain: "审核通过后方案才从草稿进入可售状态。每次发布都形成版本，方便订单快照和责任追踪。",
         db: [
@@ -1216,19 +1200,30 @@ const steps = [
                 ["operator", "platform_admin"],
                 ["evidence", "审核记录、截图、风险提示版本"],
                 ["result", "online"]
+            ]},
+            { table: "audit_reject_reasons", op: "UPSERT", tone: "update", rows: [
+                ["plan_id", "P3008"],
+                ["if_rejected", "宣传语涉嫌承诺疗效 / 缺少退款说明"],
+                ["visible_to_operator", "true"],
+                ["resubmit_required", "true"]
             ]}
         ],
         phone: `
-            <h2 class="mobile-title">发布前审核</h2>
-            <p class="mobile-sub">所有环节通过后，方案才进入商城。</p>
+            <h2 class="mobile-title">Admin 审核台</h2>
+            <p class="mobile-sub">这是平台后台页面：审核员决定过不过，并写明原因。</p>
             <div class="mobile-card">
+                <div class="mini-title"><span>待审方案 P3008</span><span class="mobile-tag amber">待终审</span></div>
                 <div class="check-list">
                     <div class="check-line"><span class="check-dot">✓</span><span>医学内容：通过</span></div>
                     <div class="check-line"><span class="check-dot">✓</span><span>宣传合规：补充风险提示后通过</span></div>
                     <div class="check-line"><span class="check-dot">✓</span><span>价格与退款：通过</span></div>
                     <div class="check-line"><span class="check-dot">✓</span><span>分润比例：70/15/10/5</span></div>
                 </div>
-                <button class="primary-btn"><i data-lucide="badge-check"></i>发布到商城</button>
+                <div class="phone-actions">
+                    <button class="secondary-btn" data-admin-result="reject"><i data-lucide="x-circle"></i>不通过</button>
+                    <button class="primary-btn" data-admin-result="approve"><i data-lucide="badge-check"></i>通过发布</button>
+                </div>
+                <div id="adminReviewStatus" class="status-note">点击审核按钮后，这里显示操作结果。</div>
             </div>
             <div class="notice"><b>版本 v1 已锁定</b><br><span class="tiny">后续订单按 v1 快照履约和结算。</span></div>
         `
@@ -1266,23 +1261,39 @@ const steps = [
             <h2 class="mobile-title">找诊疗方案</h2>
             <p class="mobile-sub">按病种、阶段、预算和背书筛选。</p>
             <div class="input-box">搜索：肝癌 术后管理</div>
-            <div class="mobile-tags">
-                <span class="mobile-tag">术后 1-12 月</span>
-                <span class="mobile-tag">¥1000 内</span>
-                <span class="mobile-tag">有老用户反馈</span>
+            <div class="color-grid">
+                <div class="color-tile blue">病种<span>肿瘤 / 心脑血管 / 罕见病</span></div>
+                <div class="color-tile teal">阶段<span>术前 / 术后 / 慢病随访</span></div>
+                <div class="color-tile amber">预算<span>¥399 / ¥980 / ¥1980</span></div>
+                <div class="color-tile coral">背书<span>老用户 / 医生 / 机构</span></div>
             </div>
-            <div class="mobile-card">
-                <div class="mini-title"><span>肝癌术后管理方案 A</span><span class="amount">¥980</span></div>
-                <p class="tiny">省肿瘤专病团队 · 老用户 48 · 完成率 82%</p>
-                <div class="mobile-tags">
-                    <span class="mobile-tag">服务包</span>
-                    <span class="mobile-tag">T+7</span>
-                    <span class="mobile-tag">风险提示完整</span>
+            <div class="mobile-tags">
+                <span class="mobile-tag blue">术后 1-12 月</span>
+                <span class="mobile-tag green">¥1000 内</span>
+                <span class="mobile-tag amber">有老用户反馈</span>
+            </div>
+            <div class="store-card teal">
+                <div class="store-inner">
+                    <div class="mini-title"><span>肝癌术后管理方案 A</span><span class="amount">¥980</span></div>
+                    <p class="tiny">省肿瘤专病团队 · 老用户 48 · 完成率 82%</p>
+                    <div class="mobile-tags">
+                        <span class="mobile-tag teal">服务包</span>
+                        <span class="mobile-tag blue">T+7</span>
+                        <span class="mobile-tag amber">风险提示完整</span>
+                    </div>
                 </div>
             </div>
-            <div class="mobile-card">
-                <div class="mini-title"><span>肝癌复查提醒方案 B</span><span>¥399</span></div>
-                <p class="tiny">基层随访团队 · 老用户 19 · 轻量服务</p>
+            <div class="store-card amber">
+                <div class="store-inner">
+                    <div class="mini-title"><span>肝癌复查提醒方案 B</span><span>¥399</span></div>
+                    <p class="tiny">基层随访团队 · 老用户 19 · 轻量服务</p>
+                </div>
+            </div>
+            <div class="store-card blue">
+                <div class="store-inner">
+                    <div class="mini-title"><span>术后营养记录方案 C</span><span>¥299</span></div>
+                    <p class="tiny">营养师团队 · 适合长期记录 · 可单独购买</p>
+                </div>
             </div>
         `
     },
@@ -1321,20 +1332,26 @@ const steps = [
         phone: `
             <h2 class="mobile-title">肝癌术后管理方案 A</h2>
             <p class="mobile-sub">¥980 · 术后 1-12 月 · 服务节点 3 项</p>
-            <div class="segment"><span class="active">概览</span><span>背书</span><span>风险</span></div>
-            <div class="mobile-card">
-                <div class="mini-title"><span>适合谁</span><span class="mobile-tag">需自评</span></div>
-                <div class="check-list">
-                    <div class="check-line"><span class="check-dot">✓</span><span>已完成线下诊疗</span></div>
-                    <div class="check-line"><span class="check-dot">✓</span><span>需要复查提醒和指标记录</span></div>
-                    <div class="check-line"><span class="check-dot">!</span><span>急性症状不适用</span></div>
-                </div>
+            <div class="segment">
+                <span class="active" data-detail-tab="overview">概览</span>
+                <span data-detail-tab="backing">背书</span>
+                <span data-detail-tab="risk">风险</span>
             </div>
-            <div class="mobile-card soft">
-                <b>老用户背书</b>
-                <div class="phone-row"><span>48 人入池</span><span>脱敏展示</span></div>
-                <div class="phone-row"><span>复查节点完成率</span><span class="amount">82%</span></div>
-                <div class="phone-row"><span>退款率</span><span>4.1%</span></div>
+            <div id="detailTabBody">
+                <div class="mobile-card">
+                    <div class="mini-title"><span>适合谁</span><span class="mobile-tag">需自评</span></div>
+                    <div class="check-list">
+                        <div class="check-line"><span class="check-dot">✓</span><span>已完成线下诊疗</span></div>
+                        <div class="check-line"><span class="check-dot">✓</span><span>需要复查提醒和指标记录</span></div>
+                        <div class="check-line"><span class="check-dot">!</span><span>急性症状不适用</span></div>
+                    </div>
+                </div>
+                <div class="mobile-card soft">
+                    <b>服务包摘要</b>
+                    <div class="phone-row"><span>资料评估</span><span>48 小时</span></div>
+                    <div class="phone-row"><span>复查提醒</span><span>3 次</span></div>
+                    <div class="phone-row"><span>医生/机构</span><span>可查看</span></div>
+                </div>
             </div>
         `
     },
@@ -1452,35 +1469,60 @@ const steps = [
             { table: "service_tasks", op: "UPDATE", tone: "update", rows: [
                 ["order_id", "O9001"],
                 ["task_1", "资料评估 completed"],
-                ["task_2", "复查提醒 completed"],
-                ["task_3", "指标整理 completed"],
-                ["complete_rate", "3/3"]
+                ["task_2", "复查提醒 waiting_user_upload"],
+                ["task_3", "指标整理 not_started"],
+                ["complete_rate", "1/3"]
             ]},
             { table: "orders", op: "UPDATE", tone: "update", rows: [
                 ["id", "O9001"],
-                ["status", "service_completed"],
-                ["completed_at", "2026-06-18"],
-                ["settlement_eligible", "true"]
+                ["status", "service_in_progress"],
+                ["completed_at", "null"],
+                ["settlement_eligible", "false"]
+            ]},
+            { table: "service_requirements", op: "INSERT", tone: "insert", rows: [
+                ["order_id", "O9001"],
+                ["requirement", "上传 3 个月复查报告"],
+                ["required_by", "2026-06-18"],
+                ["status", "waiting_user"]
+            ]},
+            { table: "contact_channels", op: "SELECT", tone: "select", rows: [
+                ["operator_phone", "020-8***-9012"],
+                ["doctor_phone", "139****7755"],
+                ["customer_service", "在线客服 / 工单"],
+                ["visible_to_buyer", "true"]
             ]},
             { table: "service_logs", op: "INSERT", tone: "insert", rows: [
                 ["order_id", "O9001"],
                 ["operator_id", "ORG018"],
-                ["log_type", "fulfillment_node"],
-                ["evidence", "节点截图 / 通知记录 / 用户确认"]
+                ["log_type", "fulfillment_node_update"],
+                ["evidence", "节点截图 / 通知记录 / 用户待补材料"]
             ]}
         ],
         phone: `
             <h2 class="mobile-title">服务进度</h2>
-            <p class="mobile-sub">节点完成后，订单才进入待结算。</p>
+            <p class="mobile-sub">不是默认完成。用户补齐材料后，机构才能继续履约。</p>
             <div class="mobile-card">
                 <div class="timeline-mini">
-                    <div class="line"><span class="line-num">1</span><div><b>资料评估</b><br><span class="tiny">已完成 · 05-22</span></div></div>
-                    <div class="line"><span class="line-num">2</span><div><b>复查提醒</b><br><span class="tiny">已完成 · 06-03</span></div></div>
-                    <div class="line"><span class="line-num">3</span><div><b>指标整理</b><br><span class="tiny">已完成 · 06-18</span></div></div>
+                    <div class="line"><span class="line-num">1</span><div><b>资料评估</b><br><span class="tiny">05-22 已完成</span> <span class="task-state done">完成</span></div></div>
+                    <div class="line"><span class="line-num">2</span><div><b>复查提醒</b><br><span class="tiny">等待上传 3 个月复查报告</span> <span class="task-state todo">待用户</span></div></div>
+                    <div class="line"><span class="line-num">3</span><div><b>指标整理</b><br><span class="tiny">报告上传后由机构整理</span> <span class="task-state block">未开始</span></div></div>
                 </div>
             </div>
-            <div class="notice"><b>下一步</b><br><span class="tiny">邀请用户提交反馈，审核后进入老用户池。</span></div>
-            <button class="secondary-btn"><i data-lucide="message-square-text"></i>提交服务评价</button>
+            <div class="mobile-card warn">
+                <b>用户需要做什么</b>
+                <p class="tiny" style="margin-top:6px;">上传复查报告、填写是否按期复查、确认机构是否完成提醒服务。</p>
+                <button class="secondary-btn" data-action="upload-report"><i data-lucide="upload"></i>上传复查报告</button>
+                <div id="reportUploadStatus" class="status-note success">已上传：2026-06-18 复查报告.pdf，节点 2 变为待机构确认。</div>
+            </div>
+            <div class="mobile-card">
+                <div class="mini-title"><span>联系服务方</span><span class="mobile-tag blue">订单 O9001</span></div>
+                <div class="phone-row"><span>机构电话</span><b>020-8***-9012</b></div>
+                <div class="phone-row"><span>医生电话</span><b>139****7755</b></div>
+                <div class="phone-actions">
+                    <button class="secondary-btn"><i data-lucide="phone"></i>打电话</button>
+                    <button class="primary-btn"><i data-lucide="headphones"></i>联系客服</button>
+                </div>
+            </div>
         `
     },
     {
@@ -1507,6 +1549,12 @@ const steps = [
                 ["index_summary", "复查完成、指标稳定"],
                 ["service_score", "5"]
             ]},
+            { table: "review_questionnaire_answers", op: "INSERT", tone: "insert", rows: [
+                ["service_node", "资料评估 / 复查提醒 / 指标整理"],
+                ["objective_result", "复查已完成，报告已上传"],
+                ["subjective_feeling", "提醒有帮助，医生解释清楚"],
+                ["negative_event", "无明显不良体验"]
+            ]},
             { table: "review_files", op: "INSERT", tone: "insert", rows: [
                 ["evidence_id", "EV7011"],
                 ["file_type", "复查报告"],
@@ -1518,10 +1566,12 @@ const steps = [
             <h2 class="mobile-title">写治疗反馈</h2>
             <p class="mobile-sub">按结构填写，避免只有一段随意评价。</p>
             <div class="mobile-card">
-                <div class="input-box">阶段：术后第 3 个月</div>
-                <div class="input-box">复查：已完成，指标稳定</div>
-                <div class="input-box">服务体验：提醒及时，解释清楚</div>
-                <div class="input-box">上传材料：复查报告 1 份</div>
+                <div class="input-box small">阶段：术后第 3 个月</div>
+                <div class="input-box small">服务节点：资料评估、复查提醒、指标整理</div>
+                <div class="input-box small">客观结果：已完成复查，报告已上传</div>
+                <div class="input-box small">主观体验：提醒及时，解释清楚</div>
+                <div class="input-box small">不良体验/投诉：无</div>
+                <div class="input-box small">上传材料：复查报告、服务确认截图</div>
             </div>
             <div class="mini-grid">
                 <div class="mini-box"><b>5 分</b><span class="tiny">服务评分</span></div>
@@ -1578,13 +1628,27 @@ const steps = [
     {
         key: "review_audit",
         icon: "user-round-check",
-        tab: "审核入池",
-        title: "14 审核入池：平台决定是否成为有效老用户",
+        tab: "老用户认证",
+        title: "14 老用户认证：已购买用户提交证据后才获得分润资格",
         actor: "平台审核",
-        screen: "反馈审核结果",
-        subtitle: "反馈授权后仍要审核。审核通过才展示、才入池、才参与后续订单的老用户池。",
-        explain: "这是防刷、防托、防虚假疗效的关键环节。老用户池不是开放池，而是审核后的有效池。",
+        screen: "老用户认证",
+        subtitle: "这里改名为“老用户认证”，避免和机构审核、方案审核混淆。它表达的是：已购买用户申请成为该方案的有效老用户。",
+        explain: "已购买不等于有分润资格。用户要写清购买后发生了什么、上传履约和复查证据、授权脱敏展示；平台认证通过后才进入有效老用户池。",
         db: [
+            { table: "old_user_certifications", op: "INSERT", tone: "insert", rows: [
+                ["id", "CERT7011"],
+                ["order_id", "O9001"],
+                ["user_id", "U1001"],
+                ["plan_id", "P3008"],
+                ["apply_reason", "完成服务并愿意分享脱敏体验"],
+                ["status", "pending_review"]
+            ]},
+            { table: "certification_answers", op: "INSERT", tone: "insert", rows: [
+                ["service_completed", "资料评估已完成，复查提醒已收到"],
+                ["user_feedback", "提醒及时，帮助按时复查"],
+                ["uploaded_docs", "复查报告、服务确认截图"],
+                ["consent", "脱敏展示 + 参与分润"]
+            ]},
             { table: "review_evidence", op: "UPDATE", tone: "update", rows: [
                 ["id", "EV7011"],
                 ["audit_status", "approved"],
@@ -1606,13 +1670,21 @@ const steps = [
         ],
         phone: `
             <h2 class="mobile-title">审核通过</h2>
-            <p class="mobile-sub">你已成为该方案的有效老用户。</p>
+            <p class="mobile-sub">已购买用户先申请认证，平台通过后才是有效老用户。</p>
+            <div class="mobile-card">
+                <div class="mini-title"><span>用户提交了什么</span><span class="mobile-tag amber">待认证</span></div>
+                <div class="input-box small">我买过：订单 O9001 / 方案 P3008</div>
+                <div class="input-box small">我完成了：资料评估，收到复查提醒，上传复查报告</div>
+                <div class="input-box small">我的反馈：提醒及时，帮助我按期复查</div>
+                <div class="input-box small">我授权：脱敏展示反馈，并参与后续订单分润</div>
+            </div>
             <div class="metric-row">
                 <div class="metric"><b>82</b><span>质量分</span></div>
                 <div class="metric"><b>active</b><span>分润资格</span></div>
                 <div class="metric"><b>48→49</b><span>池人数</span></div>
             </div>
-            <div class="mobile-card">
+            <div class="mobile-card success">
+                <b>平台认证结果</b>
                 <div class="phone-row"><span>展示状态</span><span class="amount">已上线</span></div>
                 <div class="phone-row"><span>分润状态</span><span class="amount">后续订单生效</span></div>
                 <div class="phone-row"><span>撤回授权</span><span>可申请</span></div>
@@ -1654,11 +1726,28 @@ const steps = [
                 ["entry_type", "old_user_pool_share"],
                 ["amount", "2.00"],
                 ["frozen_until", "T+7"]
+            ]},
+            { table: "wallet_accounts", op: "UPDATE", tone: "update", rows: [
+                ["user_id", "U1001"],
+                ["available_balance", "126.40"],
+                ["frozen_balance", "2.00"],
+                ["withdraw_channel", "微信零钱 / 银行卡"]
+            ]},
+            { table: "withdrawal_requests", op: "INSERT", tone: "insert", rows: [
+                ["request_id", "WD20260701001"],
+                ["amount", "100.00"],
+                ["status", "created_after_user_click"],
+                ["fee", "0.00"]
             ]}
         ],
         phone: `
             <h2 class="mobile-title">收益钱包</h2>
             <p class="mobile-sub">收益来自后续真实订单，先冻结，过退款期后可提现。</p>
+            <div class="metric-row">
+                <div class="metric"><b>¥126.40</b><span>可提现</span></div>
+                <div class="metric"><b>¥2.00</b><span>冻结中</span></div>
+                <div class="metric"><b>¥318.20</b><span>累计收益</span></div>
+            </div>
             <div class="mobile-card">
                 <b>订单 O9188 拆账</b>
                 <div class="split-mini">
@@ -1669,12 +1758,25 @@ const steps = [
                 <div class="phone-row"><span>本次分到</span><span class="amount">¥2.00</span></div>
                 <div class="phone-row"><span>状态</span><span>冻结中 T+7</span></div>
             </div>
+            <div class="mobile-card">
+                <div class="mini-title"><span>我的钱包</span><span class="mobile-tag green">实名已通过</span></div>
+                <div class="phone-row"><span>提现到</span><span>微信零钱</span></div>
+                <div class="phone-row"><span>最低提现</span><span>¥10</span></div>
+                <div class="phone-actions">
+                    <button class="secondary-btn"><i data-lucide="list"></i>明细</button>
+                    <button class="primary-btn" data-action="withdraw"><i data-lucide="banknote"></i>提现</button>
+                </div>
+                <div id="withdrawStatus" class="status-note success">提现申请已创建：¥100.00，预计 1 个工作日到账。</div>
+            </div>
             <div class="notice"><b>账单解释</b><br><span class="tiny">不是卖你的数据；是你的脱敏反馈参与了方案背书，因此参与后续订单分润。</span></div>
         `
     }
 ];
 
-let current = 0;
+const initialStepParam = Number(new URLSearchParams(window.location.search).get("step") || 0);
+let current = Number.isFinite(initialStepParam)
+    ? Math.min(Math.max(initialStepParam, 0), steps.length - 1)
+    : 0;
 
 function renderTabs() {
     document.getElementById("stepNav").innerHTML = steps.map((s, i) => `
@@ -1709,6 +1811,105 @@ function renderDb(step) {
     `).join("");
 }
 
+const detailTabTemplates = {
+    overview: `
+        <div class="mobile-card">
+            <div class="mini-title"><span>适合谁</span><span class="mobile-tag">需自评</span></div>
+            <div class="check-list">
+                <div class="check-line"><span class="check-dot">✓</span><span>已完成线下诊疗</span></div>
+                <div class="check-line"><span class="check-dot">✓</span><span>需要复查提醒和指标记录</span></div>
+                <div class="check-line"><span class="check-dot">!</span><span>急性症状不适用</span></div>
+            </div>
+        </div>
+        <div class="mobile-card soft">
+            <b>服务包摘要</b>
+            <div class="phone-row"><span>资料评估</span><span>48 小时</span></div>
+            <div class="phone-row"><span>复查提醒</span><span>3 次</span></div>
+            <div class="phone-row"><span>医生/机构</span><span>可查看</span></div>
+        </div>
+    `,
+    backing: `
+        <div class="mobile-card soft">
+            <b>老用户背书怎么来的</b>
+            <div class="phone-row"><span>有效老用户</span><span class="amount">49 人</span></div>
+            <div class="phone-row"><span>展示内容</span><span>脱敏摘要</span></div>
+            <div class="phone-row"><span>原始报告</span><span>不公开</span></div>
+            <div class="phone-row"><span>完成率</span><span class="amount">82%</span></div>
+        </div>
+        <div class="mobile-card">
+            <b>一条背书示例</b>
+            <p class="mobile-sub" style="margin-top:6px;">男，50-60 岁，术后第 3 个月完成复查；认为复查提醒有帮助。姓名、电话、报告编号均已隐藏。</p>
+        </div>
+    `,
+    risk: `
+        <div class="mobile-card danger">
+            <b>风险和边界</b>
+            <div class="check-list" style="margin-top:8px;">
+                <div class="check-line"><span class="check-dot">!</span><span>本服务不替代线下诊断</span></div>
+                <div class="check-line"><span class="check-dot">!</span><span>不承诺治愈、缓解或具体疗效</span></div>
+                <div class="check-line"><span class="check-dot">!</span><span>急性症状需优先线下就医</span></div>
+            </div>
+        </div>
+        <div class="mobile-card">
+            <div class="phone-row"><span>退款规则</span><span>未履约 7 天内</span></div>
+            <div class="phone-row"><span>投诉入口</span><span>客服 / 工单</span></div>
+        </div>
+    `
+};
+
+function showStatus(id, kind = "") {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove("danger", "success");
+    if (kind) el.classList.add(kind);
+    el.classList.add("show");
+}
+
+function bindPhoneInteractions() {
+    const content = document.getElementById("phoneContent");
+    content.onclick = event => {
+        const tab = event.target.closest("[data-detail-tab]");
+        if (tab) {
+            content.querySelectorAll("[data-detail-tab]").forEach(item => item.classList.remove("active"));
+            tab.classList.add("active");
+            const body = document.getElementById("detailTabBody");
+            if (body) body.innerHTML = detailTabTemplates[tab.dataset.detailTab] || detailTabTemplates.overview;
+            return;
+        }
+
+        const adminBtn = event.target.closest("[data-admin-result]");
+        if (adminBtn) {
+            const status = document.getElementById("adminReviewStatus");
+            if (!status) return;
+            if (adminBtn.dataset.adminResult === "reject") {
+                status.textContent = "审核不通过：宣传语涉嫌承诺疗效，且退款说明缺少未履约场景。已退回机构修改。";
+                showStatus("adminReviewStatus", "danger");
+            } else {
+                status.textContent = "审核通过：方案 v1 已发布到商城，后续订单锁定此版本快照。";
+                showStatus("adminReviewStatus", "success");
+            }
+            return;
+        }
+
+        const actionBtn = event.target.closest("[data-action]");
+        if (!actionBtn) return;
+        const action = actionBtn.dataset.action;
+        if (action === "wechat-login") showStatus("wechatStatus");
+        if (action === "submit-org") showStatus("orgSubmitStatus", "success");
+        if (action === "upload-report") showStatus("reportUploadStatus", "success");
+        if (action === "withdraw") showStatus("withdrawStatus", "success");
+        if (action === "add-custom-field") {
+            const fields = document.getElementById("customFields");
+            if (fields) {
+                const node = document.createElement("div");
+                node.className = "field-row";
+                node.textContent = "新增：随访频率说明 · 下拉 + 长文本 · 运营方自定义";
+                fields.appendChild(node);
+            }
+        }
+    };
+}
+
 function render() {
     const step = steps[current];
     renderTabs();
@@ -1720,6 +1921,7 @@ function render() {
     document.getElementById("screenName").textContent = step.screen;
     document.getElementById("phoneContent").innerHTML = step.phone;
     renderDb(step);
+    bindPhoneInteractions();
     document.getElementById("prevBtn").disabled = current === 0;
     document.getElementById("nextBtn").disabled = current === steps.length - 1;
     lucide.createIcons();
