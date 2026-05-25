@@ -851,6 +851,245 @@
       font-size: 14px;
     }
 
+    .page-flow-board {
+      display: grid;
+      grid-template-rows: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      min-height: 465px;
+    }
+
+    .page-lane {
+      display: grid;
+      grid-template-columns: 104px repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .lane-label {
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      color: #fff;
+      background: var(--dark);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.25;
+      box-shadow: var(--shadow);
+    }
+
+    .page-node {
+      position: relative;
+      min-width: 0;
+      padding: 9px 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--teal);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(31, 42, 55, 0.06);
+    }
+
+    .page-node:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      width: 8px;
+      height: 2px;
+      background: #98a2b3;
+    }
+
+    .page-node.blue { border-top-color: var(--blue); }
+    .page-node.amber { border-top-color: var(--amber); }
+    .page-node.coral { border-top-color: var(--coral); }
+    .page-node.purple { border-top-color: var(--purple); }
+    .page-node.green { border-top-color: var(--green); }
+
+    .page-node b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .page-node span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .detail-flow {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 14px;
+      min-height: 465px;
+    }
+
+    .phone-pages {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .phone-page {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 104px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(31, 42, 55, 0.06);
+    }
+
+    .phone-page b {
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .phone-page span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.24;
+    }
+
+    .page-tag {
+      display: inline-flex;
+      width: max-content;
+      align-items: center;
+      min-height: 22px;
+      padding: 0 7px;
+      color: #155b54;
+      background: var(--soft-teal);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 820;
+    }
+
+    .evidence-stack {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .evidence-card {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr) 112px;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(31, 42, 55, 0.06);
+    }
+
+    .evidence-card b {
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .evidence-card span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .status-pill {
+      justify-self: end;
+      padding: 4px 8px;
+      color: #fff;
+      background: var(--green);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .status-pill.warn { background: var(--amber); }
+    .status-pill.bad { background: var(--coral); }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      min-height: 465px;
+    }
+
+    .admin-card {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 8px;
+      min-height: 0;
+      padding: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--blue);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-card:nth-child(2) { border-left-color: var(--teal); }
+    .admin-card:nth-child(3) { border-left-color: var(--amber); }
+    .admin-card:nth-child(4) { border-left-color: var(--purple); }
+    .admin-card:nth-child(5) { border-left-color: var(--coral); }
+    .admin-card:nth-child(6) { border-left-color: var(--green); }
+
+    .admin-card b {
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .admin-card p,
+    .admin-card li {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.34;
+    }
+
+    .admin-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .trace-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .trace-table th,
+    .trace-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #edf0f5;
+      vertical-align: top;
+      font-size: 13px;
+      line-height: 1.28;
+    }
+
+    .trace-table th {
+      color: #344054;
+      background: #f8fafc;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .trace-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .trace-table td:first-child {
+      color: var(--teal);
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
     .nav-hint {
       position: fixed;
       right: 18px;
@@ -1308,6 +1547,209 @@
         <div class="slide-frame">
           <div class="slide-head">
             <div>
+              <h2>页面地图总览：前台、机构端、审核端、最高 Admin 要一起设计</h2>
+              <p class="sub">不是先画一个漂亮 C 端商城就完事。每一个前台页面，都必须能追到谁提交、谁审核、谁配置规则、谁处理异常。</p>
+            </div>
+            <div class="kicker"><i data-lucide="workflow"></i>页面泳道</div>
+          </div>
+          <div class="page-flow-board">
+            <div class="page-lane">
+              <div class="lane-label">C 端<br>患者用户</div>
+              <div class="page-node blue"><b>登录 / 注册</b><span>微信登录、手机号、实名、协议授权。</span></div>
+              <div class="page-node blue"><b>健康实名</b><span>身份证、隐私授权、风险提示版本。</span></div>
+              <div class="page-node blue"><b>商城首页</b><span>病种、阶段、预算、老用户背书筛选。</span></div>
+              <div class="page-node blue"><b>方案详情</b><span>服务包、医生、机构、背书、风险。</span></div>
+              <div class="page-node blue"><b>购物车 / 确认单</b><span>锁定 SKU、版本、分润规则和退款规则。</span></div>
+              <div class="page-node blue"><b>支付 / 订单</b><span>微信支付、订单快照、履约任务。</span></div>
+              <div class="page-node blue"><b>客服 / 钱包</b><span>工单、退款、反馈认证、提现。</span></div>
+            </div>
+            <div class="page-lane">
+              <div class="lane-label">机构端<br>商家运营</div>
+              <div class="page-node green"><b>机构入驻</b><span>电话、法人、执照、法务 terms。</span></div>
+              <div class="page-node green"><b>医生资质</b><span>电话、身份证、执业证、职称。</span></div>
+              <div class="page-node green"><b>方案草稿</b><span>病种、适用/不适用、自定义字段。</span></div>
+              <div class="page-node green"><b>服务包</b><span>节点、响应 SLA、材料要求、退款。</span></div>
+              <div class="page-node green"><b>提交审核</b><span>版本快照，不通过要能重提。</span></div>
+              <div class="page-node green"><b>履约工作台</b><span>资料评估、复查提醒、指标整理。</span></div>
+              <div class="page-node green"><b>售后协同</b><span>接客服工单、补材料、退款举证。</span></div>
+            </div>
+            <div class="page-lane">
+              <div class="lane-label">审核员<br>运营后台</div>
+              <div class="page-node amber"><b>机构审核</b><span>营业执照、服务范围、结算主体。</span></div>
+              <div class="page-node amber"><b>医生审核</b><span>执业信息、身份证、展示边界。</span></div>
+              <div class="page-node amber"><b>方案审核</b><span>医学、宣传、价格、分润、退款。</span></div>
+              <div class="page-node amber"><b>反馈认证</b><span>订单、履约、材料、脱敏预览。</span></div>
+              <div class="page-node amber"><b>客服复核</b><span>投诉、退款、服务争议证据。</span></div>
+              <div class="page-node amber"><b>风控标记</b><span>刷好评、异常推荐、重复材料。</span></div>
+              <div class="page-node amber"><b>审核日志</b><span>谁看过、谁改过、为什么过/不过。</span></div>
+            </div>
+            <div class="page-lane">
+              <div class="lane-label">最高<br>Admin</div>
+              <div class="page-node purple"><b>角色权限</b><span>RBAC、数据范围、双人复核。</span></div>
+              <div class="page-node purple"><b>类目字典</b><span>病种、阶段、服务类型、标签。</span></div>
+              <div class="page-node purple"><b>分润规则</b><span>70/15/10/5、版本、生效时间。</span></div>
+              <div class="page-node purple"><b>审核策略</b><span>队列、SLA、必审字段、拒绝原因。</span></div>
+              <div class="page-node purple"><b>结算批次</b><span>冻结期、回滚、提现、对账。</span></div>
+              <div class="page-node purple"><b>风控阈值</b><span>推荐异常、退款异常、材料重复。</span></div>
+              <div class="page-node purple"><b>审计导出</b><span>合规审计、财务导出、日志留存。</span></div>
+            </div>
+          </div>
+          <div class="footer"><span>推断原则：前台每出现一个状态，后台必须有对应的任务、规则、日志和异常处理入口。</span><span>15</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>C 端页面流：用户买的是服务包，但每一步都要锁证据</h2>
+              <p class="sub">购物车可以很轻，但不能省略“订单确认页”。医疗健康商品必须先确认适用性、退款、风险提示、服务节点和联系方式。</p>
+            </div>
+            <div class="kicker"><i data-lucide="smartphone"></i>前台页面</div>
+          </div>
+          <div class="detail-flow">
+            <div class="phone-pages">
+              <div class="phone-page"><b>登录 / 注册</b><span>微信 openid + 手机号 + 实名，不实名不能提现。</span><div class="page-tag">users / oauth_accounts</div></div>
+              <div class="phone-page"><b>商城首页</b><span>搜索病种、阶段、预算，展示老用户数量和完成率。</span><div class="page-tag">plan_search_index</div></div>
+              <div class="phone-page"><b>方案详情</b><span>概览、背书、风险三栏可切换，背书只展示脱敏摘要。</span><div class="page-tag">plans / evidence</div></div>
+              <div class="phone-page"><b>购物车 / 确认单</b><span>即使只买一个 SKU，也要锁版本、价格、推荐来源。</span><div class="page-tag">order_snapshots</div></div>
+              <div class="phone-page"><b>支付页</b><span>微信支付成功后生成订单和履约任务，不立刻分润。</span><div class="page-tag">orders / tasks</div></div>
+              <div class="phone-page"><b>服务进度</b><span>未完成节点、上传复查报告、机构和医生电话。</span><div class="page-tag">service_tasks</div></div>
+              <div class="phone-page"><b>联系客服</b><span>必须绑定订单，不做无上下文聊天；支持退款/催办/投诉。</span><div class="page-tag">support_tickets</div></div>
+              <div class="phone-page"><b>反馈认证 / 钱包</b><span>认证后成为老用户；收益冻结、明细、提现。</span><div class="page-tag">wallet_ledger</div></div>
+            </div>
+            <div class="evidence-stack">
+              <div class="evidence-card"><b>页面证据</b><span>每个关键按钮都写入版本：协议版本、风险提示版本、方案版本、分润规则版本。</span><div class="status-pill">可追溯</div></div>
+              <div class="evidence-card"><b>履约证据</b><span>服务进度不是“已完成”默认值，而是资料评估、复查提醒、报告上传、机构确认。</span><div class="status-pill warn">待补材料</div></div>
+              <div class="evidence-card"><b>客服证据</b><span>联系客服入口读取订单、服务任务、机构电话、医生电话；处理结果回写工单。</span><div class="status-pill">有上下文</div></div>
+              <div class="evidence-card"><b>分润证据</b><span>订单完成并过冻结期后，才从结算批次生成推荐人、老用户池和平台流水。</span><div class="status-pill warn">T+7</div></div>
+              <div class="evidence-card"><b>失败状态</b><span>实名失败、支付失败、服务未完成、反馈被拒、提现失败都要有用户可理解原因。</span><div class="status-pill bad">不能空白</div></div>
+            </div>
+          </div>
+          <div class="footer"><span>主动推断：C 端必须把“购物车、客服、未完成履约、提现失败”这些非理想状态先画出来。</span><span>16</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>审核员后台：不是一个“通过按钮”，而是多个证据队列</h2>
+              <p class="sub">机构、医生、方案、老用户反馈、客服争议不能混在同一个审核里。每类审核看的证据、拒绝原因、影响状态都不同。</p>
+            </div>
+            <div class="kicker"><i data-lucide="clipboard-check"></i>审核后台</div>
+          </div>
+          <div class="admin-grid">
+            <div class="admin-card">
+              <b>机构资质审核</b>
+              <ul><li>看营业执照、服务范围、客服电话、结算主体。</li><li>通过后才允许创建可提交方案。</li><li>拒绝原因回到机构入驻页。</li></ul>
+              <span class="page-tag">operators</span>
+            </div>
+            <div class="admin-card">
+              <b>医生资质审核</b>
+              <ul><li>看身份证、手机号、执业证、职称、合作授权。</li><li>决定前台医生名称和资质怎么展示。</li><li>敏感证件只给后台可见。</li></ul>
+              <span class="page-tag">doctor_profiles</span>
+            </div>
+            <div class="admin-card">
+              <b>方案发布审核</b>
+              <ul><li>医学内容、宣传合规、价格、退款、分润比例。</li><li>通过后发布 v1；不通过必须写原因。</li><li>每次发布形成版本快照。</li></ul>
+              <span class="page-tag">audit_tasks</span>
+            </div>
+            <div class="admin-card">
+              <b>老用户认证审核</b>
+              <ul><li>核对订单、履约节点、复查报告、脱敏预览。</li><li>通过才进入有效老用户池。</li><li>拒绝时不展示、不分润。</li></ul>
+              <span class="page-tag">old_user_certifications</span>
+            </div>
+            <div class="admin-card">
+              <b>客服争议复核</b>
+              <ul><li>看工单、聊天记录、服务日志、上传材料。</li><li>可触发退款、补服务、冻结分润。</li><li>争议结果回写订单。</li></ul>
+              <span class="page-tag">support_tickets</span>
+            </div>
+            <div class="admin-card">
+              <b>风控标记</b>
+              <ul><li>异常推荐、重复报告、批量好评、退款异常。</li><li>可暂停展示、暂停提现、要求二次复核。</li><li>保留审核日志。</li></ul>
+              <span class="page-tag">risk_flags</span>
+            </div>
+          </div>
+          <div class="footer"><span>后台设计标准：每一个“不过”都要有可复用原因码，不能只写一句人工备注。</span><span>17</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>最高 Admin：管规则和审计，不应该日常替审核员点按钮</h2>
+              <p class="sub">最高 admin 的重点不是“什么都能改”，而是控制规则版本、权限边界、高危操作和财务审计。否则后面无法解释谁改了分润。</p>
+            </div>
+            <div class="kicker"><i data-lucide="shield"></i>超级后台</div>
+          </div>
+          <div class="admin-grid">
+            <div class="admin-card">
+              <b>角色与数据权限</b>
+              <p>配置审核员、客服、机构运营、财务、超级管理员。不同角色只能看自己任务和数据范围。</p>
+              <span class="page-tag">rbac_roles</span>
+            </div>
+            <div class="admin-card">
+              <b>分润规则版本</b>
+              <p>维护 70/15/10/5、生效时间、适用类目、冻结期。订单只引用当时有效版本。</p>
+              <span class="page-tag">split_rules</span>
+            </div>
+            <div class="admin-card">
+              <b>审核策略配置</b>
+              <p>定义哪些字段必填、哪些病种必二审、拒绝原因库、审核 SLA 和自动派单规则。</p>
+              <span class="page-tag">audit_policies</span>
+            </div>
+            <div class="admin-card">
+              <b>结算批次与回滚</b>
+              <p>查看批次、冻结金额、提现失败、退款扣回。高危回滚需要双人复核和财务理由。</p>
+              <span class="page-tag">settlement_batches</span>
+            </div>
+            <div class="admin-card">
+              <b>风控阈值</b>
+              <p>设置同设备注册、同报告重复、异常推荐转化、退款率阈值，命中后暂停分润或提现。</p>
+              <span class="page-tag">risk_rules</span>
+            </div>
+            <div class="admin-card">
+              <b>审计与导出</b>
+              <p>导出订单、分润、审核、提现、客服记录。任何导出都要记录用途和审批人。</p>
+              <span class="page-tag">audit_logs</span>
+            </div>
+          </div>
+          <div class="footer"><span>推断结论：最高 admin 页面要少做“直接改业务数据”，多做“规则版本、审批、日志、回滚”。</span><span>18</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
+              <h2>互相查证矩阵：页面、后台、数据库必须能对上</h2>
+              <p class="sub">这页是给产品经理和开发对需求用的。任何一个页面如果找不到后台任务、数据库写入和异常状态，就说明还没想细。</p>
+            </div>
+            <div class="kicker"><i data-lucide="database-zap"></i>查证关系</div>
+          </div>
+          <table class="trace-table">
+            <thead>
+              <tr><th>页面动作</th><th>前台看到什么</th><th>后台谁处理</th><th>必须写入 / 读取</th><th>异常状态不能省</th><th>为什么要这样设计</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>登录注册</td><td>微信登录、手机号、实名、协议授权</td><td>风控 / 用户运营</td><td>users, oauth_accounts, identity_profiles, user_consents</td><td>实名失败、微信未绑手机号、协议版本过期</td><td>提现、反馈认证、客服追责都依赖同一身份。</td></tr>
+              <tr><td>商城与详情</td><td>病种筛选、方案详情、背书、风险 Tab</td><td>方案审核员 / 机构运营</td><td>medical_plans, plan_versions, review_evidence, doctor_profiles</td><td>方案下架、医生资质过期、背书被撤回</td><td>用户不是买数据，而是被可验证服务包和脱敏背书说服。</td></tr>
+              <tr><td>购物车 / 下单</td><td>SKU、版本、价格、推荐来源、退款规则</td><td>交易系统 / 最高 Admin 配规则</td><td>orders, order_snapshots, referral_locks, split_rules</td><td>支付失败、价格变更、推荐来源失效</td><td>分润不能靠口头约定，必须靠订单快照锁定。</td></tr>
+              <tr><td>履约 / 客服</td><td>未完成节点、上传报告、电话、客服工单</td><td>机构运营 / 客服 / 争议复核</td><td>service_tasks, service_logs, uploaded_documents, support_tickets</td><td>报告未传、机构超时、用户申请退款</td><td>订单没完成就不能进入可结算状态。</td></tr>
+              <tr><td>老用户认证</td><td>写反馈、脱敏预览、授权、认证结果</td><td>反馈审核员 / 风控</td><td>old_user_certifications, review_redactions, plan_user_pool</td><td>材料不足、疑似刷评、授权撤回</td><td>已购买不等于可分润，必须通过证据认证。</td></tr>
+              <tr><td>钱包提现</td><td>可提现、冻结、明细、提现申请</td><td>财务 / 最高 Admin 双人复核</td><td>settlement_items, wallet_ledger, withdrawal_requests</td><td>退款扣回、提现失败、风控冻结</td><td>用户要能解释每一分钱来自哪个订单批次。</td></tr>
+            </tbody>
+          </table>
+          <div class="footer"><span>产品验收口径：一个前台状态，要能回查到一条订单、一条规则、一条审核或一条日志。</span><span>19</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="slide-frame">
+          <div class="slide-head">
+            <div>
               <h2>最后用一张图收束：推荐的闭环</h2>
               <p class="sub">这张图是对外讲故事时最应该保留的版本。</p>
             </div>
@@ -1329,7 +1771,7 @@
               <div class="card warn"><h3>给团队的提醒</h3><p>不要急着证明愿景很大。先证明一个用户愿意买方案、一个老用户愿意上传好评、一次周清算能准确到账。</p></div>
             </div>
           </div>
-          <div class="footer"><span>最小闭环跑通后，再谈加权算法、二级市场、区块链和数据交易所。</span><span>15</span></div>
+          <div class="footer"><span>最小闭环跑通后，再谈加权算法、二级市场、区块链和数据交易所。</span><span>20</span></div>
         </div>
       </section>
     </div>
@@ -1361,8 +1803,8 @@
     function animateCurrentSlide() {
       const current = deck.getCurrentSlide();
       if (!window.gsap || !current) return;
-      const items = current.querySelectorAll(".card, .story-step, .flow-node, .risk, .object, .loop-step");
-      gsap.fromTo(items, { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.04, ease: "power2.out" });
+      const items = current.querySelectorAll(".card, .story-step, .flow-node, .risk, .object, .loop-step, .page-node, .phone-page, .evidence-card, .admin-card");
+      gsap.fromTo(items, { y: 10, opacity: 1 }, { y: 0, opacity: 1, duration: 0.24, stagger: 0.015, ease: "power2.out" });
     }
 
     let splitChart;
