@@ -997,7 +997,7 @@ const steps = [
         actor: "医学负责人",
         screen: "医生 / 专家认证",
         subtitle: "诊疗方案不是普通商品。要记录医学负责人、执业信息、擅长病种、审核权限和展示边界。",
-        explain: "这一步不是为了做在线问诊，而是让方案详情页能说明谁设计、谁审核、谁负责医学内容，避免平台变成无主体的健康建议。",
+        explain: "这一步不是做完整在线问诊，而是绑定医学负责人，让方案详情页能说明谁设计、谁审核、谁负责医学内容；FMT 等医疗技术项目所需的最小互联网诊疗与处方能力另行支撑。",
         db: [
             { table: "doctor_profiles", op: "INSERT", tone: "insert", rows: [
                 ["id", "D088"],
@@ -1768,7 +1768,7 @@ const steps = [
                 </div>
                 <div id="withdrawStatus" class="status-note success">提现申请已创建：¥100.00，预计 1 个工作日到账。</div>
             </div>
-            <div class="notice"><b>账单解释</b><br><span class="tiny">不是卖你的数据；是你的脱敏反馈参与了方案背书，因此参与后续订单分润。</span></div>
+            <div class="notice"><b>账单解释</b><br><span class="tiny">不是卖你的数据；你消费后形成了健康数据资产，脱敏反馈被后续订单参考、为方案背书，因此获得资产收益（分润）。</span></div>
         `
     }
 ];
